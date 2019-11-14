@@ -1,6 +1,7 @@
 import React from 'react'
 import Button from '@material-ui/core/Button';
 import { Redirect } from 'react-router-dom'
+import userLoginFetch from './actions.js'
 
 class Login extends React.Component {
   constructor(props) {
@@ -10,24 +11,35 @@ class Login extends React.Component {
       username: "",
       password: "",
     };
-    this.checkAuthentication = this.checkAuthentication.bind(this);
+    // this.checkAuthentication = this.checkAuthentication.bind(this);
     this.login = this.login.bind(this);
   }
- 
-  async checkAuthentication() {
-    // const authenticated = await this.props.auth.isAuthenticated();
-    // if (authenticated !== this.state.authenticated) {
-    //   this.setState({ authenticated });
-    // }
+
+  handleChange = event => {
+    this.setState({[event.target.name]: event.target.value});
+  }
+
+  login = event => {
+    console.log("Loging in with username: %s, password %s", this.state.username, this.state.password)
+    event.preventDefault()
+    userLoginFetch(this.state)
+
   }
  
-  async componentDidMount() {
-    this.checkAuthentication()
-  }
+  // async checkAuthentication() {
+  //   // const authenticated = await this.props.auth.isAuthenticated();
+  //   // if (authenticated !== this.state.authenticated) {
+  //   //   this.setState({ authenticated });
+  //   // }
+  // }
  
-  async login(e) {
-    this.props.login('/home');
-  }
+  // async componentDidMount() {
+  //   this.checkAuthentication()
+  // }
+ 
+  // async login(e) {
+  //   this.props.login('/home');
+  // }
  
   render() {
     if (this.state.authenticated) {
@@ -35,7 +47,7 @@ class Login extends React.Component {
     } else {
       return (
         <div style={{height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-          <form>
+          <form onSubmit={this.login}>
             <h1>Login</h1>
             <label>Username</label>
             <input
@@ -54,7 +66,7 @@ class Login extends React.Component {
               onChange={this.handleChange}
               /><br/>
 
-            <Button variant="contained" color="primary" onClick={this.login}>Login</Button>
+            <Button type='submit' variant="contained" color="primary" onClick={this.login}>Login</Button>
             <Button variant="contained" color="primary" onClick={this.login}>Register</Button>
             
           </form>
@@ -63,5 +75,9 @@ class Login extends React.Component {
     }
   }
  }
+
+//  const mapDispatchToProps = dispatch => ({
+//   userLoginFetch: userInfo => dispatch(userLoginFetch(userInfo))
+// })
  
- export default Login;
+ export default (Login);
