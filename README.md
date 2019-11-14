@@ -13,6 +13,16 @@ To start the server
 FLASK_APP=$PWD/app/http/api/endpoints.py python -m flask run --port 4433
 ```
 
+To install the client
+```
+npm install
+```
+
+To start the client
+```
+npm start
+```
+
 ## Git Help
 
 Add file to be tracked as a change by git
