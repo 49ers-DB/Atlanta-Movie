@@ -15,8 +15,8 @@ def login_required(f):
       resp = decode(token, None, verify=False, algorithms=['HS256'])
       g.user = resp['sub']
 
-    except exceptions.DecodeError as identifier:
-      return json.dump({'error': 'no authorization token provided'}), 403, {'Content-type': 'application/json'}
+    except exceptions.DecodeError as _:
+      return json.dumps({'error': 'no authorization token provided'}), 403, {'Content-type': 'application/json'}
 
     return f(*args, **kwargs)
 
