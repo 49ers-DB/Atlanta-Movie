@@ -10,7 +10,7 @@ conda env create -f atlanta_movie_env.yml
 
 To start the server
 ```
-FLASK_APP=$PWD/app/http/api/endpoints.py run python -m flask run --port 4433
+FLASK_APP=$PWD/app/http/api/endpoints.py python -m flask run --port 4433
 ```
 
 ## Git Help

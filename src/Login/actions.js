@@ -2,7 +2,7 @@
 export const userLoginFetch = user => {
   let url = process.env.REACT_APP_API_URL
   console.log(url)
-  return fetch(url + "/login", {
+  return fetch(url + "/auth", {
     method: "POST",
     headers: {
       'Content-Type': 'application/json',
@@ -16,7 +16,8 @@ export const userLoginFetch = user => {
       // Here you should have logic to handle invalid login credentials.
       // This assumes your Rails API will return a JSON object with a key of
       // 'message' if there is an error
-
+      console.error("Bad login parameters")
+      console.log(data)
     } else {
       // localStorage.setItem("token", data.jwt)
       // dispatch(loginUser(data.user))

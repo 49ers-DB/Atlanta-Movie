@@ -1,7 +1,9 @@
 from functools import wraps
 from flask import request, g, abort
 from jwt import decode, exceptions
+from ...util import custom_jwt
 import json
+
 
 def login_required(f):
   @wraps(f)
@@ -11,9 +13,10 @@ def login_required(f):
       return json.dumps({'error': 'no authorization token provided'}), 403, {'Content-type': 'application/json'}
 
     try:
+      print(custom_jwt.token_repo)
       token = authorization.split(' ')[1]
       resp = decode(token, None, verify=False, algorithms=['HS256'])
-      g.user = resp['sub']
+      g.user = resp['user']
 
     except exceptions.DecodeError as _:
       return json.dumps({'error': 'no authorization token provided'}), 403, {'Content-type': 'application/json'}
