@@ -13,6 +13,10 @@ class APIClient {
   constructor(accessToken) {
     this.accessToken = accessToken;
   }
+  
+  createTheater(theater) {
+    return this.perform('post', '/kudos', theater);
+  }
 
 
   async perform (method, resource, data) {
