@@ -12,3 +12,25 @@ To start the server
 ```
 FLASK_APP=$PWD/app/http/api/endpoints.py run python -m flask run --port 4433
 ```
+
+## Git Help
+
+Add file to be tracked as a change by git
+```
+git add <file_name>
+```
+
+Save changes locally
+```
+git commit -m "message describing commit"
+```
+
+Get changes from Github
+```
+git pull
+```
+
+Push changes to Github
+```
+git push
+```
