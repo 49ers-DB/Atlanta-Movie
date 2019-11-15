@@ -1,7 +1,7 @@
 import flask
 
 
-app = falsk.Flask("__main__")
+app = flask.Flask("__main__")
 
 
 

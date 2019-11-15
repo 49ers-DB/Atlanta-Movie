@@ -1,0 +1,16 @@
+.main {
+    width: 80%;
+    margin: auto;
+    height: 100vh;
+}
+
+.loginCard {
+    width: 500px;
+    margin:auto;
+    margin-top: 13%;
+
+}
+
+.buttonRows {
+    margin-top: 20px;
+}
