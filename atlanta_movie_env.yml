@@ -2,8 +2,8 @@ name: atlanta_movie
 channels:
 - defaults
 dependencies:
+- flask
 - pip:
-  - flask
   - flask_cors
   - flask_jwt_extended
 - pytest
