@@ -22,7 +22,8 @@ class Login extends React.Component {
   login = event => {
     console.log("Loging in with username: %s, password %s", this.state.username, this.state.password)
     event.preventDefault()
-    userLoginFetch(this.state)
+    var token = userLoginFetch(this.state)
+    console.log(token)
 
   }
  

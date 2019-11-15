@@ -18,10 +18,12 @@ export const userLoginFetch = user => {
       // 'message' if there is an error
       console.error("Bad login parameters")
       console.log(data)
+
     } else {
       // localStorage.setItem("token", data.jwt)
       // dispatch(loginUser(data.user))
       console.log("logged in")
+      return data;
     }
   })
 }
