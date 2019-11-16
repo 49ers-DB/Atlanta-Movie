@@ -7,7 +7,7 @@ export default class UserRegistration extends Component {
     state = {
         firstName: '',
         lastName: '',
-        email: '',
+        Username: '',
         password: '',
         password2: '',
     }
@@ -15,30 +15,33 @@ export default class UserRegistration extends Component {
     //check if user already exists
 
 
-    setFirstName(typedFirstName) {
-        this.setState({
-            firstName: typedFirstName
-        });
+    handleChange = event => {
+        this.setState({[event.target.name]: event.target.value});
     }
-    setLastName(typedLastName) {
-        this.setState({
-            lastName: typedLastName
-        });
-    }
-    setEmail(typedEmail) {
-        this.setState({
-            email: typedEmail
-        });
-    }
-    setPassword(typedPassword) {
-        this.setState({
-            password: typedPassword
-        });
-    }
-    setPassword2(typedPassword) {
-        this.setState({
-            password2: typedPassword
-        });
+    register() {
+        //Checking to make sure all of the fields are filled out correctly
+        console.log(this.state);
+        if(this.state.firstName === '' || 
+        this.state.lastname === '' || 
+        this.state.Username === '' || 
+        this.state.password === '') {
+            window.alert("Please fill out all of the fields");
+        } else if(this.state.firstName.length > 128) {
+            window.alert("First name is too long");
+        } else if(this.state.lastName.length > 128) {
+            window.alert("Last name is too long");
+        } else if(this.state.Username.length > 128) {
+            window.alert("Username is too long");
+        } else if(this.state.password.length > 128) {
+            window.alert("Password is too long");
+        } else if(this.state.password.length < 8) {
+            window.alert("Password must be at least 8 characters long");
+        } else if(this.state.password !== this.state.password2) {
+            window.alert("Passwords do not match");
+        } else {
+            
+            //post method
+        }
     }
     
     render() {
@@ -54,7 +57,7 @@ export default class UserRegistration extends Component {
                                         First Name
                                     </label>
                                 </div>
-                                <input type="text" onChange={e => this.setFirstName(e.target.value) } className="form-control" id="firstName"/>
+                                <input type="text" name="firstName" onChange={this.handleChange} className="form-control" id="firstName"/>
                             </div>
                             <div className="col-6">
                                 <div className="col-4">
@@ -62,18 +65,18 @@ export default class UserRegistration extends Component {
                                         Last Name
                                     </label>
                                 </div>
-                                <input type="text" onChange={e => this.setLastName(e.target.value) } className="form-control" id="lastName"/>
+                                <input type="text" name="lastName" onChange={this.handleChange} className="form-control" id="lastName"/>
                             </div>
                         </div>
                         <div className="row">
                             <div className="col-12">
                                 <div className="col-2">
                                     <label className="registerLabel">
-                                        Email
+                                        Username
                                     </label>
                                 </div>
                                 
-                                <input type="email" onChange={e => this.setEmail(e.target.value) } className="form-control" id="email"/>
+                                <input type="Username" name="Username" onChange={this.handleChange} className="form-control" id="Username"/>
                             </div>
                         </div>
                         <div className="row">
@@ -83,7 +86,7 @@ export default class UserRegistration extends Component {
                                         Password
                                     </label>
                                 </div>
-                                <input type="text" onChange={e => this.setPassword(e.target.value) } className="form-control" id="password"/>
+                                <input type="text" name="password" onChange={this.handleChange} className="form-control" id="password"/>
                             </div>
                             <div className="col-6">
                                 <div className="col-6">
@@ -91,18 +94,18 @@ export default class UserRegistration extends Component {
                                         Confirm Password
                                     </label>
                                 </div>
-                                <input type="text" onChange={e => this.setPassword2(e.target.value) } className="form-control" id="password2"/>
+                                <input type="text" name="password2" onChange={this.handleChange} className="form-control" id="password2"/>
                             </div>
                         </div>
                         <div className="row buttonRows">
                             <div className="col-6">
                                 <div className="LoginButton">
-                                    <a type="back" className="btn btn-primary" href="/">Back</a>
+                                    <a type="back" className="btn btn-primary" href="/Register-Option">Back</a>
                                 </div>
                             </div>
                             <div className="col-6">
                                 <div className="RegisterButton">
-                                    <a type="register" className="btn btn-primary" href="/">Register</a>
+                                    <div className="btn btn-primary" onClick={() => this.register()}>Register</div>
                                 </div>
                             </div>
                         </div>

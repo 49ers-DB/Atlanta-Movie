@@ -20,10 +20,15 @@ class Login extends React.Component {
   }
 
   login = event => {
-    console.log("Loging in with username: %s, password %s", this.state.username, this.state.password)
-    event.preventDefault()
-    var token = userLoginFetch(this.state)
-    console.log(token)
+    if(this.state.username === '' || this.state.password === '') {
+        window.alert("Please enter username and password");
+    } else {
+        console.log("Loging in with username: %s, password %s", this.state.username, this.state.password)
+        event.preventDefault()
+        var token = userLoginFetch(this.state)
+        console.log(token)
+    }
+
 
   }
  
@@ -72,7 +77,7 @@ class Login extends React.Component {
                             /><br/>
                             <div className="row buttonRows">
                                 <div className="col-6">
-                                    <div className="btn btn-primary" onClick={this.login}>Login</div>
+                                    <button className="btn btn-primary" type="submit">Login</button>
                                 </div>
                                 <div className="col-6">
                                     <a className="btn btn-primary" href="/Register-Option">Register</a>
