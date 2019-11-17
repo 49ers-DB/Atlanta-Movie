@@ -1,6 +1,5 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
-import userLoginFetch from '../actions/actions.js';
 import userLogin from '../actions/login.js';
 import './Login.css';
 
@@ -30,21 +29,6 @@ class Login extends React.Component {
         console.log(token)
     }
   }
- 
-  // async checkAuthentication() {
-  //   // const authenticated = await this.props.auth.isAuthenticated();
-  //   // if (authenticated !== this.state.authenticated) {
-  //   //   this.setState({ authenticated });
-  //   // }
-  // }
- 
-  // async componentDidMount() {
-  //   this.checkAuthentication()
-  // }
- 
-  // async login(e) {
-  //   this.props.login('/home');
-  // }
  
   render() {
     if (this.state.authenticated) {
@@ -91,9 +75,5 @@ class Login extends React.Component {
     }
   }
  }
-
-//  const mapDispatchToProps = dispatch => ({
-//   userLoginFetch: userInfo => dispatch(userLoginFetch(userInfo))
-// })
  
  export default (Login);

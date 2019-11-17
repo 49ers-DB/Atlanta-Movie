@@ -43,6 +43,7 @@ def userLogin():
 @login_required
 def example_endpoint(param_1):
   print(param_1)
+  username = g.user
   return json_response({'response': param_1}, 200)
 
 
