@@ -2,6 +2,7 @@ import React from 'react'
 import Button from '@material-ui/core/Button';
 import { Redirect } from 'react-router-dom'
 import userLoginFetch from './actions.js'
+import userLogin from './actions.js'
 
 class Login extends React.Component {
   constructor(props) {

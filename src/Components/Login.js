@@ -1,6 +1,7 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
 import userLoginFetch from '../actions/actions.js';
+import userLogin from '../actions/login.js';
 import './Login.css';
 
 class Login extends React.Component {
@@ -25,11 +26,9 @@ class Login extends React.Component {
     } else {
         console.log("Loging in with username: %s, password %s", this.state.username, this.state.password)
         event.preventDefault()
-        var token = userLoginFetch(this.state)
+        var token = userLogin(this.state)
         console.log(token)
     }
-
-
   }
  
   // async checkAuthentication() {
