@@ -44,23 +44,6 @@ def userLogin():
 def example_endpoint(param_1):
   print(param_1)
   return json_response({'response': param_1}, 200)
-  
-
-# @app.route("/auth", methods=['POST'])
-# def auth_user():
-#   data = request.get_json()
-#   user = data['user']
-#   try:
-#     if user['username'] == 'ed':
-#       # todo call LoginService to get the user
-#       del user['password']
-#       access_token = create_access_token(identity=data)
-#       user['token'] = access_token
-#       return json_response({'ok': True, 'data': user})
-#   except Exception as e:
-#     print("Exception", e)
-#     return json_response({'message': 'Bad request parameters'}, 400)
-
 
 
 def json_response(payload, status_code=200):
