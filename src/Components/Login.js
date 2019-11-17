@@ -1,6 +1,5 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
-import userLoginFetch from '../actions/actions.js';
 import userLogin from '../actions/login.js';
 import './Login.css';
 

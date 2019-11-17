@@ -1,4 +1,6 @@
 import React, {Component} from "react";
+import customerRegister from "../../actions/registerCustomer";
+
 
 
 export default class CustomerRegistration extends Component {
@@ -21,7 +23,6 @@ export default class CustomerRegistration extends Component {
 
     register() {
         //Checking to make sure all of the fields are filled out correctly
-        console.log(this.state);
         if(this.state.firstName === '' || 
         this.state.lastname === '' || 
         this.state.Username === '' || 
@@ -38,7 +39,7 @@ export default class CustomerRegistration extends Component {
             window.alert("Password is too long");
         } else if(this.state.password.length < 8) {
             window.alert("Password must be at least 8 characters long");
-        } else if(this.state.creditCard.length < 10) {
+        } else if(this.state.creditCard.length < 16) {
             window.alert("Invalid credit card");
         } else if(this.state.password !== this.state.password2) {
             window.alert("Passwords do not match");
@@ -52,7 +53,7 @@ export default class CustomerRegistration extends Component {
                 while(creditString[0] === "," || creditString[0] === " ") {
                     creditString = creditString.substring(1);
                 }
-                var cardNumber = creditString.substring(0,10);
+                var cardNumber = creditString.substring(0,16);
 
                 //if the credit card has any characters besides just numbers
                 if(cardNumber.match(/^[0-9]+$/) == null) {
@@ -69,14 +70,20 @@ export default class CustomerRegistration extends Component {
                 }
 
                 //new credit card string omitting the previous credit card
-                creditString = creditString.substring(10);
+                creditString = creditString.substring(16);
             }
-            this.setState({creditCardsList: cards});
+            this.setState(
+                {creditCardsList: cards},
+                function() {
+                    var registration = customerRegister(this.state)
+                    console.log(registration)
+                });
+
             
-            //post method
         }
     }
     
+
     render() {
         return(
             <div className="main">

@@ -119,7 +119,7 @@ export default class ManagerCustomerRegistration extends Component {
             window.alert("Zip Code must be 5 characters long");
         } else if(this.state.zipCode.match(/^[0-9]+$/) == null) {
             window.alert("Zip Code must be only numbers");
-        } else if(this.state.creditCard.length < 10) {
+        } else if(this.state.creditCard.length < 16) {
             window.alert("Invalid credit card");
         } else if(this.state.password.length < 8) {
             window.alert("Password must be at least 8 characters long");
@@ -139,7 +139,7 @@ export default class ManagerCustomerRegistration extends Component {
                 while(creditString[0] === "," || creditString[0] === " ") {
                     creditString = creditString.substring(1);
                 }
-                var cardNumber = creditString.substring(0,10);
+                var cardNumber = creditString.substring(0,16);
 
                 //if the credit card has any characters besides just numbers
                 if(cardNumber.match(/^[0-9]+$/) == null) {
@@ -156,7 +156,7 @@ export default class ManagerCustomerRegistration extends Component {
                 }
 
                 //new credit card string omitting the previous credit card
-                creditString = creditString.substring(10);
+                creditString = creditString.substring(16);
             }
             this.setState({creditCardsList: cards});
             //post method

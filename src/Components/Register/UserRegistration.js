@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import userRegister from '../../actions/registerUser.js';
 import "./UserRegistration.css"
 
 
@@ -39,7 +40,8 @@ export default class UserRegistration extends Component {
         } else if(this.state.password !== this.state.password2) {
             window.alert("Passwords do not match");
         } else {
-            
+            var registration = userRegister(this.state)
+            console.log(registration)
             //post method
         }
     }
