@@ -7,14 +7,15 @@ class LoginService(object):
 
 
   def login(self, user) -> bool:
+
     with self.connection.cursor() as cursor:
       # Read a single record
-      sql = "SELECT `username`, `password` FROM `User`"
-      cursor.execute(sql)
+      sql = "SELECT `username`, `password` FROM `User` where username=(%s) and password=(%s)"
+      cursor.execute(sql, (user['username'], user['password']))
       userDatas = cursor.fetchall()
-      for userData in userDatas:
-        if(user['username'] == userData[0]):
-          if(user['password'] == userData[1]):
-            return True
+      self.connection.commit()
+
+      if len(userDatas) > 0:
+        return True
       
       return False
