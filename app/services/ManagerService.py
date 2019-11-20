@@ -5,7 +5,7 @@ class ManagerService(object):
     def __init__(self, connection):
         self.connection = connection
 
-    def TheaterOverview(self, username, filters):
+    def get_theater_overview_data(self, username, filters):
 
         i_username = username
         i_minReleaseDate=filters.get("i_minReleaseDate")
@@ -44,6 +44,7 @@ class ManagerService(object):
                 i_Movie, i_Movie,i_notplayed,i_minReleaseDate, i_minReleaseDate, i_maxReleaseDate,i_maxReleaseDate,i_maxDuration, i_maxDuration,i_minDuration, i_minDuration,i_Movie, i_Movie))
             data=cursor.fetchall()
             self.connection.commit()
+            return info
 
 
 def ScheduleMovie(self, username, filters):

@@ -10,7 +10,7 @@ class TestManagerService(object):
     def test_TheaterOverview(self):
         connection = pymysql.connect(host='localhost',
                              user='root',
-                             password='trixie3008',
+                             password='1234',
                              db='moviez',
                              charset='utf8mb4',
                              port=3306,
