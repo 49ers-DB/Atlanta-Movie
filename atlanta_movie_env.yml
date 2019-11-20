@@ -1,0 +1,14 @@
+name: atlanta_movie
+channels:
+- defaults
+dependencies:
+- flask
+- pip:
+  - flask_cors
+  - flask_jwt_extended
+- pytest
+- pylint
+- python=3.7
+- pyyaml
+- pyjwt
+- pymysql
