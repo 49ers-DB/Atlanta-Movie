@@ -89,7 +89,7 @@ def customerRegister():
 def get_theater_overview():
   data = request.get_json()
   user = g.user
-  manager_service.get_theater_overview_data(user, data['filters'])
+  manager_service.TheaterOverview(user, data['filters'])
 
 
 # #is this right? lol
