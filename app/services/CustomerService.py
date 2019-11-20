@@ -18,7 +18,7 @@ class CustomerService(object):
 
             query = "SELECT MoviePlay.movName, MoviePlay.comName, Theater.thStreet, Theater.thCity, Theater.thState, Theater.thZipcode, MoviePlay.movPlayDate\
             FROM MoviePlay INNER JOIN Theater ON Theater.thName = MoviePlay.thName AND Theater.comName = MoviePlay.comName\
-            WHERE (movName = (%s) OR (%s) is NULL) AND \
+            WHERE (MoviePlay.movName = (%s) OR (%s) is NULL) AND \
             (MoviePlay.comName = (%s) OR (%s) is NULL) AND \
             (Theater.thCity = (%s) OR (%s) is NULL) AND \
             (Theater.thState = (%s) OR (%s) is NULL) AND \
