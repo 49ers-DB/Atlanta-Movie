@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Atlanta Movie",
+  "name": "Atlanta Movie Database Application",
   "icons": [
     {
       "src": "favicon.ico",
