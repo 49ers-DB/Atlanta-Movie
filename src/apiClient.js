@@ -33,3 +33,5 @@ class APIClient {
   }
 
 }
+
+export default (APIClient);

@@ -126,7 +126,7 @@ export default class CustomerRegistration extends Component {
                                         Password
                                     </label>
                                 </div>
-                                <input type="text" name="password" onChange={this.handleChange}  className="form-control" id="password"/>
+                                <input type="password" name="password" onChange={this.handleChange}  className="form-control" id="password"/>
                             </div>
                             <div className="col-6">
                                 <div className="col-6">
@@ -134,7 +134,7 @@ export default class CustomerRegistration extends Component {
                                         Confirm Password
                                     </label>
                                 </div>
-                                <input type="text" name="password2" onChange={this.handleChange}  className="form-control" id="password2"/>
+                                <input type="password" name="password2" onChange={this.handleChange}  className="form-control" id="password2"/>
                             </div>
                         </div>
                         <div className="row">

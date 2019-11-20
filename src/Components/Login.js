@@ -2,6 +2,8 @@ import React from 'react';
 import { Redirect } from 'react-router-dom';
 import userLogin from '../actions/login.js';
 import './Login.css';
+import App from '../App.js';
+import APIClient from '../apiClient.js';
 
 class Login extends React.Component {
   constructor(props) {
@@ -27,12 +29,17 @@ class Login extends React.Component {
         event.preventDefault()
         var token = userLogin(this.state)
         console.log(token)
+        
+        this.setState({authenticated: true})
+        App.state = {
+          apiClient: new APIClient(token)
+        };
     }
   }
  
   render() {
     if (this.state.authenticated) {
-      return <Redirect to='/home' />
+      return <Redirect to='/menu' />
     } else {
       return (
             <div className="main">
