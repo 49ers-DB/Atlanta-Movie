@@ -76,7 +76,27 @@ class TestManagerService(object):
         assert len(Expected) == len(Actual)
         assert sorted(Expected, key=functools.cmp_to_key(compare_movie)) == sorted(Actual, key=functools.cmp_to_key(compare_movie))
 
+    def test_TheaterOverview_PlayDate(self):
+        
+        TOTestDict = {'i_minPlayDate':datetime.date(2019,3, 19),
+                    'i_maxPlayDate':datetime.date(2019, 11, 12)
+        }
+        manager_service = ManagerService(self.connection)
+        Actual= manager_service.TheaterOverview('imbatman',TOTestDict)
+        Expected =[
+            {'Movie':"4400 The Movie",'Release_Date':datetime.date(2019,8,12),'Play_Date':datetime.date(2019,10,12),'Duration':130}]
+        print(Actual)
+        assert len(Expected) == len(Actual)
+        assert sorted(Expected, key=functools.cmp_to_key(compare_movie)) == sorted(Actual, key=functools.cmp_to_key(compare_movie))
 
+        TOTestDict = {'i_minPlayDate':datetime.date(2019,3, 19),
+                    'i_maxPlayDate':datetime.date(2019, 3, 19)
+        }
+        Actual = manager_service.TheaterOverview('imbatman',TOTestDict)
+        Expected =[]
+        print(Actual)
+        assert len(Expected) == len(Actual)
+        assert sorted(Expected, key=functools.cmp_to_key(compare_movie)) == sorted(Actual, key=functools.cmp_to_key(compare_movie))
 
 
 def compare_movie(item1, item2):

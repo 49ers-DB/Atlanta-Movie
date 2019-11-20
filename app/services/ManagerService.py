@@ -22,17 +22,19 @@ class ManagerService(object):
                 i_minReleaseDate,
                 i_maxReleaseDate,
                 i_maxReleaseDate,
-        #         i_maxPlayDate,
-        #         i_maxPlayDate,
-        #         i_minPlayDate,
-        #         i_minPlayDate,
+                i_maxPlayDate,
+                i_maxPlayDate,
+                i_minPlayDate,
+                i_minPlayDate,
         #         i_Movie, 
         #         i_Movie,
         #         i_notplayed,
                 i_minReleaseDate, 
                 i_minReleaseDate,
                 i_maxReleaseDate,
-                i_maxReleaseDate)
+                i_maxReleaseDate,
+                i_maxPlayDate,
+                i_minPlayDate)
         #         i_maxDuration,
         #         i_maxDuration,
         #         i_minDuration, 
@@ -58,11 +60,14 @@ class ManagerService(object):
             where MoviePlay.thName in 
             (select thName from Theater where Theater.manUsername=(%s)) 
             and ((%s) is NULL or Movie.movReleaseDate >= (%s))
-            and ((%s) is NULL or Movie.movReleaseDate <= (%s)) 
-            Union \
+            and ((%s) is NULL or Movie.movReleaseDate <= (%s))
+            and ((%s) is NULL or MoviePlay.movPlayDate <= (%s)) 
+            and ((%s) is NULL or MoviePlay.movPlayDate >= (%s)) 
+            Union 
             select Movie.movName as \"Movie\", Movie.movReleaseDate as \"Release_Date\", cast(NULL as date) as \"Play_Date\", Movie.duration as \"Duration\" from Movie\
             where ((%s) is NULL or Movie.movReleaseDate >= (%s)) 
             and ((%s) is NULL or Movie.movReleaseDate <= (%s)) 
+            and ((%s) is NULL or (%s) is NULL)
             """
             # where ((%s) is not NULL and Movie.movReleaseDate >= (%s)) 
             # and ((%s) is not NULL and Movie.movReleaseDate <= (%s)) 
