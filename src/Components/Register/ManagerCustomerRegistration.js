@@ -150,7 +150,7 @@ export default class ManagerCustomerRegistration extends Component {
                 count++;
 
                 //if the user tries to add more than 5 credit cards
-                if(count >= 5) {
+                if(count > 5) {
                     window.alert("You can only add up to 5 credit cards");
                     return;
                 }
