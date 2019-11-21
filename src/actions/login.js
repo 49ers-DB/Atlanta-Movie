@@ -7,23 +7,7 @@ export const userLogin = user => {
         Accept: 'application/json',
       },
       body: JSON.stringify({user})
-    })
-    .then(resp => resp.json())
-    .then(data => {
-      if (data.message) {
-        // Here you should have logic to handle invalid login credentials.
-        // This assumes your Rails API will return a JSON object with a key of
-        // 'message' if there is an error
-        console.error("Bad login parameters")
-        console.log(data)
-  
-      } else {
-        // localStorage.setItem("token", data.jwt)
-        // dispatch(loginUser(data.user))
-        console.log("logged in")
-        return data;
-      }
-    })
+    });
   }
 
   export default userLogin;

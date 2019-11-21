@@ -17,12 +17,17 @@ class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      apiClient: null
+      apiClient: null,
+      authenticated: null
     };
+    this.handleAPIClientChange = this.handleAPIClientChange.bind(this)
   }  
 
   handleAPIClientChange(client) {
-    this.setState({apiClient: client})
+    this.setState({
+        apiClient: client,
+        authenticated: true
+    });
   }
 
   render() {
@@ -32,7 +37,7 @@ class App extends Component {
         <Router>
           
           <NavBar />
-          <Route exact path="/" component={() => <Login onApiClientChange={this.handleAPIClientChange}/>} />
+          <Route exact path="/" component={() => <Login handleAPIClientChange={this.handleAPIClientChange} authenticated={this.state.authenticated}/>} />
           <Route exact path="/Register-Option" component={RegisterOption}/>
           <Route exact path="/Customer-Registration" component={CustomerRegistration}/>
           <Route exact path="/Manager-Registration" component={ManagerRegistration}/>

@@ -1,11 +1,12 @@
-from .middleware import login_required
+from middleware import login_required
 from flask import Flask, json, g, request
 from flask_cors import CORS
 import pymysql.cursors
-from ...util.custom_jwt import create_access_token
-from ...services.LoginService import LoginService
-from ...services.ManagerService import ManagerService
-from ...services.RegisterService import RegisterService
+from app.util.custom_jwt import create_access_token
+from app.services.LoginService import LoginService
+from app.services.ManagerService import ManagerService
+from app.services.RegisterService import RegisterService
+
 
 app = Flask(__name__)
 CORS(app)
@@ -113,4 +114,4 @@ def example_endpoint(param_1):
 
 
 def json_response(payload, status_code=200):
-   return json.dumps(payload), 200, {'Content-type': 'application/json'}
+   return json.dumps(payload), status_code, {'Content-type': 'application/json'}

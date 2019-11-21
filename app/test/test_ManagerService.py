@@ -1,5 +1,5 @@
 import pytest
-from ..services.ManagerService import ManagerService
+from app.services.ManagerService import ManagerService
 import functools
 import datetime
 

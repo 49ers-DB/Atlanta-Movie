@@ -1,8 +1,10 @@
 from functools import wraps
 from flask import request, g, abort
 from jwt import decode, exceptions
-from ...util import custom_jwt
+
 import json
+
+from app.util import custom_jwt
 
 
 def login_required(f):

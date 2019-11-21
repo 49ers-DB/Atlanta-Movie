@@ -10,7 +10,7 @@ class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = { 
-      authenticated: null,
+      authenticated: this.props.authenticated,
       username: "",
       password: "",
     };
@@ -30,13 +30,33 @@ class Login extends React.Component {
     if(this.state.username === '' || this.state.password === '') {
         window.alert("Please enter username and password");
     } else {
-        console.log("Loging in with username: %s, password %s", this.state.username, this.state.password)
-        event.preventDefault()
-        var token = userLogin(this.state)
-        console.log(token)
+        console.log("Logging in with username: %s, password %s", this.state.username, this.state.password)
+        event.preventDefault();
+        var tokenPromise = userLogin(this.state);
+        tokenPromise.then(resp => resp.json())
+        .then(data => {
+          if (data.message) {
+            // Here you should have logic to handle invalid login credentials.
+            // This assumes your Rails API will return a JSON object with a key of
+            // 'message' if there is an error
+            console.error("Bad login parameters")
+            console.log(data)
+            return null;
+          } else {
+            // localStorage.setItem("token", data.jwt)
+            // dispatch(loginUser(data.user))
+            console.log("logged in")
+            return data;
+          }
+        })
         
-        this.setState({authenticated: true})
-        this.handleAPIClientChange(new APIClient(token));
+        if (token !== null) {
+          console.log(token);
+          this.setState({authenticated: true});
+        
+          this.handleAPIClientChange(new APIClient(token));
+        }
+        
     }
   }
  
