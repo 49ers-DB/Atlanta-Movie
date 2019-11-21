@@ -33,6 +33,24 @@ class AdminService(object):
 
     def CreateTheater(self, username, filters):
 
+        i_adminUsername = username
+        i_thName = filters.get("i_thName")
+        i_comName = filters.get("i_comName")
+        i_thStreet = filters.get("i_thStreet")
+        i_thCity = filters.get("i_thCity")
+        i_thState = filters.get("i_thState")
+        i_thZipcode = filters.get("i_thZipcode")
+        i_capacity = filters.get("i_capacity")
+        i_manUsername = filters.get("i_manUsername")
+
+    with self.connection.cursor() as cursor:
+
+        query2 = "insert into Theater (thName, comName, capacity, thStreet, thCity, thState, thZipcode, manUsername) \
+        values ((%s), (%s), (%s), (%s), (%s), (%s), (%s), (%s))"
+
+        cursor.execute(query2, (i_thName, i_comName, i_capacity, i_thStreet, i_thCity, i_thState, i_thZipcode, i_manUsername))
+        data2 = cursor.fetchall()
+        self.connection.commit()
 
 
     def CompanyDetail(self, username, filters):
@@ -40,5 +58,28 @@ class AdminService(object):
 
 
     def CreateMovie(self, username, filters):
+
+        i_adminUsername = username
+        i_movName = filters.get("i_movName")
+        i_movDuration = filters.get("i_movDuration")
+        i_movReleaseDate = filters.get("i_movReleaseDate")
+
+    with self.connection.cursor() as cursor:
+
+        query3 = "insert into Movie (movName, movReleaseDate, duration) \
+        values ((%s), (%s), (%s))"
+
+        cursor.execute(query3, (i_movName, i_movReleaseDate, i_duration))
+        data3 = cursor.fetchall()
+        self.connection.commit()
+
+
+
+
+
+
+
+
+
 
 
