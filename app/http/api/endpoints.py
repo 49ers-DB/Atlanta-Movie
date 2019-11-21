@@ -13,7 +13,7 @@ CORS(app)
 
 
 connection = pymysql.connect(host='localhost',
-                             user='root',
+                             user='flask',
                              password='1234',
                              db='moviez',
                              charset='utf8mb4',
