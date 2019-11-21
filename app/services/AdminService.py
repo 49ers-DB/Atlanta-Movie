@@ -37,12 +37,33 @@ class AdminService(object):
         i_sortBy
         i_sortDirection
 
-    with self.connection.cursor() as cursor:
-        query = "select comName, count(thName), count(thCity), count(manUsername) \
-        from theater \
-        where (comName = (%s) or (%s) is NULL) AND \
-        \
-        group by comName"
+        with self.connection.cursor() as cursor:
+            query = "select manager.comName as \"Company\", count(distinct theater.thCity) as \"City Count\", \
+            count(distinct theater.thName) \"Theater Count\", count(distinct Manager.username) as \"Employee Count\" \
+            from theater join Manager on theater.comName=Manager.comName group by theater.comName  \
+            where (%s) is Null or Manager.comName = (%s),\
+            and where (%s) is Null or count(distinct theater.thCity)>=(%s),\
+            and where (%s) is Null or count(distinct theater.thCity)<=(%s),\
+            and where (%s) is Null or count(distinct theater.thName)>=(%s),\
+            and where (%s) is Null or count(distinct theater.thName)<=(%s),\
+            and where (%s) is Null or count(distinct manager.username)>=(%s),\
+            and where (%s) is Null or count(distinct manager.username)<=(%s),\
+            union select company.comName as \"Company\", 0 as \"City Count\", 0 as \"Theater Count\",\
+            0 as \"Employee Count\" from company where company.comName not in (select Manager.comName from\
+            Manager) and\
+            where (%s) is Null or Manager.comName = (%s),\
+            and where (%s) is Null or count(distinct theater.thCity)>=0,\
+            and where (%s) is Null or count(distinct theater.thCity)<=0,\
+            and where (%s) is Null or count(distinct theater.thName)>=0,\
+            and where (%s) is Null or count(distinct theater.thName)<=0,\
+            and where (%s) is Null or count(distinct manager.username)>=0,\
+            and where (%s) is Null or count(distinct manager.username)<=0"
+
+            data = cursor.execute(query, (i_comName,i_comName,i_minCity,i_minCity,i_maxCity,i_maxCity,i_minTheater,i_minTheater,i_maxTheater,i_maxTheater,i_minEmployee,i_minEmployee,i_maxEmployee,i_maxEmployee,i_comName,i_comName,i_minCity,i_minCity,i_maxCity,i_maxCity,i_minTheater,i_minTheater,i_maxTheater,i_maxTheater,i_minEmployee,i_minEmployee,i_maxEmployee,i_maxEmployee))
+            info = cursor.fetchall()
+            self.connection.commit()
+            return info
+
 
 
     def CreateTheater(self, username, filters):
