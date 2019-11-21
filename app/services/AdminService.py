@@ -4,11 +4,25 @@ class AdminService(object):
     def __init__(self, connection):
         self.connection = connection
 
-    def ManageUser(self, username, filters):
+    def ApproveUser(self, username, filters):
 
         i_username = username
 
-# How do I approve or decline a user?
+    with self.connection.cursor()
+        query1 = "update User set Status = \"Approved\" where username = (%s)"
+        cursor.execute(query1, (i_username))
+        data1 = cursor.fetchall()
+        self.connection.commit()
+
+    def DeclineUser(self, username, filters):
+
+        i_username = username
+
+    with self.connection.cursor()
+        query4 = "update User set Status = \"Declined\" where username = (%s)"
+        cursor.execute(query4, (i_username))
+        data1 = cursor.fetchall()
+        self.connection.commit()
 
     def ManageCompany(self, username, filters):
 
