@@ -2,16 +2,16 @@ import React, { Component } from "react";
 import ErrorScreen from "../ErrorScreen.js"
 import { UserMenu } from "./UserMenu.js";
 import { CustomerMenu } from "./CustomerMenu.js";
-import apiClient from "../../App.js";
-
-
-
+import ManagerMenu from "./ManagerMenu.js";
+import ManagerCustomerMenu from "./ManagerCustomerMenu.js";
+import AdminMenu from "./AdminMenu.js";
+import AdminCustomerMenu from "./AdminCustomerMenu.js";
 
 export default class Menu extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      userType: 'customer'
+      userType: 'u'
     }
 
     //api call here to get user type
@@ -27,20 +27,20 @@ export default class Menu extends Component {
     var menuBody = null
     if (this.props.apiClient === null) {
       menuBody = <ErrorScreen/>
-    }  if (this.state.userType === 'customer') {
-      menuBody = <CustomerMenu/>
     } else if (this.state.userType === 'customer') {
-      
+      menuBody = <CustomerMenu/>
     } else if (this.state.userType === 'manager') {
-
+      menuBody = <ManagerMenu/>
     } else if (this.state.userType === 'manager-customer') {
-
+      menuBody = <ManagerCustomerMenu/>
     } else if (this.state.userType === 'admin') {
-
+      menuBody = <AdminMenu/>
     } else if (this.state.userType === 'admin-customer') {
-
-    } else {
+      menuBody = <AdminCustomerMenu/>
+    } else if (this.state.userType === 'user') {
       menuBody = <UserMenu/>
+    } else {
+      menuBody = <ErrorScreen/>
     }
     return (
       <div className='main'>
