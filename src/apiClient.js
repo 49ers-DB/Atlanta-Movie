@@ -13,7 +13,33 @@ class APIClient {
   constructor(accessToken) {
     this.accessToken = accessToken;
   }
+
+  //-----Register-----
+  registerUser(userData) {
+    return this.perform("post", "/userRegister", userData)
+  }
+
+  registerManager(userData) {
+    return this.perform("post", "/managerRegister", userData)
+  }
+
+  registerCustomer(userData) {
+    return this.perform("post", "/customerRegister", userData)
+  }
+
+  registerManagerCustomer(userData) {
+    return this.perform("post", "/managerCustomerRegister", userData)
+  }
   
+
+  //-------User_Type--------
+  getUser(userData) {
+    return this.perform("get", "/user", userData)
+  }
+
+
+  
+
   createTheater(theater) {
     return this.perform('post', '/kudos', theater);
   }

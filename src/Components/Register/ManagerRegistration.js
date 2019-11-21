@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 // import "./ManagerRegistration.css";
 import Select from "react-select";
+import APIClient from "../../apiClient.js"
 
 var companies = [];
 const stateOptions = [
@@ -125,8 +126,11 @@ export default class ManagerRegistration extends Component {
         } else if(this.state.password !== this.state.password2) {
             window.alert("Passwords do not match");
         } else {
+            var apiClient = new APIClient("")
+            apiClient.registerManager(this.state).then( resp => {
+
+            });
             
-            //post method
         }
     }
     

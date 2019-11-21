@@ -77,9 +77,13 @@ export default class CustomerRegistration extends Component {
                 function() {
                     var registration = customerRegister(this.state)
                     console.log(registration)
-                });
+            });
 
-            
+            var apiClient = new APIClient("")
+            apiClient.registerCustomer(this.state).then( resp => {
+
+            });
+
         }
     }
     

@@ -160,7 +160,10 @@ export default class ManagerCustomerRegistration extends Component {
                 creditString = creditString.substring(16);
             }
             this.setState({creditCardsList: cards});
-            //post method
+            var apiClient = new APIClient("")
+            apiClient.registerManagerCustomer(this.state).then( resp => {
+
+            });
         }
     }
     

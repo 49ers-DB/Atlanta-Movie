@@ -18,7 +18,7 @@ class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      apiClient: null,
+      apiClient: new APIClient(),
       authenticated: null
     };
     this.handleAPIClientChange = this.handleAPIClientChange.bind(this)
