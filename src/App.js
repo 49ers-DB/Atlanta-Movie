@@ -44,6 +44,7 @@ class App extends Component {
           <Route exact path="/Manager-Customer-Registration" component={ManagerCustomerRegistration}/>
           <Route exact path="/User-Registration" component={UserRegistration}/>
           <Route exact path="/Menu" component={() => <Menu apiClient={this.state.apiClient}/>} />
+          <Route exact path="/Manage-User" component={ManageUser} />
 
         </Router>
       </div>
