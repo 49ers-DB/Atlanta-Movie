@@ -2,7 +2,8 @@ import React from 'react';
 import { Redirect } from 'react-router-dom';
 import userLogin from '../actions/login.js';
 import './Login.css';
-import App from '../App.js';
+import apiClient from '../App.js';
+
 import APIClient from '../apiClient.js';
 
 class Login extends React.Component {
@@ -15,6 +16,10 @@ class Login extends React.Component {
     };
     // this.checkAuthentication = this.checkAuthentication.bind(this);
     this.login = this.login.bind(this);
+  }
+
+  handleAPIClientChange(client) {
+    this.props.handleAPIClientChange(client);
   }
 
   handleChange = event => {
@@ -31,9 +36,7 @@ class Login extends React.Component {
         console.log(token)
         
         this.setState({authenticated: true})
-        App.state = {
-          apiClient: new APIClient(token)
-        };
+        this.handleAPIClientChange(new APIClient(token));
     }
   }
  
