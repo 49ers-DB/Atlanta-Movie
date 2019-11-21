@@ -13,6 +13,7 @@ import UserRegistration from './Components/Register/UserRegistration';
 import Menu from './Components/Menu/Menu';
 
 
+
 class App extends Component {
   constructor(props) {
     super(props)
@@ -24,6 +25,7 @@ class App extends Component {
   }  
 
   handleAPIClientChange(client) {
+    console.log(client)
     this.setState({
         apiClient: client,
         authenticated: true
@@ -44,13 +46,14 @@ class App extends Component {
           <Route exact path="/Manager-Customer-Registration" component={ManagerCustomerRegistration}/>
           <Route exact path="/User-Registration" component={UserRegistration}/>
           <Route exact path="/Menu" component={() => <Menu apiClient={this.state.apiClient}/>} />
-          <Route exact path="/Manage-User" component={ManageUser} />
+          {/* <Route exact path="/Manage-User" component={ManageUser} /> */}
 
         </Router>
       </div>
+      
     );
   }
   
 }
 
-export default App;
+export default (App);

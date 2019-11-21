@@ -3,8 +3,10 @@ import { Redirect } from 'react-router-dom';
 import userLogin from '../actions/login.js';
 import './Login.css';
 import apiClient from '../App.js';
+import Alert from './Alert.js'
 
-import APIClient from '../apiClient.js';
+
+
 
 class Login extends React.Component {
   constructor(props) {
@@ -13,10 +15,27 @@ class Login extends React.Component {
       authenticated: this.props.authenticated,
       username: "",
       password: "",
+      showAlert: false,
+      title: "",
+      message: ""
     };
     // this.checkAuthentication = this.checkAuthentication.bind(this);
     this.login = this.login.bind(this);
   }
+
+  
+
+  handleAlert = (title, message) => {
+    this.setState({
+      showAlert: true,
+      title: title,
+      message: message
+    });
+  }
+
+  handleClose = () => {
+    this.setState({showAlert: false});
+  };
 
   handleAPIClientChange(client) {
     this.props.handleAPIClientChange(client);
@@ -27,12 +46,14 @@ class Login extends React.Component {
   }
 
   login = event => {
+    event.preventDefault();
     if(this.state.username === '' || this.state.password === '') {
-        window.alert("Please enter username and password");
+        // this.props.alert.error("Please enter username and password");
+        this.handleAlert("Login Error", "Please enter username and password")
     } else {
         console.log("Logging in with username: %s, password %s", this.state.username, this.state.password)
-        event.preventDefault();
         var tokenPromise = userLogin(this.state);
+
         tokenPromise.then(resp => resp.json())
         .then(data => {
           if (data.message) {
@@ -40,21 +61,21 @@ class Login extends React.Component {
             // This assumes your Rails API will return a JSON object with a key of
             // 'message' if there is an error
             console.error("Bad login parameters")
-            
+            this.handleAlert("Could Not Login", "Incorrect username or password");
           } else {
-            // localStorage.setItem("token", data.jwt)
-            // dispatch(loginUser(data.user))
-            console.log("logged in")
-            return data;
+            data = data.data
+            localStorage.setItem("token", data.jwt)
+            console.log("got data message", data)
+            var token = data.jwt
+            console.log(token)
+            if (token) {
+
+              this.setState({authenticated: true});
+              this.handleAPIClientChange(new apiClient(token))
+
+            }
           }
         })
-        
-        // if (token !== null) {
-        //   console.log(token);
-        //   this.setState({authenticated: true});
-        
-        //   this.handleAPIClientChange(new APIClient(token));
-        // }
         
     }
   }
@@ -99,10 +120,12 @@ class Login extends React.Component {
                         </form>
                     </div>
                 </div>
+                <Alert show={this.state.showAlert} title={this.state.title} message={this.state.message} handleClose={this.handleClose} ></Alert>
             </div>
       )
     }
   }
  }
  
- export default (Login);
+ export default (Login)
+

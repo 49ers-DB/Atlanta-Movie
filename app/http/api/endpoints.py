@@ -37,7 +37,7 @@ def userLogin():
       del user['password']
 
       access_token = create_access_token(identity=data)
-      user['token'] = access_token
+      user['jwt'] = access_token
       return json_response({'ok': True, 'data': user})
 
   except Exception as e:
