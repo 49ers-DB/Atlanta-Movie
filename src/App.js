@@ -26,10 +26,15 @@ class App extends Component {
 
   handleAPIClientChange(client) {
     console.log(client)
-    this.setState({
+    client.example(12).then( () => {
+      this.setState({
         apiClient: client,
         authenticated: true
-    });
+      });
+    }
+      
+    );
+    
   }
 
   render() {

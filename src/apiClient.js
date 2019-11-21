@@ -4,7 +4,7 @@ const BASE_URI = 'http://localhost:4433'
 
 
 const client = axios.create({
-  base_url: BASE_URI,
+  baseURL: BASE_URI,
   json: true
 });
 
@@ -16,6 +16,10 @@ class APIClient {
   
   createTheater(theater) {
     return this.perform('post', '/kudos', theater);
+  }
+
+  example() {
+    return this.perform('get', '/example/12');
   }
 
 

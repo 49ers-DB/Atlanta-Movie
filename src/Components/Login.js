@@ -2,7 +2,7 @@ import React from 'react';
 import { Redirect } from 'react-router-dom';
 import userLogin from '../actions/login.js';
 import './Login.css';
-import apiClient from '../App.js';
+import APIClient from '../apiClient';
 import Alert from './Alert.js'
 
 
@@ -71,7 +71,7 @@ class Login extends React.Component {
             if (token) {
 
               this.setState({authenticated: true});
-              this.handleAPIClientChange(new apiClient(token))
+              this.handleAPIClientChange(new APIClient(token))
 
             }
           }

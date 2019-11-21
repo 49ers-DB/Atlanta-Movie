@@ -110,7 +110,7 @@ def get_theater_overview():
 def example_endpoint(param_1):
   print(param_1)
   username = g.user
-  return json_response({'response': param_1}, 200)
+  return json_response({'ok': True, 'data': param_1}, 200)
 
 
 def json_response(payload, status_code=200):

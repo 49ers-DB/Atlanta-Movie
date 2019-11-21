@@ -10,10 +10,17 @@ import apiClient from "../../App.js";
 export default class Menu extends Component {
   constructor(props) {
     super(props)
-    //api call here to get user type
     this.state = {
-      userType: 'user'
+      userType: 'customer'
     }
+
+    //api call here to get user type
+    if (this.props.apiClient !== null) {
+      this.props.apiClient.example().then( data => {
+        console.log("got api Request change me to get usertype and set state")
+      });
+    }
+    
   }
 
   render () {
