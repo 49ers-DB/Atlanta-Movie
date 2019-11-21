@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import customerRegister from "../../actions/registerCustomer";
+import APIClient from "../../apiClient.js"
 
 
 

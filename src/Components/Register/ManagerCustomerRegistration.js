@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 // import "./ManagerCustomerRegistration.css";
 import Select from "react-select";
+import APIClient from "../../apiClient.js"
 
 var companies = [];
 const stateOptions = [
