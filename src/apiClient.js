@@ -48,7 +48,7 @@ class APIClient {
   }
 
   getCompanies() {
-    return this.perform('get', '/companies');
+    return this.perform('get', '/getCompanies');
   }
 
   

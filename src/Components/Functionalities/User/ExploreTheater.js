@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import DatePicker from "react-datepicker";
 import Select from "react-select";
+import AsyncSelect from 'react-select/async';
 import APIClient from "../../../apiClient"
 
 import "../Functionality.css"
@@ -64,10 +65,8 @@ export default class ExploreTheater extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      rowData: [
-        ["","fdasfa",""],
-        ["","2",""]
-      ],
+      apiClient: null,
+      rowData: [[],[],[],[]],
       theaters: [],
       companies: [],
       city: "",
@@ -81,28 +80,89 @@ export default class ExploreTheater extends Component {
     
     if (accessToken) {
       var apiClient = new APIClient(accessToken)
+      this.state.apiClient = apiClient
       console.log(apiClient)
 
-      this.props.apiClient.getTheaters().then(resp => {
-        var companies = resp.get('')
+      apiClient.getTheaters().then(resp => {
+        var theaters = resp.get('')
       });
-      this.props.apiClient.getCompanies().then(resp => {
+      apiClient.getCompanies().then(resp => {
+        var companies = []
+        resp.map( company => {
+          companies.push({value: company['comName'], label: company['comName']})
+        });
+        console.log(resp)
+        this.state.companies = companies
+      });
+
+      apiClient.perform('get', '/exploreTheater', this.state).then(resp => {
+        var rowData = resp
+        this.state.rowData = rowData
+      });
+      
+    }
+    this.handleLogVisit = this.handleLogVisit.bind(this)
+    this.handleFilter = this.handleFilter.bind(this)
+    this.handleChange = this.handleChange.bind(this)
+    this.setSelectedTheater = this.setSelectedTheater.bind(this)
+    this.setSelectedCompany = this.setSelectedCompany.bind(this)
+    this.setSelectedState = this.setSelectedState.bind(this)
+    this.setCity = this.setCity.bind(this)
+  }
+
+  promiseTheaterOptions = inputValue =>
+  new Promise();
+
+
+  promiseCompanyOptions = inputValue =>
+  new Promise(resolve => {
+    var accessToken = localStorage.getItem("accessToken")
+    if (accessToken) {
+      var apiClient = new APIClient(accessToken)
+      return apiClient.getCompanies().then(resp => {
+        var companies = []
+        resp.map( company => {
+          companies.push({value: company['comName'], label: company['comName']})
+        });
+        console.log(resp)
+        return companies
+      });
+    }
+  });
+
+  handleFilter(event) {
+    event.preventDefault()
+    var accessToken = localStorage.getItem("accessToken")
+    
+    if (accessToken) {
+      var apiClient = new APIClient(accessToken)
+
+      apiClient.perform('get', '/exploreTheater', this.state).then( resp => {
 
       });
       
     }
   }
 
-  handleFilter(event) {
-    event.preventDefault()
-  }
-
   handleLogVisit(event) {
-    event.preventDefault()
+    var accessToken = localStorage.getItem("accessToken")
+    
+    if (accessToken) {
+      var apiClient = new APIClient(accessToken)
+      this.state.apiClient = apiClient
+      console.log(apiClient)
+
+      apiClient.perform('post', '/logVisit', this.state).then( resp => {
+
+      });
+      
+      
+    }
   }
 
-  handleChange(event) {
-    
+  handleChange(date) {
+    console.log(date)
+    this.setState({visitDate: date})
   }
 
   setSelectedTheater = (selectedTheater) => {
@@ -117,6 +177,10 @@ export default class ExploreTheater extends Component {
     this.setState({selectedState})
   }
 
+  setCity = (event) => {
+    this.setState({city: event.target.value})
+  }
+
   render () {
     return (
       <div className="main">
@@ -129,7 +193,7 @@ export default class ExploreTheater extends Component {
             <div className="row">
               <div className="form-group form-inline functionalities-form-row col">
                 <label htmlFor="theaterName">Theater Name</label>
-                <Select className="functionalities-select"
+                <AsyncSelect className="functionalities-select"
                   value={this.state.selectedTheater}
                   onChange={this.setSelectedTheater}
                   options={this.state.theaters}
@@ -141,7 +205,9 @@ export default class ExploreTheater extends Component {
                 <Select className="functionalities-select"
                   value={this.state.selectedCompany}
                   onChange={this.setSelectedCompany}
-                  options={this.state.companies}
+                  loadOptions={this.promiseCompanyOptions}
+                  cacheOptions 
+                  defaultOptions
                   placeholder="Select"
                 />
               </div>  
@@ -149,7 +215,7 @@ export default class ExploreTheater extends Component {
             <div className="row">
             <div className="form-group form-inline functionalities-form-row col">
                 <label htmlFor="theaterName">City</label>
-                <input className="form-control functionalities" id="city"/>
+                <input className="form-control functionalities" value={this.state.city} onChange={this.setCity}/>
               </div>
               <div className="form-group form-inline functionalities-form-row col">
                 <label htmlFor="comName">State</label>

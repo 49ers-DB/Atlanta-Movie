@@ -113,9 +113,25 @@ def managerCustomerRegister():
 #get the list of companies
 @app.route('/getCompanies', methods=['GET'])
 def getCompanies():
-  response = manager_service.getCompanies();
+  response = manager_service.getCompanies()
   return json_response(response)
   
+
+@app.route('/exploreTheater', methods=['GET'])
+@login_required
+def get_explore_theater():
+  data = request.get_json()
+  user = g.user
+  print(data)
+  #manager_service.TheaterOverview(user, data['filters'])
+
+@app.route('/logVisit', methods=['POST'])
+@login_required
+def log_visit():
+  data = request.get_json()
+  user = g.user
+  print(data)
+  #manager_service.TheaterOverview(user, data['filters'])
 
 
 
