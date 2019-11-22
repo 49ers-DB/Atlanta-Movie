@@ -11,6 +11,7 @@ import ManagerRegistration from './Components/Register/ManagerRegistration';
 import ManagerCustomerRegistration from './Components/Register/ManagerCustomerRegistration';
 import UserRegistration from './Components/Register/UserRegistration';
 import Menu from './Components/Menu/Menu';
+import Auth from './Components/Functionalities/Auth'
 
 
 
@@ -18,7 +19,7 @@ class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      apiClient: new APIClient(),
+      apiClient: localStorage.getItem("apiClient"),
       authenticated: null
     };
     this.handleAPIClientChange = this.handleAPIClientChange.bind(this)
@@ -27,6 +28,7 @@ class App extends Component {
   handleAPIClientChange(client) {
     console.log(client)
     client.example(12).then( () => {
+      localStorage.setItem("apiClient", client)
       this.setState({
         apiClient: client,
         authenticated: true
@@ -51,7 +53,7 @@ class App extends Component {
           <Route exact path="/Manager-Customer-Registration" component={ManagerCustomerRegistration}/>
           <Route exact path="/User-Registration" component={UserRegistration}/>
           <Route exact path="/Menu" component={() => <Menu apiClient={this.state.apiClient}/>} />
-          {/* <Route exact path="/Manage-User" component={ManageUser} /> */}
+          <Route path="/Auth" component={() => <Auth apiClient={this.state.apiClient}/>} />
 
         </Router>
       </div>

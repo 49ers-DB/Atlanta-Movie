@@ -1,0 +1,41 @@
+form {
+  display: contents;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  min-width: 50%;
+  max-width: 600px;
+}
+
+
+
+.functionalities-form-row {
+  margin: auto
+}
+
+.functionalities-form-row > label {
+  margin: auto;
+  padding: 10px;
+}
+
+.functionalities-form-row >  select {
+  margin: auto;
+  width: 200px;
+  min-width: 30px;
+  
+}
+
+.functionalities-form-row > input {
+  margin: auto;
+}
+
+/* label {
+  margin: inherit;
+}
+
+select {
+  margin: inherit
+}
+
+input {
+  margin: inherit;
+} */

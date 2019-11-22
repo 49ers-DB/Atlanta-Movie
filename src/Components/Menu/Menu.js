@@ -18,6 +18,7 @@ export default class Menu extends Component {
     if (this.props.apiClient !== null) {
       this.props.apiClient.example().then( data => {
         console.log("got api Request change me to get usertype and set state")
+        this.setState({userType: 'user'})
       });
     }
     

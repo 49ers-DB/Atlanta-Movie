@@ -11,10 +11,10 @@ export class UserMenu extends Component {
         <h2 className="card-header">User Functionality</h2>
         <div className="card-body">
           <div className="row">
-              <a className="btn btn-primary" href="/explore-theater">Explore Theater</a>
+              <a className="btn btn-primary" href="/auth/explore-theater">Explore Theater</a>
           </div>
           <div className="row">
-                <a className="btn btn-primary" href="/visit-history">Visit History</a>
+                <a className="btn btn-primary" href="/auth/visit-history">Visit History</a>
           </div>
           <div className="row">
                 <a className="btn btn-primary" href="/">Back</a>
