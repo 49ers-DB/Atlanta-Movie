@@ -13,7 +13,7 @@ CORS(app)
 
 
 connection = pymysql.connect(host='localhost',
-                             user='flask',
+                             user='root',
                              password='1234',
                              db='moviez',
                              charset='utf8mb4',
@@ -56,7 +56,6 @@ def userRegister():
   response = json_response({'message': 'Bad request parameters'}, 400)
   try:
     success = register_service.registerUser(user)
-    username = user['data']['username']
   
     if success:
       response = json_response({'ok': True, 'data': user})
@@ -73,7 +72,7 @@ def userRegister():
 @app.route('/customerRegister', methods=['POST'])
 def customerRegister():
   data = request.get_json()
-  user = data['user']
+  user = data
   try:
     response = register_service.registerCustomer(user)
     return json_response(response)
@@ -82,6 +81,40 @@ def customerRegister():
     print("Failed to insert record")
   return json_response({'message': 'Bad request parameters'}, 400)
 
+
+#manager
+@app.route('/managerRegister', methods=['POST'])
+def managerRegister():
+  data = request.get_json()
+  user = data
+  try:
+    response = register_service.registerManager(user)
+    return json_response(response)
+  except pymysql.InternalError as e:
+    print(e)
+    print("Failed to insert record")
+  return json_response({'message': 'Bad request parameters'}, 400)
+
+#managerCustomer
+@app.route('/managerCustomerRegister', methods=['POST'])
+def managerCustomerRegister():
+  data = request.get_json()
+  user = data
+  try:
+    response = register_service.registerManagerCustomer(user)
+    return json_response(response)
+  except pymysql.InternalError as e:
+    print(e)
+    print("Failed to insert record")
+  return json_response({'message': 'Bad request parameters'}, 400)
+
+
+#get the list of companies
+@app.route('/getCompanies', methods=['GET'])
+def getCompanies():
+  response = manager_service.getCompanies();
+  return json_response(response)
+  
 
 
 

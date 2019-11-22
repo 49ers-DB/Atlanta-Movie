@@ -7,9 +7,9 @@ import APIClient from "../../apiClient.js"
 export default class CustomerRegistration extends Component {
 
     state = {
-        firstName: '',
-        lastName: '',
-        Username: '',
+        firstname: '',
+        lastname: '',
+        username: '',
         password: '',
         password2: '',
         creditCard: '',
@@ -24,18 +24,18 @@ export default class CustomerRegistration extends Component {
 
     register() {
         //Checking to make sure all of the fields are filled out correctly
-        if(this.state.firstName === '' || 
+        if(this.state.firstname === '' || 
         this.state.lastname === '' || 
-        this.state.Username === '' || 
+        this.state.username === '' || 
         this.state.password === '' || 
         this.state.creditCard === '') {
             window.alert("Please fill out all of the fields");
-        } else if(this.state.firstName.length > 128) {
+        } else if(this.state.firstname.length > 128) {
             window.alert("First name is too long");
-        } else if(this.state.lastName.length > 128) {
+        } else if(this.state.lastname.length > 128) {
             window.alert("Last name is too long");
-        } else if(this.state.Username.length > 128) {
-            window.alert("Username is too long");
+        } else if(this.state.username.length > 128) {
+            window.alert("username is too long");
         } else if(this.state.password.length > 128) {
             window.alert("Password is too long");
         } else if(this.state.password.length < 8) {
@@ -76,14 +76,21 @@ export default class CustomerRegistration extends Component {
             this.setState(
                 {creditCardsList: cards},
                 function() {
-                    var registration = customerRegister(this.state)
-                    console.log(registration)
+                    // var registration = customerRegister1(this.state)
+                    // console.log(registration)
+                    var apiClient = new APIClient("")
+                    apiClient.registerCustomer(this.state).then( resp => {
+                        console.log(resp)
+                        if(resp[1] == 200) {
+                            console.log("Registered")
+                        }
+                });
             });
 
-            var apiClient = new APIClient("")
-            apiClient.registerCustomer(this.state).then( resp => {
+            // var apiClient = new APIClient("")
+            // apiClient.registerCustomer(this.state).then( resp => {
 
-            });
+            // });
 
         }
     }
@@ -102,7 +109,7 @@ export default class CustomerRegistration extends Component {
                                         First Name
                                     </label>
                                 </div>
-                                <input type="text" name="firstName" onChange={this.handleChange} className="form-control" id="firstName"/>
+                                <input type="text" name="firstname" onChange={this.handleChange} className="form-control" id="firstname"/>
                             </div>
                             <div className="col-6">
                                 <div className="col-4">
@@ -110,18 +117,18 @@ export default class CustomerRegistration extends Component {
                                         Last Name
                                     </label>
                                 </div>
-                                <input type="text" name="lastName" onChange={this.handleChange} className="form-control" id="lastName"/>
+                                <input type="text" name="lastname" onChange={this.handleChange} className="form-control" id="lastname"/>
                             </div>
                         </div>
                         <div className="row">
                             <div className="col-12">
                                 <div className="col-2">
                                     <label className="registerLabel">
-                                        Username
+                                        username
                                     </label>
                                 </div>
                                 
-                                <input type="Username" name="Username" onChange={this.handleChange}  className="form-control" id="Username"/>
+                                <input type="username" name="username" onChange={this.handleChange}  className="form-control" id="username"/>
                             </div>
                         </div>
                         <div className="row">

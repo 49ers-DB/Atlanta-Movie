@@ -82,6 +82,14 @@ class ManagerService(object):
             print(data_tuple)
             print(info)
             return data
+    
+    def getCompanies(self):
+        with self.connection.cursor() as cursor:
+            sql = """SELECT comName FROM Company"""
+            cursor.execute(sql)
+            data=cursor.fetchall()
+            self.connection.commit()
+            return data
 
 
 def ScheduleMovie(self, username, filters):
@@ -117,6 +125,8 @@ def ScheduleMovie(self, username, filters):
             data3 = cursor.fetchall()
 
             self.connection.commit()
+
+
 
 
 
