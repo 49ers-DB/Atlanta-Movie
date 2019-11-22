@@ -46,3 +46,9 @@ select.functionalities {
   min-width: 30px;
   padding: 10px;
 }
+
+.functionalities-select {
+  width: 219px;
+  min-width: 30px;
+  padding: 10px;
+}

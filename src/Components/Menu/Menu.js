@@ -6,6 +6,7 @@ import ManagerMenu from "./ManagerMenu.js";
 import ManagerCustomerMenu from "./ManagerCustomerMenu.js";
 import AdminMenu from "./AdminMenu.js";
 import AdminCustomerMenu from "./AdminCustomerMenu.js";
+import APIClient from "../../apiClient"
 
 export default class Menu extends Component {
   constructor(props) {
@@ -15,10 +16,14 @@ export default class Menu extends Component {
     }
 
     //api call here to get user type
-    if (this.props.apiClient !== undefined && this.props.apiClient.accessToken) {
-      console.log(this.props.apiClient)
-      this.props.apiClient.example().then( data => {
+    var accessToken = localStorage.getItem("accessToken")
+
+    if (accessToken) {
+      var apiClient = new APIClient(accessToken)
+      console.log(apiClient)
+      apiClient.example().then( data => {
         console.log("got api Request change me to get usertype and set state")
+        console.log(data)
         this.setState({userType: 'user'})
       });
     }

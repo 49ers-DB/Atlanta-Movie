@@ -64,15 +64,13 @@ class Login extends React.Component {
             this.handleAlert("Could Not Login", "Incorrect username or password");
           } else {
             data = data.data
-            localStorage.setItem("token", data.jwt)
+            
             console.log("got data message", data)
             var token = data.jwt
             console.log(token)
             if (token) {
-
+              localStorage.setItem("accessToken", data.jwt)
               this.setState({authenticated: true});
-              this.handleAPIClientChange(new APIClient(token))
-
             }
           }
         })

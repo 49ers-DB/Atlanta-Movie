@@ -1,8 +1,64 @@
 import React, { Component } from 'react'
 import DatePicker from "react-datepicker";
+import Select from "react-select";
+import APIClient from "../../../apiClient"
+
 import "../Functionality.css"
 
 import "react-datepicker/dist/react-datepicker.css";
+
+const stateOptions = [
+  {value: "AL", label: "AL"},
+  {value: "AK", label: "AK"},
+  {value: "AZ", label: "AZ"},
+  {value: "AR", label: "AR"},
+  {value: "CA", label: "CA"},
+  {value: "CO", label: "CO"},
+  {value: "CT", label: "CT"},
+  {value: "DE", label: "DE"},
+  {value: "FL", label: "FL"},
+  {value: "GA", label: "GA"},
+  {value: "HI", label: "HI"},
+  {value: "ID", label: "ID"},
+  {value: "IL", label: "IL"},
+  {value: "IN", label: "IN"},
+  {value: "IA", label: "IA"},
+  {value: "KS", label: "KS"},
+  {value: "KY", label: "KY"},
+  {value: "LA", label: "LA"},
+  {value: "ME", label: "ME"},
+  {value: "MD", label: "MD"},
+  {value: "MA", label: "MA"},
+  {value: "MI", label: "MI"},
+  {value: "MN", label: "MN"},
+  {value: "MS", label: "MS"},
+  {value: "MO", label: "MO"},
+  {value: "MT", label: "MT"},
+  {value: "NE", label: "NE"},
+  {value: "NV", label: "NV"},
+  {value: "NH", label: "NH"},
+  {value: "NJ", label: "NJ"},
+  {value: "NM", label: "NM"},
+  {value: "NY", label: "NY"},
+  {value: "NC", label: "NC"},
+  {value: "ND", label: "ND"},
+  {value: "OH", label: "OH"},
+  {value: "OK", label: "OK"},
+  {value: "OR", label: "OR"},
+  {value: "PA", label: "PA"},
+  {value: "RI", label: "RI"},
+  {value: "SC", label: "SC"},
+  {value: "SD", label: "SD"},
+  {value: "TN", label: "TN"},
+  {value: "TX", label: "TX"},
+  {value: "UT", label: "UT"},
+  {value: "VT", label: "VT"},
+  {value: "VA", label: "VA"},
+  {value: "WA", label: "WA"},
+  {value: "WV", label: "WV"},
+  {value: "WI", label: "WI"},
+  {value: "WY", label: "WY"},
+]
 
 export default class ExploreTheater extends Component {
   constructor(props) {
@@ -14,8 +70,26 @@ export default class ExploreTheater extends Component {
       ],
       theaters: [],
       companies: [],
-      
+      city: "",
+      selectedTheater: null,
+      selectedCompany: null,
+      selectedState: null,
       visitDate: new Date()
+    }
+    
+    var accessToken = localStorage.getItem("accessToken")
+    
+    if (accessToken) {
+      var apiClient = new APIClient(accessToken)
+      console.log(apiClient)
+
+      this.props.apiClient.getTheaters().then(resp => {
+        var companies = resp.get('')
+      });
+      this.props.apiClient.getCompanies().then(resp => {
+
+      });
+      
     }
   }
 
@@ -31,6 +105,17 @@ export default class ExploreTheater extends Component {
     
   }
 
+  setSelectedTheater = (selectedTheater) => {
+    this.setState({selectedTheater})
+  }
+
+  setSelectedCompany = (selectedCompany) =>  {
+    this.setState({selectedCompany})
+  }
+
+  setSelectedState = (selectedState) => {
+    this.setState({selectedState})
+  }
 
   render () {
     return (
@@ -44,11 +129,21 @@ export default class ExploreTheater extends Component {
             <div className="row">
               <div className="form-group form-inline functionalities-form-row col">
                 <label htmlFor="theaterName">Theater Name</label>
-                <select className="form-control functionalities" id="theaterName"/>
+                <Select className="functionalities-select"
+                  value={this.state.selectedTheater}
+                  onChange={this.setSelectedTheater}
+                  options={this.state.theaters}
+                  placeholder="Select"
+                />
               </div>
               <div className="form-group form-inline functionalities-form-row col">
                 <label htmlFor="comName">Company Name</label>
-                <select className="form-control functionalities" id="comName"/>
+                <Select className="functionalities-select"
+                  value={this.state.selectedCompany}
+                  onChange={this.setSelectedCompany}
+                  options={this.state.companies}
+                  placeholder="Select"
+                />
               </div>  
             </div>
             <div className="row">
@@ -58,7 +153,12 @@ export default class ExploreTheater extends Component {
               </div>
               <div className="form-group form-inline functionalities-form-row col">
                 <label htmlFor="comName">State</label>
-                <select className="form-control functionalities" id="state"/>
+                <Select className="functionalities-select"
+                  value={this.state.selectedState}
+                  onChange={this.setSelectedState}
+                  options={stateOptions}
+                  placeholder="Select"
+                />
               </div>  
             </div>
             <div className="row">

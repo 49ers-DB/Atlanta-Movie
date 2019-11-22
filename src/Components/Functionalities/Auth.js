@@ -7,11 +7,15 @@ import ExploreTheater from './User/ExploreTheater';
 export default class Auth extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      accessToken: localStorage.getItem("accessToken")
+    }
+    
   }
 
   render () {
     
-    if (this.props.apiClient) {
+    if (this.state.accessToken) {
       return (
         <Switch>
           <Route exact path="/Auth/Explore-Theater" component={() => <ExploreTheater apiClient={this.props.apiClient}/>}/>

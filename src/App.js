@@ -18,26 +18,7 @@ import Auth from './Components/Functionalities/Auth'
 class App extends Component {
   constructor(props) {
     super(props)
-    this.state = {
-      apiClient: localStorage.getItem("apiClient"),
-      authenticated: null
-    };
-    this.handleAPIClientChange = this.handleAPIClientChange.bind(this)
   }  
-
-  handleAPIClientChange(client) {
-    console.log(client)
-    client.example(12).then( () => {
-      localStorage.setItem("apiClient", client)
-      this.setState({
-        apiClient: client,
-        authenticated: true
-      });
-    }
-      
-    );
-    
-  }
 
   render() {
 
@@ -46,14 +27,14 @@ class App extends Component {
         <Router>
           
           <NavBar />
-          <Route exact path="/" component={() => <Login handleAPIClientChange={this.handleAPIClientChange} authenticated={this.state.authenticated}/>} />
+          <Route exact path="/" component={() => <Login/>} />
           <Route exact path="/Register-Option" component={RegisterOption}/>
           <Route exact path="/Customer-Registration" component={CustomerRegistration}/>
           <Route exact path="/Manager-Registration" component={ManagerRegistration}/>
           <Route exact path="/Manager-Customer-Registration" component={ManagerCustomerRegistration}/>
           <Route exact path="/User-Registration" component={UserRegistration}/>
-          <Route exact path="/Menu" component={() => <Menu apiClient={this.state.apiClient}/>} />
-          <Route path="/Auth" component={() => <Auth apiClient={this.state.apiClient}/>} />
+          <Route exact path="/Menu" component={() => <Menu/>} />
+          <Route path="/Auth" component={() => <Auth/>} />
 
         </Router>
       </div>

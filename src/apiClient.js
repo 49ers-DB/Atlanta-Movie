@@ -36,11 +36,20 @@ class APIClient {
   }
   
 
-  //-------User_Type--------
+  //-------User_Type-------
   getUser(userData) {
     return this.perform("get", "/user", userData)
   }
 
+  //---------Data_Getters-----------
+
+  getTheaters() {
+    return this.perform('get', '/theaters');
+  }
+
+  getCompanies() {
+    return this.perform('get', '/companies');
+  }
 
   
 
