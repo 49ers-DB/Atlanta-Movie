@@ -30,6 +30,10 @@ class APIClient {
   registerManagerCustomer(userData) {
     return this.perform("post", "/managerCustomerRegister", userData)
   }
+
+  getCompanies() {
+    return this.perform("get", "/getCompanies")
+  }
   
 
   //-------User_Type--------
