@@ -69,6 +69,7 @@ export default class ManagerRegistration extends Component {
         zipCode: '',
         selectedCompany: {value: "None", label: "None"},
         selectedState: null,
+        redirect: true,
     }
     
     getCompanies() {
@@ -130,11 +131,11 @@ export default class ManagerRegistration extends Component {
             apiClient.registerManager(this.state).then( resp => {
                 console.log(resp)
                 if(resp[1] !== 200) {
-                    if(resp[1] === 402) {
-                        window.alert("Credit Card Invalid")
-                    } else if(resp[1] === 403) {
+                    if(resp[1] === 403) {
                         window.alert("Address Already Taken")
                     }
+                } else if(resp[1] === 200) {
+                    window.location.replace("/");
                 }
             });
             

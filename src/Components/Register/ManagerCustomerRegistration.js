@@ -169,6 +169,8 @@ export default class ManagerCustomerRegistration extends Component {
                     } else if(resp[1] === 403) {
                         window.alert("Address Already Taken")
                     }
+                } else if(resp[1] === 200) {
+                    window.location.replace("/");
                 }
             });
         }

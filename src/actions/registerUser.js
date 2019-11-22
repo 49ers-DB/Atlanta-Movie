@@ -15,12 +15,13 @@ export const userRegister = user => {
         // This assumes your Rails API will return a JSON object with a key of
         // 'message' if there is an error
         console.error("Bad Register parameters")
-        console.log(data)
+        window.alert(data.message)
+        return data
   
       } else {
         // localStorage.setItem("token", data.jwt)
         // dispatch(loginUser(data.user))
-        console.log("Registered")
+        window.alert("Registered")
         return data;
       }
     })

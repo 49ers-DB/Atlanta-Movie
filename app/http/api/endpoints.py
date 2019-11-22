@@ -56,11 +56,12 @@ def userRegister():
   response = json_response({'message': 'Bad request parameters'}, 400)
   try:
     success = register_service.registerUser(user)
+    print(success)
   
     if success:
       response = json_response({'ok': True, 'data': user})
     else: 
-      response = json_response({'message': 'username: {} taken'.format(username)}, 402)
+      response = json_response({'message': 'username taken'}, 401)
   except:
     response = json_response({'message': 'Bad request parameters'}, 400)
     print("Failed to insert record")
