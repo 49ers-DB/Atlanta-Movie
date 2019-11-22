@@ -5,3 +5,9 @@
 .registerLabel {
     margin-left: 10px;
 }
+
+@media (max-width: 850px) {
+    .registrationCard {
+        width: auto;
+    }
+}
