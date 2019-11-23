@@ -7,7 +7,7 @@ from app.services.LoginService import LoginService
 from app.services.ManagerService import ManagerService
 from app.services.RegisterService import RegisterService
 from app.services.DropDownService import DropDownService
-
+from app.services.UserService import UserService
 
 
 app = Flask(__name__)
@@ -27,8 +27,7 @@ login_service = LoginService(connection)
 register_service = RegisterService(connection)
 manager_service = ManagerService(connection)
 drop_down_service = DropDownService(connection)
-
-
+user_service = UserService(connection)
 
 
 #------------LOGIN------------

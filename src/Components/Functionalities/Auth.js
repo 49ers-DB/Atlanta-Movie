@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import ErrorScreen from '../ErrorScreen'
 import { Route, Switch } from 'react-router-dom'
 import ExploreTheater from './User/ExploreTheater';
+import VisitHistory from './User/VisitHistory';
 
 
 export default class Auth extends Component {
@@ -19,6 +20,7 @@ export default class Auth extends Component {
       return (
         <Switch>
           <Route exact path="/Auth/Explore-Theater" component={() => <ExploreTheater apiClient={this.props.apiClient}/>}/>
+          <Route exact path="/Auth/Visit-History" component={() => <VisitHistory apiClient={this.props.apiClient}/>}/>
         </Switch>
 
       );

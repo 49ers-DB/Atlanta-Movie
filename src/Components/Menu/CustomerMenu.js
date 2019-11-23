@@ -16,7 +16,7 @@ export class CustomerMenu extends Component {
           </div>
           <div className="row">
             <a className="btn btn-primary" href="/auth/explore-theater">Explore Theater</a>
-            <a className="btn btn-primary" href="">Visit Movie</a>
+            <a className="btn btn-primary" href="/auth/visit-history">Visit History</a>
           </div>
           <div className="row">
             <a className="btn btn-primary" href="">Back</a>

@@ -52,3 +52,12 @@ select.functionalities {
   min-width: 30px;
   padding: 10px;
 }
+
+.visitHistoryTableCard {
+  margin: 15px;
+}
+
+.visitHistoryCard {
+  width: 900px;
+  margin: auto;
+}
