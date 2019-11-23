@@ -61,6 +61,8 @@ const stateOptions = [
   {value: "WY", label: "WY"},
 ]
 
+var theaters = []
+
 export default class ExploreTheater extends Component {
   constructor(props) {
     super(props)
@@ -110,25 +112,28 @@ export default class ExploreTheater extends Component {
     this.setCity = this.setCity.bind(this)
   }
 
-  promiseTheaterOptions = inputValue =>
-  new Promise();
+  onComponentDidMount() {
+    var apiClient = new APIClient("")
+    apiClient.getCompanies().then( resp => {
+      for(var i = 0; i < resp.length; i++) {
+        var companyName = resp[i].comName;
+        companies[i] = {value: companyName, label: companyName}
+      }
+    });
+  }
+  
 
-
-  promiseCompanyOptions = inputValue =>
-  new Promise(resolve => {
-    var accessToken = localStorage.getItem("accessToken")
-    if (accessToken) {
-      var apiClient = new APIClient(accessToken)
-      return apiClient.getCompanies().then(resp => {
-        var companies = []
-        resp.map( company => {
-          companies.push({value: company['comName'], label: company['comName']})
-        });
-        console.log(resp)
-        resolve(companies)
-      });
-    }
-  });
+  getCompanies() {
+    var companies = []
+    var apiClient = new APIClient("")
+    apiClient.getCompanies().then( resp => {
+      for(var i = 0; i < resp.length; i++) {
+        var companyName = resp[i].comName;
+        companies[i] = {value: companyName, label: companyName}
+      }
+    });
+    return companies;
+  }
 
   handleFilter(event) {
     event.preventDefault()
@@ -196,7 +201,7 @@ export default class ExploreTheater extends Component {
                 <AsyncSelect className="functionalities-select"
                   value={this.state.selectedTheater}
                   onChange={this.setSelectedTheater}
-                  options={this.state.theaters}
+                  options={theaters}
                   placeholder="Select"
                 />
               </div>
@@ -205,10 +210,8 @@ export default class ExploreTheater extends Component {
                 <Select className="functionalities-select"
                   value={this.state.selectedCompany}
                   onChange={this.setSelectedCompany}
-                  loadOptions={this.promiseCompanyOptions}
+                  options={this.getCompanies()}
                   cacheOptions 
-                  defaultOptions
-                  placeholder="Select"
                 />
               </div>  
             </div>
@@ -258,7 +261,7 @@ export default class ExploreTheater extends Component {
           </div>
           <div className="row">
             <div className="col-3">
-              <a className="btn btn-primary" href="/">Back</a>
+              <a className="btn btn-primary" href="/menu">Back</a>
             </div>
             <div className="col functionalities-form-row">
                 <label>Visit Date</label>
