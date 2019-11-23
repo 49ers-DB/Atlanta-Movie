@@ -7,9 +7,9 @@ class UserService(object):
 
    
     def ExploreTheater(self, username, filters):
-        i_thname=filters.get("i_thname")
+        i_thname=filters.get("selectedTheater")
         i_coname=filters.get("i_coname")
-        i_city=filters.get("i_city")
+        i_city=filters.get("city")
         i_state=filters.get("i_state")
 
         connection = get_conn()

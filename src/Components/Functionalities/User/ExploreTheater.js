@@ -68,7 +68,7 @@ export default class ExploreTheater extends Component {
     super(props)
     this.state = {
       apiClient: null,
-      rowData: [[],[],[],[]],
+      rowData: [["fj","fjdk","fjd"],[],[],[]],
       theaters: [],
       companies: [],
       city: "",
@@ -108,6 +108,8 @@ export default class ExploreTheater extends Component {
 
   getTheatersForCompany(companyName) {
     var accessToken = localStorage.getItem("accessToken")
+    theaters = []
+    this.setState({selectedTheater: null})
     
     if (accessToken) {
       var apiClient = new APIClient(accessToken)
@@ -116,8 +118,8 @@ export default class ExploreTheater extends Component {
         var someTheats = resp['theaters']
         someTheats.map( theater => {
           theaters.push({
-            value: theater['theaterName'],
-            label: theater['theaterName']});
+            value: theater['thName'],
+            label: theater['thName']});
         });
       });
     }
@@ -244,6 +246,7 @@ export default class ExploreTheater extends Component {
           <table className="table">
             <thead>
               <tr>
+                <th scope="col">Selected</th>
                 <th scope="col">Theater</th>
                 <th scope="col">Address</th>
                 <th scope="col">Company</th>
@@ -254,6 +257,9 @@ export default class ExploreTheater extends Component {
                 {this.state.rowData.map( (row) => {
                   return (
                     <tr key={this.state.rowData.indexOf(row)}>
+                      <td>
+                        <input type="checkbox" className="form-check-input" id=""/>
+                      </td>
                       <td>{row[0]}</td>
                       <td>{row[1]}</td>
                       <td>{row[2]}</td>

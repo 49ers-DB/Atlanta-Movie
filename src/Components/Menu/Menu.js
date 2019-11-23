@@ -30,6 +30,11 @@ export default class Menu extends Component {
     
   }
 
+  logout() {
+    localStorage.setItem("accessToken", false)
+    window.location.replace("/");
+  };
+
   render () {
     var menuBody = null
     if (!localStorage.getItem("accessToken")) {
@@ -47,7 +52,7 @@ export default class Menu extends Component {
     } else if (this.state.userType === 'user') {
       menuBody = <UserMenu/>
     } else {
-      menuBody = <div/>
+      menuBody = <div className="btn btn-primary" onClick={this.logout}>Back</div>           
     }
     return (
       <div className='main'>

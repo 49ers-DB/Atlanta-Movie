@@ -122,13 +122,13 @@ def getTheaters(comName):
   return json_response({'ok': True, 'theaters': theaters})
   
 
-@app.route('/exploreTheater', methods=['GET'])
+@app.route('/exploreTheater/', methods=['POST'])
 @login_required
 def get_explore_theater():
   data = request.get_json()
   user = g.user
   print(data)
-  #manager_service.TheaterOverview(user, data['filters'])
+  user_service.ExploreTheater(user, data['filters'])
 
 @app.route('/logVisit', methods=['POST'])
 @login_required
