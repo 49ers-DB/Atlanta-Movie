@@ -159,9 +159,15 @@ def get_theater_overview():
 @login_required
 def example_endpoint(param_1):
   print(param_1)
-  username = g.user
-  return json_response({'ok': True, 'data': param_1}, 200)
+  user = g.user
+  response = json_response({'userType': 'user'}, 200)
+  userType = login_service.findUserType(user['username'])
+  print(userType)
+  response = json_response({'userType': userType}, 200)
 
+
+  return response
+  
 
 def json_response(payload, status_code=200):
    return json.dumps(payload), status_code, {'Content-type': 'application/json'}

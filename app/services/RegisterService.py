@@ -61,15 +61,15 @@ class RegisterService(object):
         cursor.execute(sql, dataTuple)
         self.connection.commit()
 
-      #Inserting the values to CustomerCreditCard
-      creditCards = customer['creditCardsList']
-      for creditCard in creditCards:
-        if(creditCard != None):
-          sql = """INSERT INTO CustomerCreditCard (username, creditCardNum) 
-                    VALUES (%s, %s)"""
-          dataTuple = (customer['username'], creditCard)
-          cursor.execute(sql, dataTuple)
-          self.connection.commit() 
+        #Inserting the values to CustomerCreditCard
+        creditCards = customer['creditCardsList']
+        for creditCard in creditCards:
+          if(creditCard != None):
+            sql = """INSERT INTO CustomerCreditCard (username, creditCardNum) 
+                      VALUES (%s, %s)"""
+            dataTuple = (customer['username'], creditCard)
+            cursor.execute(sql, dataTuple)
+            self.connection.commit() 
 
       response = ({'ok': True, 'data': customer}, 200)
 
