@@ -61,6 +61,10 @@ export default class CustomerRegistration extends Component {
                     window.alert("Invalid credit card format");
                     return;
                 }
+                if(cards.indexOf(cardNumber) !== -1) {
+                    window.alert("Duplicate Credit Cards Found");
+                    return;
+                }
                 cards[count] = cardNumber;
                 count++;
 
