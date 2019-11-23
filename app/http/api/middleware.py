@@ -15,11 +15,9 @@ def login_required(f):
       return json.dumps({'error': 'no authorization token provided'}), 403, {'Content-type': 'application/json'}
 
     try:
-      print(authorization)
       token = authorization.split(' ')[1]
       resp = decode(token, None, verify=False, algorithms=['HS256'])
       if custom_jwt.token_repo.get(resp['user']['username']) is None:
-        print(custom_jwt.token_repo)
         return json.dumps({'error': 'wrong authorization token provided'}), 403, {'Content-type': 'application/json'}
       g.user = resp['user']
 

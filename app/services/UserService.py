@@ -1,8 +1,8 @@
+import app.services.DBService
 
 class UserService(object):
 
-    def __init__(self, connection):
-        self.connection = connection
+   
 
     def ExploreTheater(self, username, filters):
         i_thname=filters.get("i_thname")
@@ -10,7 +10,8 @@ class UserService(object):
         i_city=filters.get("i_city")
         i_state=filters.get("i_state")
 
-        with self.connection.cursor() as cursor:
+        connection = DBService.get_conn()
+        with connection.cursor() as cursor:
             info = "select distinct thName as \"Name\", thStreet as \"Street\", thCity as \"City\", thState as \"State\", thZipcode as \"Zipcode\", comName as \"Company\" from \
             Theater where ((%s) is NULL or thName = (%s)) \
             and ((%s) is NULL or thCity = (%s)) \
@@ -19,7 +20,10 @@ class UserService(object):
 
             cursor.execute(info,(i_thname,i_coname,i_city,i_state))
             data=cursor.fetchall()
-            self.connection.commit()
+            connection.commit()
+
+        connection.close()
+        return data
 
     def LogVisit(self, username, filters):
         i_thname=filters.get("i_thname")
@@ -27,16 +31,19 @@ class UserService(object):
         i_visitdate=filters.get("i_visitdate")
         i_username = username
 
-        with self.connection.cursor() as cursor:
+        connection = DBService.get_conn()
+        with connection.cursor() as cursor:
             leng="select visitID from UserVisitTheater"
             cursor.execute(leng)
             length=cursor.fetchall()
-            self.connection.commit()
+            connection.commit()
             new_id= int(len(length.values()))+1
             info="insert (visitID,username,thName,comName,visitDate) values ((%s),(%s),(%s),(%s),(%s))"
             cursor.execute(info,(new_id,i_username,i_thname,i_coname,i_visitdate))
             data=cursor.fetchall()
-            self.connection.commit()
+            connection.commit()
+
+        connection.close()
 
     def VisitHistory(self, username, filters):
         i_comName=filters.get("i_comName")
@@ -44,7 +51,9 @@ class UserService(object):
         i_maxVisitDate =filters.get("i_maxVisitDate")
         i_username = username
 
-        with self.connection.cursor() as cursor:
+        connection = DBService.get_conn()
+
+        with connection.cursor() as cursor:
 
 
             info = "select Theater.thName, Theater.thStreet, Theater.thCity, Theater.thState, Theater.thZipcode, Theater.comName, UserVisitTheater.visitDate\
@@ -53,4 +62,7 @@ class UserService(object):
 
             cursor.execute(info, (i_username, i_minVisitDate, i_minVisitDate, i_maxVisitDate, i_maxVisitDate, i_comName, i_comName))
             data = cursor.fetchall()
-            self.connection.commit()
+            connection.commit()
+
+        connection.close()
+        return data

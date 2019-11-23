@@ -1,9 +1,6 @@
-
+import app.services.DBService
 
 class RegisterService(object):
-
-  def __init__(self, connection):
-    self.connection = connection
 
   def registerUser(self, user) -> bool:
     username = user['username']
@@ -11,25 +8,29 @@ class RegisterService(object):
     lastname = user['lastname']
     password = user['password']
 
-
-    with self.connection.cursor() as cursor:
+    connection = DBService.get_conn()
+    with connection.cursor() as cursor:
       #Checking for duplicates
 
       sql = "SELECT `username` FROM `User` where username=(%s)"
       cursor.execute(sql, (username))
       userDatas = cursor.fetchall()
-      self.connection.commit()
+      connection.commit()
+
+      success = False
+
       if len(userDatas) < 1:
         #Inserting the values to User
         sql = """INSERT INTO User (username, status, firstname, lastname, password)
                   VALUES (%s,%s,%s,%s,%s)"""
         dataTuple = (username, 'Pending', firstname, lastname, password)
         cursor.execute(sql, dataTuple)
-        self.connection.commit()
-        return True
+        connection.commit()
 
+        success = True
 
-      return False
+      connection.close()
+      return success
 
 
 
@@ -37,7 +38,9 @@ class RegisterService(object):
 
     response = ({'message': 'Credit Card taken'}, 402)
 
-    with self.connection.cursor() as cursor:
+    connection = DBService.get_conn()
+
+    with connection.cursor() as cursor:
       credit_card_list = customer['creditCardsList']
       for i in range(5 - len(credit_card_list)):
         credit_card_list.append(None)
@@ -48,7 +51,7 @@ class RegisterService(object):
           where creditCardNum in (%s, %s, %s, %s, %s)"""
       cursor.execute(sql, credit_card_list)
       dup_count = cursor.fetchall()
-      self.connection.commit()
+      connection.commit()
       if dup_count[0].get(('count(`creditCardNum`)')) > 0:
         return ({'message': 'Credit Card taken'}, 402)
       
@@ -59,7 +62,7 @@ class RegisterService(object):
                   VALUES (%s)"""
         dataTuple = (customer['username'])
         cursor.execute(sql, dataTuple)
-        self.connection.commit()
+        connection.commit()
 
         #Inserting the values to CustomerCreditCard
         creditCards = customer['creditCardsList']
@@ -69,21 +72,24 @@ class RegisterService(object):
                       VALUES (%s, %s)"""
             dataTuple = (customer['username'], creditCard)
             cursor.execute(sql, dataTuple)
-            self.connection.commit() 
+            connection.commit() 
 
+      connection.close()
       response = ({'ok': True, 'data': customer}, 200)
 
     return response
 
   def registerManager(self, manager) -> bool:
-    with self.connection.cursor() as cursor:
+
+    connection = DBService.get_conn()
+    with connection.cursor() as cursor:
       if self.registerUser(manager):
         address = (manager['address'], manager['city'], manager['selectedState']['value'], manager['zipCode'])
         print(address)
         sql = "SELECT `username` FROM `Manager` WHERE manStreet=(%s) AND manCity=(%s) AND manState=(%s) AND manZipCode=(%s)"
         cursor.execute(sql, address)
         userDatas = cursor.fetchall()
-        self.connection.commit()
+        connection.commit()
         print(userDatas)
         if len(userDatas) < 1:
           #Inserting the values to Employee
@@ -91,31 +97,35 @@ class RegisterService(object):
                     VALUES (%s)"""
           dataTuple = (manager['username'])
           cursor.execute(sql, dataTuple)
-          self.connection.commit()
+          connection.commit()
 
           #Inserting the values to Manager
           sql = """INSERT INTO Manager (username, manStreet, manCity, manState, manZipCode, comName)
                     VALUES (%s, %s, %s, %s, %s, %s)"""
           dataTuple = (manager['username'], manager['address'], manager['city'], manager['selectedState']['value'], manager['zipCode'], manager['selectedCompany']['value'])
           cursor.execute(sql, dataTuple)
-          self.connection.commit()
+          connection.commit()
 
           response = ({'ok': True, 'data': manager}, 200)
         else:
           print("here")
           response = ({'Address already taken': False, 'data': manager}, 402)
-
+    connection.close()
     return response
+
+
   def registerManagerCustomer(self, managerCustomer) -> bool:
-    print(managerCustomer)
-    with self.connection.cursor() as cursor:
-      if(self.registerCustomer(managerCustomer)):
+    
+    connection = DBService.get_conn()
+
+    with connection.cursor() as cursor:
+      if self.registerCustomer(managerCustomer):
         address = (managerCustomer['address'], managerCustomer['city'], managerCustomer['selectedState']['value'], managerCustomer['zipCode'])
         print(address)
         sql = "SELECT `username` FROM `Manager` WHERE manStreet=(%s) AND manCity=(%s) AND manState=(%s) AND manZipCode=(%s)"
         cursor.execute(sql, address)
         userDatas = cursor.fetchall()
-        self.connection.commit()
+        connection.commit()
         print(userDatas)
         if len(userDatas) < 1:
           #Inserting the values to Employee
@@ -123,14 +133,14 @@ class RegisterService(object):
                     VALUES (%s)"""
           dataTuple = (managerCustomer['username'])
           cursor.execute(sql, dataTuple)
-          self.connection.commit()
+          connection.commit()
 
           #Inserting the values to Manager
           sql = """INSERT INTO Manager (username, manStreet, manCity, manState, manZipCode, comName)
                     VALUES (%s, %s, %s, %s, %s, %s)"""
           dataTuple = (managerCustomer['username'], managerCustomer['address'], managerCustomer['city'], managerCustomer['selectedState']['value'], managerCustomer['zipCode'], managerCustomer['selectedCompany']['value'])
           cursor.execute(sql, dataTuple)
-          self.connection.commit()
+          connection.commit()
 
           response = ({'ok': True, 'data': managerCustomer}, 200)
         else:
@@ -138,6 +148,7 @@ class RegisterService(object):
           response = ({'Address already taken': False, 'data': managerCustomer}, 403)
 
         
-
+      connection.close()
+      
       return response
 
