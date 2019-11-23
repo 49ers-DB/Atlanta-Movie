@@ -6,6 +6,7 @@ from app.util.custom_jwt import create_access_token
 from app.services.LoginService import LoginService
 from app.services.ManagerService import ManagerService
 from app.services.RegisterService import RegisterService
+from app.services.UserService import UserService
 
 
 app = Flask(__name__)
@@ -24,6 +25,7 @@ connection = pymysql.connect(host='localhost',
 login_service = LoginService(connection)
 register_service = RegisterService(connection)
 manager_service = ManagerService(connection)
+user_service = UserService(connection)
 
 
 #------------LOGIN------------

@@ -21,7 +21,7 @@ const AdminCustomerMenu = () => {
           <a className="btn btn-primary" href="">View History</a>
         </div>
         <div className="row">
-          <a className="btn btn-primary" href="">Visit History</a>
+          <a className="btn btn-primary" href="/auth/visit-history">Visit History</a>
           <a className="btn btn-primary" href="">Back</a>
         </div>
       </div>

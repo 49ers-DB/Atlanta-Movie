@@ -1,7 +1,7 @@
 
 class UserService(object):
 
-def __init__(self, connection):
+    def __init__(self, connection):
         self.connection = connection
 
     def ExploreTheater(self, username, filters):
