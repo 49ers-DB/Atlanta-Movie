@@ -32,7 +32,7 @@ export default class Menu extends Component {
 
   render () {
     var menuBody = null
-    if (this.props.apiClient === null) {
+    if (!localStorage.getItem("accessToken")) {
       menuBody = <ErrorScreen/>
     } else if (this.state.userType === 'customer') {
       menuBody = <CustomerMenu/>
@@ -47,7 +47,7 @@ export default class Menu extends Component {
     } else if (this.state.userType === 'user') {
       menuBody = <UserMenu/>
     } else {
-      menuBody = <ErrorScreen/>
+      menuBody = <div/>
     }
     return (
       <div className='main'>
