@@ -27,7 +27,7 @@ class LoginService(object):
     manager = False
     admin = False
     customer = False
-    connection = DBService.get_conn()
+    connection = get_conn()
     
     with connection.cursor() as cursor:
       #Check Manager
