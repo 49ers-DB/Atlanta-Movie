@@ -6,11 +6,21 @@ from app.services.DBService import get_conn
 class UserService(object):
 
    
-    def ExploreTheater(self, username, filters):
+    def ExploreTheater(self, filters):
         i_thname=filters.get("selectedTheater")
-        i_coname=filters.get("i_coname")
+        i_coname=filters.get("selectedCompany")
         i_city=filters.get("city")
-        i_state=filters.get("i_state")
+        i_state=filters.get("selectedState")
+
+        data_tuple = (
+            i_thname,
+            i_thname,
+            i_coname,
+            i_coname,
+            i_city,
+            i_city,
+            i_state,
+            i_state)
 
         connection = get_conn()
         with connection.cursor() as cursor:
@@ -20,11 +30,13 @@ class UserService(object):
             and ((%s) is NULL or thCity = (%s)) \
             and ((%s) is NULL or thCity = (%s))"
 
-            cursor.execute(info,(i_thname,i_coname,i_city,i_state))
+
+            cursor.execute(info, data_tuple)
             data=cursor.fetchall()
             connection.commit()
 
         connection.close()
+        print(data)
         return data
 
     def LogVisit(self, username, filters):

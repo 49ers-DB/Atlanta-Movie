@@ -84,10 +84,8 @@ export default class ExploreTheater extends Component {
       var apiClient = new APIClient(accessToken)
       this.state.apiClient = apiClient
       console.log(apiClient)
-
-      apiClient.perform('get', '/exploreTheater', this.state).then(resp => {
-        var rowData = resp
-        this.state.rowData = rowData
+      apiClient.exploreTheater(this.state).then(resp => {
+        this.setState({rowData: resp['theaters']})
       });
       
     }
@@ -150,8 +148,8 @@ export default class ExploreTheater extends Component {
     if (accessToken) {
       var apiClient = new APIClient(accessToken)
 
-      apiClient.perform('get', '/exploreTheater', this.state).then( resp => {
-
+      apiClient.perform('post', '/exploreTheater', this.state).then( resp => {
+        this.setState({rowData: resp['theaters']})
       });
       
     }

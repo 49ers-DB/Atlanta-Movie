@@ -51,6 +51,10 @@ class APIClient {
     return this.perform('get', '/getCompanies');
   }
 
+  //-------Explore Theater-------
+  exploreTheater(filters) {
+    return this.perform('post', '/exploreTheater', filters);
+  }
   
 
   createTheater(theater) {
