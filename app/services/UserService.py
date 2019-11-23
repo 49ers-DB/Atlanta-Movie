@@ -1,6 +1,7 @@
+
 class UserService(object):
 
-    def __init__(self, connection):
+def __init__(self, connection):
         self.connection = connection
 
     def ExploreTheater(self, username, filters):
@@ -38,13 +39,18 @@ class UserService(object):
             self.connection.commit()
 
     def VisitHistory(self, username, filters):
-        i_coname=filters.get("i_coname")
-        i_minvisitdate =filters.get("i_minvisitdate")
-        i_maxvisitdate =filters.get("i_maxvisitdate")
+        i_comName=filters.get("i_comName")
+        i_minVisitDate =filters.get("i_minVisitDate")
+        i_maxVisitDate =filters.get("i_maxVisitDate")
         i_username = username
-'''
+
         with self.connection.cursor() as cursor:
-            info="select thName, thStreet, thCity, thState, thZipcode, comName, visitDate from UserVisitTheater natural join Theater where (username = i_username) and (i_minVisitDate IS null or visitDate >= i_minVisitDate) and (i_maxVisitDate is null or visitDate <= i_maxVisitDate)"
 
-'''
 
+            info = "select Theater.thName, Theater.thStreet, Theater.thCity, Theater.thState, Theater.thZipcode, Theater.comName, UserVisitTheater.visitDate\
+            from UserVisitTheater natural join Theater \
+            where (username = (%s)) and ((%s) is null or UserVisitTheater.visitDate >= (%s)) and ((%s) is null or UserVisitTheater.visitDate <= (%s)) and ((%s) is null or Theater.comName = (%s))"
+
+            cursor.execute(info, (i_username, i_minVisitDate, i_minVisitDate, i_maxVisitDate, i_maxVisitDate, i_comName, i_comName))
+            data = cursor.fetchall()
+            self.connection.commit()
