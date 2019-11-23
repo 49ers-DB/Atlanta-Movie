@@ -14,7 +14,7 @@ const ManagerCustomerMenu = () => {
         </div>
         <div className="row">
           <a className="btn btn-primary" href="">Schedule Movie</a>
-          <a className="btn btn-primary" href="">Explore Theater</a>
+          <a className="btn btn-primary" href="/auth/explore-theater">Explore Theater</a>
         </div>
         <div className="row">
           <a className="btn btn-primary" href="">View History</a>

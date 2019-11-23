@@ -86,14 +86,14 @@ export default class ExploreTheater extends Component {
       apiClient.getTheaters().then(resp => {
         var theaters = resp.get('')
       });
-      apiClient.getCompanies().then(resp => {
-        var companies = []
-        resp.map( company => {
-          companies.push({value: company['comName'], label: company['comName']})
-        });
-        console.log(resp)
-        this.state.companies = companies
-      });
+      // apiClient.getCompanies().then(resp => {
+      //   var companies = []
+      //   resp.map( company => {
+      //     companies.push({value: company['comName'], label: company['comName']})
+      //   });
+      //   console.log(resp)
+      //   this.state.companies = companies
+      // });
 
       apiClient.perform('get', '/exploreTheater', this.state).then(resp => {
         var rowData = resp
@@ -125,7 +125,7 @@ export default class ExploreTheater extends Component {
           companies.push({value: company['comName'], label: company['comName']})
         });
         console.log(resp)
-        return companies
+        resolve(companies)
       });
     }
   });
