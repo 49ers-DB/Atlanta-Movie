@@ -55,6 +55,9 @@ export default class CustomerRegistration extends Component {
                     creditString = creditString.substring(1);
                 }
                 var cardNumber = creditString.substring(0,16);
+                if(cardNumber.length < 16) {
+                    window.alert("Invalid Credit Card Format")
+                }
 
                 //if the credit card has any characters besides just numbers
                 if(cardNumber.match(/^[0-9]+$/) == null) {
