@@ -26,63 +26,52 @@ class ManagerService(object):
                 i_maxPlayDate,
                 i_minPlayDate,
                 i_minPlayDate,
-        #         i_Movie, 
-        #         i_Movie,
-        #         i_notplayed,
-                i_minReleaseDate, 
+                i_maxDuration,
+                i_maxDuration,
+                i_minDuration,
+                i_minDuration,
+                i_Movie,
+                i_Movie,
+                i_notplayed,
+                i_minReleaseDate,
                 i_minReleaseDate,
                 i_maxReleaseDate,
                 i_maxReleaseDate,
-                i_maxPlayDate,
-                i_minPlayDate)
-        #         i_maxDuration,
-        #         i_maxDuration,
-        #         i_minDuration, 
-        #         i_minDuration,
-        #         i_Movie, 
-        #         i_Movie)
+                i_maxDuration,
+                i_maxDuration,
+                i_minDuration,
+                i_minDuration,
+                i_Movie,
+                i_Movie)
 
         with self.connection.cursor() as cursor:
 
-            # and ((%s) is not NULL and Movie.movReleaseDate >= (%s)) 
-            # and ((%s) is not NULL and Movie.movReleaseDate <= (%s)) 
-            # and ((%s) is not NULL and MoviePlay.movPlayDate <= (%s)) 
-            # and ((%s) is not NULL and MoviePlay.movPlayDate >= (%s)) 
-            # and ((%s) is not NULL and Movie.movName = (%s)) 
-            # and ((%s) = FALSE and MoviePlay.movPlayDate is not NULL)
-
-            info = """select distinct 
-            MoviePlay.movName as \"Movie\", MoviePlay.movReleaseDate as \"Release_Date\", 
-            MoviePlay.movPlayDate as "Play_Date", Movie.duration as \"Duration\" 
-            from MoviePlay  
-            join Movie 
-            on MoviePlay.movName=Movie.movName 
-            where MoviePlay.thName in 
-            (select thName from Theater where Theater.manUsername=(%s)) 
-            and ((%s) is NULL or Movie.movReleaseDate >= (%s))
-            and ((%s) is NULL or Movie.movReleaseDate <= (%s))
-            and ((%s) is NULL or MoviePlay.movPlayDate <= (%s)) 
-            and ((%s) is NULL or MoviePlay.movPlayDate >= (%s)) 
-            Union 
-            select Movie.movName as \"Movie\", Movie.movReleaseDate as \"Release_Date\", cast(NULL as date) as \"Play_Date\", Movie.duration as \"Duration\" from Movie\
-            where ((%s) is NULL or Movie.movReleaseDate >= (%s)) 
-            and ((%s) is NULL or Movie.movReleaseDate <= (%s)) 
-            and ((%s) is NULL or (%s) is NULL)
-            """
-            # where ((%s) is not NULL and Movie.movReleaseDate >= (%s)) 
-            # and ((%s) is not NULL and Movie.movReleaseDate <= (%s)) 
-            # and ((%s) is not NULL and Movie.Duration <= (%s)) 
-            # and ((%s) is not NULL and Movie.Duration >= (%s))
-            # and ((%s) is not NULL and Movie.movName = (%s))
+            info = "select distinct MoviePlay.movName as \"Movie\", MoviePlay.movReleaseDate as \"Release_Date\", \
+            MoviePlay.movPlayDate as \"Play_Date\", Movie.duration as \"Duration\" \
+            from MoviePlay join Movie on MoviePlay.movName=Movie.movName where MoviePlay.thName in \
+            (select thName from Theater where Theater.manUsername=(%s)) \
+            and ((%s) is NULL or Movie.movReleaseDate >=(%s))\
+            and ((%s) is NULL or Movie.movReleaseDate <=(%s))\
+            and ((%s) is NULL or MoviePlay.movPlayDate <=(%s))\
+            and ((%s) is NULL or MoviePlay.movPlayDate >=(%s)) \
+            and ((%s) is NULL or Movie.duration <=(%s))\
+            and ((%s) is NULL or Movie.duration >=(%s))\
+            and ((%s) is NULL or Movie.movName like(%s))\
+            and ((%s) is NULL or MoviePlay.movPlayDate!=NULL)\
+            Union \
+            select Movie.movName as \"Movie\", Movie.movReleaseDate as \"Release_Date\", \
+            cast(NULL as date) as \"Play_Date\", Movie.duration as \"Duration\" from Movie\
+            where ((%s)) is NULL or Movie.movReleaseDate >=((%s))) \
+            and ((%s)) is NULL or Movie.movReleaseDate <=((%s))) \
+            and ((%s)) is NULL or Movie.duration >=((%s)))\
+            and ((%s)) is NULL or Movie.duration <=((%s)))\
+            and ((%s)) is NULL or Movie.movName like((%s)))"
 
             cursor.execute(info, data_tuple)
             data=cursor.fetchall()
             self.connection.commit()
-
-            print(data_tuple)
-            print(info)
             return data
-    
+
     def getCompanies(self):
         with self.connection.cursor() as cursor:
             sql = """SELECT comName FROM Company"""
