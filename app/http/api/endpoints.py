@@ -108,7 +108,6 @@ def managerCustomerRegister():
 
 #-------DropDownService---------
 @app.route('/getCompanies', methods=['GET'])
-@login_required
 def getCompanies():
   response = drop_down_service.CompanyDropDown()
   return json_response(response)
