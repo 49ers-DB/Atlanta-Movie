@@ -14,20 +14,12 @@ app = Flask(__name__)
 CORS(app)
 
 
-connection = pymysql.connect(host='localhost',
-                             user='root',
-                             password='1234',
-                             db='moviez',
-                             charset='utf8mb4',
-                             port=3306,
-                             cursorclass=pymysql.cursors.DictCursor)
-
 # create services
-login_service = LoginService(connection)
-register_service = RegisterService(connection)
-manager_service = ManagerService(connection)
-drop_down_service = DropDownService(connection)
-user_service = UserService(connection)
+login_service = LoginService()
+register_service = RegisterService()
+manager_service = ManagerService()
+drop_down_service = DropDownService()
+user_service = UserService()
 
 
 #------------LOGIN------------
@@ -114,11 +106,20 @@ def managerCustomerRegister():
   return json_response({'message': 'Bad request parameters'}, 400)
 
 
-#get the list of companies
+#-------DropDownService---------
 @app.route('/getCompanies', methods=['GET'])
+@login_required
 def getCompanies():
   response = drop_down_service.CompanyDropDown()
   return json_response(response)
+
+
+@app.route('/theaters/<string:comName>', methods=['GET'])
+@login_required
+def getTheaters(comName):
+
+  theaters = drop_down_service.TheaterDropDown(comName)
+  return json_response({'ok': True, 'theaters': theaters})
   
 
 @app.route('/exploreTheater', methods=['GET'])

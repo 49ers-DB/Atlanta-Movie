@@ -1,19 +1,21 @@
 import pymysql.cursors
+import DBService
 
 class LoginService(object):
-
-  def __init__(self, connection):
-    self.connection = connection
 
 
   def login(self, user) -> bool:
 
-    with self.connection.cursor() as cursor:
+    connection = DBService.get_conn()
+
+    with connection.cursor() as cursor:
       # Read a single record
       sql = "SELECT `username`, `password` FROM `User` where username=(%s) and password=(%s)"
       cursor.execute(sql, (user['username'], user['password']))
       userDatas = cursor.fetchall()
-      self.connection.commit()
+      connection.commit()
+    
+    connection.close()
 
       if len(userDatas) > 0:
         return True
@@ -24,13 +26,14 @@ class LoginService(object):
     manager = False
     admin = False
     customer = False
+    connection = DBService.get_conn()
     
-    with self.connection.cursor() as cursor:
+    with connection.cursor() as cursor:
       #Check Manager
       sql = "SELECT `username` FROM `Manager` where username=(%s)"
       cursor.execute(sql, (username))
       userDatas = cursor.fetchall()
-      self.connection.commit()
+      connection.commit()
       if len(userDatas) > 0:
         manager = True
       
@@ -38,7 +41,7 @@ class LoginService(object):
       sql = "SELECT `username` FROM `Customer` where username=(%s)"
       cursor.execute(sql, (username))
       userDatas = cursor.fetchall()
-      self.connection.commit()
+      connection.commit()
       if len(userDatas) > 0:
         customer = True
       
@@ -46,9 +49,11 @@ class LoginService(object):
       sql = "SELECT `username` FROM `Admin` where username=(%s)"
       cursor.execute(sql, (username))
       userDatas = cursor.fetchall()
-      self.connection.commit()
+      connection.commit()
       if len(userDatas) > 0:
         admin = True
+
+    connection.close()
     
     userType = 'user'
     if(manager):

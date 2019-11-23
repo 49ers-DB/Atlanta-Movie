@@ -98,13 +98,13 @@ export default class ExploreTheater extends Component {
     this.setSelectedCompany = this.setSelectedCompany.bind(this)
     this.setSelectedState = this.setSelectedState.bind(this)
     this.setCity = this.setCity.bind(this)
-    this.componentDidMount = this.componentDidMount.bind(this)
+    // this.componentDidMount = this.componentDidMount.bind(this)
     this.getTheatersForCompany = this.getTheatersForCompany.bind(this)
   }
 
-  componentDidMount() {
-    this.getTheatersForCompany({comName: ""})
-  }
+  // componentDidMount() {
+  //   this.getTheatersForCompany("")
+  // }
 
   getTheatersForCompany(companyName) {
     var accessToken = localStorage.getItem("accessToken")
@@ -112,7 +112,8 @@ export default class ExploreTheater extends Component {
     if (accessToken) {
       var apiClient = new APIClient(accessToken)
       apiClient.getTheaters(companyName).then( resp => {
-        var someTheats = resp.get('theaters')
+        
+        var someTheats = resp['theaters']
         someTheats.map( theater => {
           theaters.push({
             value: theater['theaterName'],
@@ -179,7 +180,7 @@ export default class ExploreTheater extends Component {
 
   setSelectedCompany = (selectedCompany) =>  {
     this.setState({selectedCompany})
-    var company = {comName: selectedCompany['value']}
+    var company = selectedCompany['value']
     this.getTheatersForCompany(company)
   }
 
