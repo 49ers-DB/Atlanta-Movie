@@ -11,7 +11,7 @@ status  ENUM('Pending', 'Approved', 'Declined') NOT NULL,
 PRIMARY KEY(username),
 CHECK(LENGTH(password) >= 8)
 );
-
+	
 CREATE TABLE Employee (
 username VARCHAR(75) NOT NULL,
 FOREIGN KEY(username) REFERENCES user(username)

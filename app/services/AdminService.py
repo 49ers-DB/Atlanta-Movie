@@ -8,21 +8,51 @@ class AdminService(object):
 
         i_username = username
 
-    with self.connection.cursor()
-        query1 = "update User set Status = \"Approved\" where username = (%s)"
-        cursor.execute(query1, (i_username))
-        data1 = cursor.fetchall()
-        self.connection.commit()
+        with self.connection.cursor()
+            query1 = "update User set Status = \"Approved\" where username = (%s)"
+            cursor.execute(query1, (i_username))
+            data1 = cursor.fetchall()
+            self.connection.commit()
 
     def DeclineUser(self, username, filters):
 
         i_username = username
 
-    with self.connection.cursor()
-        query4 = "update User set Status = \"Declined\" where username = (%s)"
-        cursor.execute(query4, (i_username))
-        data1 = cursor.fetchall()
-        self.connection.commit()
+        with self.connection.cursor()
+            query4 = "update User set Status = \"Declined\" where username = (%s)"
+            cursor.execute(query4, (i_username))
+            data1 = cursor.fetchall()
+            self.connection.commit()
+
+    def FilterUser(self, username, filters):
+
+        i_username = username
+        i_status = filters.get("i_status")
+        i_sortBy = filters.get("i_sortBy")
+        i_sortDirection = filters.get("i_sortDirection")
+
+        with self.connection.cursor() as cursor:
+            query = "select * from \
+            (select user.username as \"Username\", count(CustomerCreditCard.creditCardNum) as \"Credit Card Count\", user.Status from user inner join CustomerCreditCard on user.username = CustomerCreditCard.username group by User.username \
+            union \
+            select user.username as \"Username\", 0 as \"Credit Card Count\", user.Status from user where user.username not in (select username from  CustomerCreditCard)) as Table1 \
+            natural join \
+            (select user.username as \"Username\", \"Manager-Customer\" as \"User Type\" from user where user.username in (select manager.username from manager inner join customer where manager.username=customer.username) \
+            union \
+            select user.username as \"Username\", \"Customer\" as \"User Type\" from user where user.username in (select customer.username from customer) and user.username not in (select manager.username from manager inner join customer where manager.username = customer.username) \
+            union \
+            select user.username as \"Username\", \"Manager\" as \"User Type\" from user where user.username in (select manager.username from manager) and user.username not in (select manager.username from manager inner join customer where manager.username = customer.username) \
+            union \
+            select user.username as \"Username\", \"User\" as \"User Type\" from user where user.username in (select user.username from user) and user.username not in (select manager.username from manager inner join customer where manager.username = customer.username) and user.username not in (select customer.username from customer) and user.username not in (select manager.username from manager)) as Table2 \
+            where ((%s) is null or user.username = (%s)) AND \
+            (user.status = (%s) or (%s) = "ALL") \
+            order by (%s) (%s)"
+
+            cursor.execute(query, (i_username, i_username, i_status, i_status, i_sortBy, i_sortDirection))
+            data = cursor.fetchall()
+            self.connection.commit()
+        return data
+
 
     def ManageCompany(self, username, filters):
 
@@ -37,12 +67,33 @@ class AdminService(object):
         i_sortBy
         i_sortDirection
 
-    with self.connection.cursor() as cursor:
-        query = "select comName, count(thName), count(thCity), count(manUsername) \
-        from theater \
-        where (comName = (%s) or (%s) is NULL) AND \
-        \
-        group by comName"
+        with self.connection.cursor() as cursor:
+            query = "select manager.comName as \"Company\", count(distinct theater.thCity) as \"City Count\", \
+            count(distinct theater.thName) \"Theater Count\", count(distinct Manager.username) as \"Employee Count\" \
+            from theater join Manager on theater.comName=Manager.comName group by theater.comName  \
+            where ((%s) is Null or Manager.comName = (%s)),\
+            and (where (%s) is Null or count(distinct theater.thCity)>=(%s)),\
+            and (where (%s) is Null or count(distinct theater.thCity)<=(%s)),\
+            and (where (%s) is Null or count(distinct theater.thName)>=(%s)),\
+            and (where (%s) is Null or count(distinct theater.thName)<=(%s)),\
+            and (where (%s) is Null or count(distinct manager.username)>=(%s)),\
+            and (where (%s) is Null or count(distinct manager.username)<=(%s)),\
+            union select company.comName as \"Company\", 0 as \"City Count\", 0 as \"Theater Count\",\
+            0 as \"Employee Count\" from company where company.comName not in (select Manager.comName from\
+            Manager) and\
+            where (%s) is Null or Manager.comName = (%s),\
+            and (where (%s) is Null or count(distinct theater.thCity)>=0),\
+            and (where (%s) is Null or count(distinct theater.thCity)<=0),\
+            and (where (%s) is Null or count(distinct theater.thName)>=0),\
+            and (where (%s) is Null or count(distinct theater.thName)<=0),\
+            and (where (%s) is Null or count(distinct manager.username)>=0),\
+            and (where (%s) is Null or count(distinct manager.username)<=0)"
+
+            data = cursor.execute(query, (i_comName,i_comName,i_minCity,i_minCity,i_maxCity,i_maxCity,i_minTheater,i_minTheater,i_maxTheater,i_maxTheater,i_minEmployee,i_minEmployee,i_maxEmployee,i_maxEmployee,i_comName,i_comName,i_minCity,i_minCity,i_maxCity,i_maxCity,i_minTheater,i_minTheater,i_maxTheater,i_maxTheater,i_minEmployee,i_minEmployee,i_maxEmployee,i_maxEmployee))
+            info = cursor.fetchall()
+            self.connection.commit()
+        return info
+
 
 
     def CreateTheater(self, username, filters):
@@ -57,17 +108,38 @@ class AdminService(object):
         i_capacity = filters.get("i_capacity")
         i_manUsername = filters.get("i_manUsername")
 
-    with self.connection.cursor() as cursor:
+        with self.connection.cursor() as cursor:
 
-        query2 = "insert into Theater (thName, comName, capacity, thStreet, thCity, thState, thZipcode, manUsername) \
-        values ((%s), (%s), (%s), (%s), (%s), (%s), (%s), (%s))"
+            query2 = "insert into Theater (thName, comName, capacity, thStreet, thCity, thState, thZipcode, manUsername) \
+            values ((%s), (%s), (%s), (%s), (%s), (%s), (%s), (%s))"
 
-        cursor.execute(query2, (i_thName, i_comName, i_capacity, i_thStreet, i_thCity, i_thState, i_thZipcode, i_manUsername))
-        data2 = cursor.fetchall()
-        self.connection.commit()
-
+            cursor.execute(query2, (i_thName, i_comName, i_capacity, i_thStreet, i_thCity, i_thState, i_thZipcode, i_manUsername))
+            data2 = cursor.fetchall()
+            self.connection.commit()
 
     def CompanyDetail(self, username, filters):
+        i_comName = filters.get("i_comName")
+
+        with self.connection.cursor() as cursor:
+            #returns all employees and the company name
+            query1 = "select user.firstname, user.lastname, manager.comName from user join manager on user.username=manager.username \
+            where user.username in (select manager.username from manager) and manager.comName in (select company.comName from company where company.comName = (%s))"
+
+            cursor.execute(query1, (i_comName))
+            employees = cursor.fetchall()
+            self.connection.commit()
+            #returns theater details for the company
+            query2 = "select theater.thName, user.firstname, user.lastname, theater.thCity, theater.thState, theater.capacity \
+            from theater join user on user.username=theater.manUsername where theater.comName=(%s)"
+
+
+            cursor.execute(query2, (i_comName))
+            theaters = cursor.fetchall()
+            self.connection.commit()
+
+            return employees
+            return theaters
+
 
 
 
@@ -78,17 +150,14 @@ class AdminService(object):
         i_movDuration = filters.get("i_movDuration")
         i_movReleaseDate = filters.get("i_movReleaseDate")
 
-    with self.connection.cursor() as cursor:
+        with self.connection.cursor() as cursor:
 
-        query3 = "insert into Movie (movName, movReleaseDate, duration) \
-        values ((%s), (%s), (%s))"
+            query3 = "insert into Movie (movName, movReleaseDate, duration) \
+            values ((%s), (%s), (%s))"
 
-        cursor.execute(query3, (i_movName, i_movReleaseDate, i_duration))
-        data3 = cursor.fetchall()
-        self.connection.commit()
-
-
-
+            cursor.execute(query3, (i_movName, i_movReleaseDate, i_duration))
+            data3 = cursor.fetchall()
+            self.connection.commit()
 
 
 
