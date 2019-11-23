@@ -1,6 +1,12 @@
 import React from 'react'
 
+
+
 const ManagerCustomerMenu = () => {
+  function logout(){
+    localStorage.setItem("accessToken", false)
+    window.location.replace("/");
+  };
 
   return (
     <div className="card">
@@ -17,11 +23,11 @@ const ManagerCustomerMenu = () => {
           <a className="btn btn-primary" href="/auth/explore-theater">Explore Theater</a>
         </div>
         <div className="row">
-          <a className="btn btn-primary" href="">View History</a>
+          <a className="btn btn-primary" href="/auth/view-history">View History</a>
           <a className="btn btn-primary" href="/auth/visit-history">Visit History</a>
         </div>
         <div className="row">
-          <a className="btn btn-primary" href="">Back</a>
+          <div className="btn btn-primary" onClick={logout}>Back</div>
         </div>
       </div>
     </div>

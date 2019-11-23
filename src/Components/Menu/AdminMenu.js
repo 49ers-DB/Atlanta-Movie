@@ -1,6 +1,10 @@
 import React from 'react'
 
 const AdminMenu = () => {
+  function logout(){
+    localStorage.setItem("accessToken", false)
+    window.location.replace("/");
+  };
 
   return (
     <div className="card">
@@ -18,7 +22,7 @@ const AdminMenu = () => {
         </div>
         <div className="row">
           <a className="btn btn-primary" href="">Create Movie</a>
-          <a className="btn btn-primary" href="">Back</a>
+          <div className="btn btn-primary" onClick={logout}>Back</div>
         </div>
       </div>
     </div>

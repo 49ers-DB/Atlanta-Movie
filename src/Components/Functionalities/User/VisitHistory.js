@@ -8,7 +8,7 @@ import "../Functionality.css"
 import "react-datepicker/dist/react-datepicker.css";
 
 
-export default class ExploreTheater extends Component {
+export default class VisitHistory extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -161,7 +161,7 @@ export default class ExploreTheater extends Component {
                       <td>{row[0]}</td>
                       <td>{row[1]}</td>
                       <td>{row[2]}</td>
-                      <td>{row[2]}</td>
+                      <td>{row[3]}</td>
                     </tr>
                   );
                 })}
@@ -174,7 +174,7 @@ export default class ExploreTheater extends Component {
           
           <div className="row">
             <div className="col-12">
-              <a className="btn btn-primary" href="/">Back</a>
+              <a className="btn btn-primary" href="/menu">Back</a>
             </div>
           </div>
           
