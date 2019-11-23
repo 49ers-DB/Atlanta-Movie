@@ -10,8 +10,12 @@ class DropDownService(object):
         with self.connection.cursor() as cursor:
     #Manager-Only Registration, Manager-Customer Registration, Manage Company, Create Theater
     # Explore Movie, Explore Theater, Visit History
-
-            query = "select comName from Company"
+            
+            sql = """SELECT comName FROM Company"""
+            cursor.execute(sql)
+            data=cursor.fetchall()
+            self.connection.commit()
+            return data
 
 
     def ManagerDropDown(self):

@@ -6,6 +6,8 @@ from app.util.custom_jwt import create_access_token
 from app.services.LoginService import LoginService
 from app.services.ManagerService import ManagerService
 from app.services.RegisterService import RegisterService
+from app.services.DropDownService import DropDownService
+
 
 
 app = Flask(__name__)
@@ -24,6 +26,9 @@ connection = pymysql.connect(host='localhost',
 login_service = LoginService(connection)
 register_service = RegisterService(connection)
 manager_service = ManagerService(connection)
+drop_down_service = DropDownService(connection)
+
+
 
 
 #------------LOGIN------------
@@ -113,7 +118,7 @@ def managerCustomerRegister():
 #get the list of companies
 @app.route('/getCompanies', methods=['GET'])
 def getCompanies():
-  response = manager_service.getCompanies()
+  response = drop_down_service.CompanyDropDown()
   return json_response(response)
   
 
