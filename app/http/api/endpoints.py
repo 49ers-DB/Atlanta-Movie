@@ -162,7 +162,6 @@ def example_endpoint(param_1):
   user = g.user
   response = json_response({'userType': 'user'}, 200)
   userType = login_service.findUserType(user['username'])
-  print(userType)
   response = json_response({'userType': userType}, 200)
 
 
