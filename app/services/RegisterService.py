@@ -84,33 +84,34 @@ class RegisterService(object):
 
     connection = get_conn()
     with connection.cursor() as cursor:
-      if self.registerUser(manager):
-        address = (manager['address'], manager['city'], manager['selectedState']['value'], manager['zipCode'])
-        print(address)
-        sql = "SELECT `username` FROM `Manager` WHERE manStreet=(%s) AND manCity=(%s) AND manState=(%s) AND manZipCode=(%s)"
-        cursor.execute(sql, address)
-        userDatas = cursor.fetchall()
+
+      address = (manager['address'], manager['city'], manager['selectedState']['value'], manager['zipCode'])
+      
+      sql = "SELECT `username` FROM `Manager` WHERE manStreet=(%s) AND manCity=(%s) AND manState=(%s) AND manZipCode=(%s)"
+      cursor.execute(sql, address)
+      userDatas = cursor.fetchall()
+      connection.commit()
+
+      if len(userDatas) < 1 and self.registerUser(manager):
+
+        #Inserting the values to Employee
+        sql = """INSERT INTO Employee (username)
+                  VALUES (%s)"""
+        dataTuple = (manager['username'])
+        cursor.execute(sql, dataTuple)
         connection.commit()
-        print(userDatas)
-        if len(userDatas) < 1:
-          #Inserting the values to Employee
-          sql = """INSERT INTO Employee (username)
-                    VALUES (%s)"""
-          dataTuple = (manager['username'])
-          cursor.execute(sql, dataTuple)
-          connection.commit()
 
-          #Inserting the values to Manager
-          sql = """INSERT INTO Manager (username, manStreet, manCity, manState, manZipCode, comName)
-                    VALUES (%s, %s, %s, %s, %s, %s)"""
-          dataTuple = (manager['username'], manager['address'], manager['city'], manager['selectedState']['value'], manager['zipCode'], manager['selectedCompany']['value'])
-          cursor.execute(sql, dataTuple)
-          connection.commit()
+        #Inserting the values to Manager
+        sql = """INSERT INTO Manager (username, manStreet, manCity, manState, manZipCode, comName)
+                  VALUES (%s, %s, %s, %s, %s, %s)"""
+        dataTuple = (manager['username'], manager['address'], manager['city'], manager['selectedState']['value'], manager['zipCode'], manager['selectedCompany']['value'])
+        cursor.execute(sql, dataTuple)
+        connection.commit()
 
-          response = ({'ok': True, 'data': manager}, 200)
-        else:
-          print("here")
-          response = ({'Address already taken': False, 'data': manager}, 402)
+        response = ({'ok': True, 'data': manager}, 200)
+      else:
+
+        response = ({'Address already taken': False, 'data': manager}, 402)
     connection.close()
     return response
 
@@ -120,34 +121,33 @@ class RegisterService(object):
     connection = get_conn()
 
     with connection.cursor() as cursor:
-      if self.registerCustomer(managerCustomer):
-        address = (managerCustomer['address'], managerCustomer['city'], managerCustomer['selectedState']['value'], managerCustomer['zipCode'])
-        print(address)
-        sql = "SELECT `username` FROM `Manager` WHERE manStreet=(%s) AND manCity=(%s) AND manState=(%s) AND manZipCode=(%s)"
-        cursor.execute(sql, address)
-        userDatas = cursor.fetchall()
+
+      address = (managerCustomer['address'], managerCustomer['city'], managerCustomer['selectedState']['value'], managerCustomer['zipCode'])
+      sql = "SELECT `username` FROM `Manager` WHERE manStreet=(%s) AND manCity=(%s) AND manState=(%s) AND manZipCode=(%s)"
+      cursor.execute(sql, address)
+      userDatas = cursor.fetchall()
+      connection.commit()
+
+      if len(userDatas) < 1 and self.registerCustomer(managerCustomer)[0]['ok']:
+
+        #Inserting the values to Employee
+        sql = """INSERT INTO Employee (username)
+                  VALUES (%s)"""
+        dataTuple = (managerCustomer['username'])
+        cursor.execute(sql, dataTuple)
         connection.commit()
-        print(userDatas)
-        if len(userDatas) < 1:
-          #Inserting the values to Employee
-          sql = """INSERT INTO Employee (username)
-                    VALUES (%s)"""
-          dataTuple = (managerCustomer['username'])
-          cursor.execute(sql, dataTuple)
-          connection.commit()
 
-          #Inserting the values to Manager
-          sql = """INSERT INTO Manager (username, manStreet, manCity, manState, manZipCode, comName)
-                    VALUES (%s, %s, %s, %s, %s, %s)"""
-          dataTuple = (managerCustomer['username'], managerCustomer['address'], managerCustomer['city'], managerCustomer['selectedState']['value'], managerCustomer['zipCode'], managerCustomer['selectedCompany']['value'])
-          cursor.execute(sql, dataTuple)
-          connection.commit()
+        #Inserting the values to Manager
+        sql = """INSERT INTO Manager (username, manStreet, manCity, manState, manZipCode, comName)
+                  VALUES (%s, %s, %s, %s, %s, %s)"""
+        dataTuple = (managerCustomer['username'], managerCustomer['address'], managerCustomer['city'], managerCustomer['selectedState']['value'], managerCustomer['zipCode'], managerCustomer['selectedCompany']['value'])
+        cursor.execute(sql, dataTuple)
+        connection.commit()
 
-          response = ({'ok': True, 'data': managerCustomer}, 200)
-        else:
-          print("here")
-          response = ({'Address already taken': False, 'data': managerCustomer}, 403)
-
+        response = ({'ok': True, 'data': managerCustomer}, 200)
+      else:
+        print("here")
+        response = ({'Address already taken': False, 'data': managerCustomer}, 403)
         
       connection.close()
       
