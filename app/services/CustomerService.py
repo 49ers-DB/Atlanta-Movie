@@ -1,5 +1,4 @@
-import app.services.DBService
-
+from app.services.DBService import get_conn
 
 class CustomerService(object):
 
@@ -14,7 +13,7 @@ class CustomerService(object):
         i_minMovPlayDate = filters.get("i_minMovPlayDate")
         i_maxMovPlayDate = filters.get("i_maxMovPlayDate")
 
-        connection = DBService.get_conn()
+        connection = get_conn()
 
         with connection.cursor() as cursor:
 
@@ -42,7 +41,7 @@ class CustomerService(object):
         i_thName = filters.get("i_thName")
         i_comName = filters.get("i_comName")
 
-        connection = DBService.get_conn()
+        connection = get_conn()
 
         with connection.cursor() as cursor:
 
@@ -63,7 +62,7 @@ class CustomerService(object):
     def ViewHistory(self, username, filters):
 
         i_cusUsername = username
-        connection = DBService.get_conn()
+        connection = get_conn()
 
         with connection.cursor() as cursor:
 
@@ -75,7 +74,7 @@ class CustomerService(object):
             data3 = cursor.fetchall()
             connection.commit()
 
-        connection = DBService.get_conn()
+        connection.close()
 
 
 

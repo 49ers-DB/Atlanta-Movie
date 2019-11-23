@@ -1,11 +1,12 @@
-import app.services.DBService
+from app.services.DBService import get_conn
+
 
 class AdminService(object):
 
     def ApproveUser(self, username, filters):
 
         i_username = username
-        connection = DBService.get_conn()
+        connection = get_conn()
 
         with connection.cursor() as cursor:
             query1 = "update User set Status = \"Approved\" where username = (%s)"
@@ -17,7 +18,7 @@ class AdminService(object):
     def DeclineUser(self, username, filters):
 
         i_username = username
-        connection = DBService.get_conn()
+        connection = get_conn()
 
         with connection.cursor() as cursor:
             query4 = "update User set Status = \"Declined\" where username = (%s)"
@@ -33,7 +34,7 @@ class AdminService(object):
         i_status = filters.get("i_status")
         i_sortBy = filters.get("i_sortBy")
         i_sortDirection = filters.get("i_sortDirection")
-        connection = DBService.get_conn()
+        connection = get_conn()
 
         with connection.cursor() as cursor:
             query = "select * from \
@@ -72,7 +73,7 @@ class AdminService(object):
         i_sortBy
         i_sortDirection
 
-        connection = DBService.get_conn()
+        connection = get_conn()
         with connection.cursor() as cursor:
             query = "select manager.comName as \"Company\", count(distinct theater.thCity) as \"City Count\", \
             count(distinct theater.thName) \"Theater Count\", count(distinct Manager.username) as \"Employee Count\" \
@@ -116,7 +117,7 @@ class AdminService(object):
         i_capacity = filters.get("i_capacity")
         i_manUsername = filters.get("i_manUsername")
 
-        connection = DBService.get_conn()
+        connection = get_conn()
         with connection.cursor() as cursor:
 
             query2 = "insert into Theater (thName, comName, capacity, thStreet, thCity, thState, thZipcode, manUsername) \
@@ -139,7 +140,7 @@ class AdminService(object):
         i_movDuration = filters.get("i_movDuration")
         i_movReleaseDate = filters.get("i_movReleaseDate")
 
-        connection = DBService.get_conn()
+        connection = get_conn()
         with connection.cursor() as cursor:
 
             query3 = "insert into Movie (movName, movReleaseDate, duration) \

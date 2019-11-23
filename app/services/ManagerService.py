@@ -1,4 +1,4 @@
-import app.services.DBService
+from app.services.DBService import get_conn
 
 class ManagerService(object):
 
@@ -39,7 +39,7 @@ class ManagerService(object):
         #         i_Movie, 
         #         i_Movie)
 
-        connection = DBService.get_conn()
+        connection = get_conn()
 
         with connection.cursor() as cursor:
 
@@ -92,7 +92,7 @@ def ScheduleMovie(self, username, filters):
         i_movName = filters.get("i_movName")
         i_movReleaseDate = filters.get("i_movReleaseDate")
         i_movPlayDate = filters.get("i_movPlayDate")
-        connection = DBService.get_conn()
+        connection = get_conn()
 
         with connection.cursor() as cursor:
 

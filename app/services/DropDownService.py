@@ -1,11 +1,11 @@
-import app.services.DBService
+from app.services.DBService import get_conn
 
 class DropDownService(object):
 
 
     def CompanyDropDown(self):
 
-        connection = DBService.get_conn()
+        connection = get_conn()
         with connection.cursor() as cursor:
     #Manager-Only Registration, Manager-Customer Registration, Manage Company, Create Theater
     # Explore Movie, Explore Theater, Visit History
@@ -20,7 +20,7 @@ class DropDownService(object):
 
     def ManagerDropDown(self):
 
-        connection = DBService.get_conn()
+        connection = get_conn()
 
         with connection.cursor() as cursor:
     #Create Theater
@@ -32,7 +32,7 @@ class DropDownService(object):
 
     def MovieDropDown(self):
 
-        connection = DBService.get_conn()
+        connection = get_conn()
 
         with connection.cursor() as cursor:
     #Schedule Movie, Explore Movie
@@ -44,7 +44,7 @@ class DropDownService(object):
 
     def TheaterDropDown(self, companyName):
 
-        connection = DBService.get_conn()
+        connection = get_conn()
 
         with connection.cursor() as cursor:
 

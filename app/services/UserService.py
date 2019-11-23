@@ -1,16 +1,18 @@
-import app.services.DBService
+from app.services.DBService import get_conn
+
+
+
 
 class UserService(object):
 
    
-
     def ExploreTheater(self, username, filters):
         i_thname=filters.get("i_thname")
         i_coname=filters.get("i_coname")
         i_city=filters.get("i_city")
         i_state=filters.get("i_state")
 
-        connection = DBService.get_conn()
+        connection = get_conn()
         with connection.cursor() as cursor:
             info = "select distinct thName as \"Name\", thStreet as \"Street\", thCity as \"City\", thState as \"State\", thZipcode as \"Zipcode\", comName as \"Company\" from \
             Theater where ((%s) is NULL or thName = (%s)) \
@@ -31,7 +33,7 @@ class UserService(object):
         i_visitdate=filters.get("i_visitdate")
         i_username = username
 
-        connection = DBService.get_conn()
+        connection = get_conn()
         with connection.cursor() as cursor:
             leng="select visitID from UserVisitTheater"
             cursor.execute(leng)
@@ -51,7 +53,7 @@ class UserService(object):
         i_maxVisitDate =filters.get("i_maxVisitDate")
         i_username = username
 
-        connection = DBService.get_conn()
+        connection = get_conn()
 
         with connection.cursor() as cursor:
 

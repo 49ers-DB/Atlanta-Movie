@@ -1,4 +1,5 @@
-import app.services.DBService
+from app.services.DBService import get_conn
+
 
 class RegisterService(object):
 
@@ -8,7 +9,7 @@ class RegisterService(object):
     lastname = user['lastname']
     password = user['password']
 
-    connection = DBService.get_conn()
+    connection = get_conn()
     with connection.cursor() as cursor:
       #Checking for duplicates
 
@@ -38,7 +39,7 @@ class RegisterService(object):
 
     response = ({'message': 'Credit Card taken'}, 402)
 
-    connection = DBService.get_conn()
+    connection = get_conn()
 
     with connection.cursor() as cursor:
       credit_card_list = customer['creditCardsList']
@@ -81,7 +82,7 @@ class RegisterService(object):
 
   def registerManager(self, manager) -> bool:
 
-    connection = DBService.get_conn()
+    connection = get_conn()
     with connection.cursor() as cursor:
       if self.registerUser(manager):
         address = (manager['address'], manager['city'], manager['selectedState']['value'], manager['zipCode'])
@@ -116,7 +117,7 @@ class RegisterService(object):
 
   def registerManagerCustomer(self, managerCustomer) -> bool:
     
-    connection = DBService.get_conn()
+    connection = get_conn()
 
     with connection.cursor() as cursor:
       if self.registerCustomer(managerCustomer):
