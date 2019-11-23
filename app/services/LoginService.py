@@ -1,12 +1,12 @@
 import pymysql.cursors
-import DBService
+from app.services.DBService import get_conn
 
 class LoginService(object):
 
 
   def login(self, user) -> bool:
 
-    connection = DBService.get_conn()
+    connection = get_conn()
 
     with connection.cursor() as cursor:
       # Read a single record
@@ -14,13 +14,14 @@ class LoginService(object):
       cursor.execute(sql, (user['username'], user['password']))
       userDatas = cursor.fetchall()
       connection.commit()
+      connection.close()
     
-    connection.close()
-
       if len(userDatas) > 0:
         return True
       
       return False
+
+      
 
   def findUserType(self, username):
     manager = False

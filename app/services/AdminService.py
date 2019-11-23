@@ -1,4 +1,4 @@
-import DBService
+import app.services.DBService
 
 class AdminService(object):
 
