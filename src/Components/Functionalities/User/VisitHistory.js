@@ -37,7 +37,8 @@ export default class VisitHistory extends Component {
       
     }
     this.handleFilter = this.handleFilter.bind(this)
-    this.handleChange = this.handleChange.bind(this)
+    this.handleChange1 = this.handleChange1.bind(this)
+    this.handleChange2 = this.handleChange2.bind(this)
     this.setSelectedCompany = this.setSelectedCompany.bind(this)
   }
 
@@ -59,22 +60,35 @@ export default class VisitHistory extends Component {
   }
 
   handleFilter(event) {
-    event.preventDefault()
-    var accessToken = localStorage.getItem("accessToken")
+      if(this.state.visitDate1 > this.state.visitDate2) {
+          window.alert("Invalid Date Rage")
+      } else {
+        event.preventDefault()
+        var accessToken = localStorage.getItem("accessToken")
+        
+        if (accessToken) {
+          var apiClient = new APIClient(accessToken)
     
-    if (accessToken) {
-      var apiClient = new APIClient(accessToken)
+        //   apiClient.perform('post', '/visitHistory', this.state ).then( resp => {
+    
+        //   });
+          
+        }
 
-    //   apiClient.perform('post', '/visitHistory', this.state ).then( resp => {
-
-    //   });
-      
-    }
+      }
+    
   }
 
 
-  handleChange = event => {
-    this.setState({[event.target.name]: event.target.value});
+//   handleChange = event => {
+//     this.setState({[event.target.name]: event.target.value});
+//   }
+
+  handleChange1(date) {
+    this.setState({visitDate1: date})
+  }
+  handleChange2(date) {
+    this.setState({visitDate2: date})
   }
 
 
@@ -118,7 +132,7 @@ export default class VisitHistory extends Component {
                             <DatePicker className="form-control"
                             value={this.state.visitDate1}
                             selected={this.state.visitDate1}
-                            onChange={this.handleChange}
+                            onChange={this.handleChange1}
                             />
                         </div>
                     </div>
@@ -132,7 +146,7 @@ export default class VisitHistory extends Component {
                             <DatePicker className="form-control"
                             value={this.state.visitDate2}
                             selected={this.state.visitDate2}
-                            onChange={this.handleChange}
+                            onChange={this.handleChange2}
                             />
                         </div>
                     </div>
