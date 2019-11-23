@@ -1,9 +1,15 @@
 import pytest
-from app.services.ManagerService import ManagerService
 import functools
 import datetime
 
 import pymysql
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+
+from app.services.ManagerService import ManagerService
+
 
 class TestManagerService(object):
 
