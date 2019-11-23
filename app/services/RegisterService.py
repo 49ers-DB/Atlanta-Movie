@@ -23,7 +23,7 @@ class RegisterService(object):
       if len(userDatas) < 1:
         #Inserting the values to User
         sql = """INSERT INTO User (username, status, firstname, lastname, password)
-                  VALUES (%s,%s,%s,%s,%s)"""
+                  VALUES (%s,%s,%s,%s,MD5(%s))"""
         dataTuple = (username, 'Pending', firstname, lastname, password)
         cursor.execute(sql, dataTuple)
         connection.commit()

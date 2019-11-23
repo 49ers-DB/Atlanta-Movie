@@ -10,7 +10,7 @@ class LoginService(object):
 
     with connection.cursor() as cursor:
       # Read a single record
-      sql = "SELECT `username`, `password` FROM `User` where username=(%s) and password=(%s)"
+      sql = "SELECT `username`, `password` FROM `User` where username=(%s) and password=MD5(%s)"
       cursor.execute(sql, (user['username'], user['password']))
       userDatas = cursor.fetchall()
       connection.commit()
