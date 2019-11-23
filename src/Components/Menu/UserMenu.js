@@ -3,6 +3,10 @@ import "./Menu.css"
 
 
 export class UserMenu extends Component {
+  logout(){
+    localStorage.setItem("accessToken", false)
+    window.location.replace("/");
+  };
 
 
   render () {
@@ -17,7 +21,7 @@ export class UserMenu extends Component {
                 <a className="btn btn-primary" href="/auth/visit-history">Visit History</a>
           </div>
           <div className="row">
-                <a className="btn btn-primary" href="/">Back</a>
+            <div className="btn btn-primary" onClick={this.logout()}>Back</div>
           </div>
         </div>
       </div>

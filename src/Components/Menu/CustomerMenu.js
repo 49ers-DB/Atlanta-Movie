@@ -23,7 +23,7 @@ export class CustomerMenu extends Component {
             <a className="btn btn-primary" href="/auth/visit-history">Visit History</a>
           </div>
           <div className="row">
-          <div className="btn btn-primary" onClick={this.logout()}>Back</div>
+            <div className="btn btn-primary" onClick={this.logout()}>Back</div>
           </div>
         </div>
       </div>
