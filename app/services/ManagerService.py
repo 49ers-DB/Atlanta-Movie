@@ -73,21 +73,8 @@ class ManagerService(object):
             connection.close()
             return data
 
-    def getCompanies(self):
 
-        connection = get_conn()
-
-        with connection.cursor() as cursor:
-            sql = """SELECT comName FROM Company"""
-            cursor.execute(sql)
-            data=cursor.fetchall()
-            connection.commit()
-            
-            connection.close()
-            return data
-
-
-def ScheduleMovie(self, username, filters):
+    def ScheduleMovie(self, username, filters):
 
         i_manUsername = username
         i_movName = filters.get("i_movName")
@@ -119,7 +106,7 @@ def ScheduleMovie(self, username, filters):
 
             connection.commit()
 
-            connection.close()
+        connection.close()
 
 
 
