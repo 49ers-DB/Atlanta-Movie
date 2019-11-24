@@ -2,6 +2,7 @@ import pytest
 
 import functools
 import datetime
+import dateutil.parser
 
 import pymysql
 import sys
@@ -158,8 +159,10 @@ class TestUserService(object):
       filters = {
         'i_thname':'Cinema Star',
         'i_coname':'4400 Theater Company',
-        'i_visitdate': datetime.date(2019,11,21)
+        'i_visitdate': '2019-11-24T01:38:50.493Z'
       }
+
+      date = dateutil.parser.parse(filters['i_visitdate']).date()
 
       user_name = 'georgep'
 
@@ -184,7 +187,7 @@ class TestUserService(object):
           and thName=(%s)
           and comName=(%s)
           and visitDate=(%s)"""
-        cursor.execute(info, (new_id, user_name, filters['i_thname'], filters['i_coname'], filters['i_visitdate']))
+        cursor.execute(info, (new_id, user_name, filters['i_thname'], filters['i_coname'], date))
         data=cursor.fetchall()
         connection.commit()
 

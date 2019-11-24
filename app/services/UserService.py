@@ -1,3 +1,5 @@
+import dateutil.parser
+
 from app.services.DBService import get_conn
 
 
@@ -52,6 +54,8 @@ class UserService(object):
         i_coname=filters.get("i_coname")
         i_visitdate=filters.get("i_visitdate")
         i_username = username
+
+        i_visitdate = dateutil.parser.parse(i_visitdate).date()
 
         connection = get_conn()
         with connection.cursor() as cursor:
