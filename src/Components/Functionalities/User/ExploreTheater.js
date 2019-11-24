@@ -221,7 +221,7 @@ export default class ExploreTheater extends Component {
   render () {
     return (
       <div className="main">
-        <div className="card registrationCard">
+        <div className="card exploreTheaterCard">
           <div className="card-header">
             <h2>Explore Theater</h2>
           </div>
