@@ -22,6 +22,7 @@ export const userRegister = user => {
         // localStorage.setItem("token", data.jwt)
         // dispatch(loginUser(data.user))
         window.alert("Registered")
+        window.location.replace("/")
         return data;
       }
     })

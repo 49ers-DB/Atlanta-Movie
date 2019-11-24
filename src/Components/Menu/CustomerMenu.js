@@ -1,6 +1,10 @@
 import React, {Component} from "react"
 
 export class CustomerMenu extends Component {
+  logout(){
+    localStorage.setItem("accessToken", false)
+    window.location.replace("/");
+  };
 
 
   render () {
@@ -11,15 +15,15 @@ export class CustomerMenu extends Component {
         </div>
         <div className="card-body">
           <div className="row">
-            <a className="btn btn-primary" href="">Explore Movie</a>
-            <a className="btn btn-primary" href="">View History</a>
+            <a className="btn btn-primary" href="/auth/explore-movie">Explore Movie</a>
+            <a className="btn btn-primary" href="/auth/view-history">View History</a>
           </div>
           <div className="row">
             <a className="btn btn-primary" href="/auth/explore-theater">Explore Theater</a>
-            <a className="btn btn-primary" href="">Visit Movie</a>
+            <a className="btn btn-primary" href="/auth/visit-history">Visit History</a>
           </div>
           <div className="row">
-            <a className="btn btn-primary" href="">Back</a>
+            <div className="btn btn-primary" onClick={this.logout()}>Back</div>
           </div>
         </div>
       </div>

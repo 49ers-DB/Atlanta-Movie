@@ -43,14 +43,18 @@ class APIClient {
 
   //---------Data_Getters-----------
 
-  getTheaters() {
-    return this.perform('get', '/theaters');
+  getTheaters(companyName) {
+    return this.perform('get', `/theaters/${companyName}`);
   }
 
   getCompanies() {
     return this.perform('get', '/getCompanies');
   }
 
+  //-------Explore Theater-------
+  exploreTheater(filters) {
+    return this.perform('post', '/exploreTheater', filters);
+  }
   
 
   createTheater(theater) {

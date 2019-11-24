@@ -79,7 +79,7 @@ class Login extends React.Component {
   }
  
   render() {
-    if (this.state.authenticated) {
+    if (localStorage.getItem("accessToken") != 'false') {
       return <Redirect to='/menu' />
     } else {
       return (

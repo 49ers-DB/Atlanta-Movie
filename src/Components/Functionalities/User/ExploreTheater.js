@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import DatePicker from "react-datepicker";
 import Select from "react-select";
-import AsyncSelect from 'react-select/async';
 import APIClient from "../../../apiClient"
 
 import "../Functionality.css"
 
 import "react-datepicker/dist/react-datepicker.css";
+import { isThisISOWeek } from 'date-fns';
 
 const stateOptions = [
   {value: "AL", label: "AL"},
@@ -61,6 +61,20 @@ const stateOptions = [
   {value: "WY", label: "WY"},
 ]
 
+var theaters = []
+
+
+function formatTheaters(theaters) {
+  var formatted = []
+  if (theaters) {
+    theaters.map( theater => {
+      var addressStr = `${theater['thStreet']}, ${theater['thCity']}, ${theater['thState']}, ${theater['thZipcode']}`
+      formatted.push([theater['thName'], addressStr, theater['comName']])
+    });
+  }
+  return formatted;
+}
+
 export default class ExploreTheater extends Component {
   constructor(props) {
     super(props)
@@ -73,7 +87,8 @@ export default class ExploreTheater extends Component {
       selectedTheater: null,
       selectedCompany: null,
       selectedState: null,
-      visitDate: new Date()
+      visitDate: new Date(),
+      theaterIndex: null,
     }
     
     var accessToken = localStorage.getItem("accessToken")
@@ -81,25 +96,11 @@ export default class ExploreTheater extends Component {
     if (accessToken) {
       var apiClient = new APIClient(accessToken)
       this.state.apiClient = apiClient
-      console.log(apiClient)
-
-      apiClient.getTheaters().then(resp => {
-        var theaters = resp.get('')
-      });
-      // apiClient.getCompanies().then(resp => {
-      //   var companies = []
-      //   resp.map( company => {
-      //     companies.push({value: company['comName'], label: company['comName']})
-      //   });
-      //   console.log(resp)
-      //   this.state.companies = companies
-      // });
-
-      apiClient.perform('get', '/exploreTheater', this.state).then(resp => {
-        var rowData = resp
-        this.state.rowData = rowData
-      });
       
+      apiClient.exploreTheater(this.state).then(resp => {
+        this.setState({rowData: formatTheaters(resp['theaters'])})
+        console.log(resp['theaters'])
+      });
     }
     this.handleLogVisit = this.handleLogVisit.bind(this)
     this.handleFilter = this.handleFilter.bind(this)
@@ -108,27 +109,51 @@ export default class ExploreTheater extends Component {
     this.setSelectedCompany = this.setSelectedCompany.bind(this)
     this.setSelectedState = this.setSelectedState.bind(this)
     this.setCity = this.setCity.bind(this)
+    this.checkedTheater = this.checkedTheater.bind(this);
+    // this.componentDidMount = this.componentDidMount.bind(this)
+    this.getTheatersForCompany = this.getTheatersForCompany.bind(this)
   }
 
-  promiseTheaterOptions = inputValue =>
-  new Promise();
+  // componentDidMount() {
+  //   this.getTheatersForCompany("")
+  // }
 
-
-  promiseCompanyOptions = inputValue =>
-  new Promise(resolve => {
+  getTheatersForCompany(companyName) {
     var accessToken = localStorage.getItem("accessToken")
+    theaters = []
+    this.setState({selectedTheater: null})
+    
     if (accessToken) {
       var apiClient = new APIClient(accessToken)
-      return apiClient.getCompanies().then(resp => {
-        var companies = []
-        resp.map( company => {
-          companies.push({value: company['comName'], label: company['comName']})
+      apiClient.getTheaters(companyName).then( resp => {
+        
+        var someTheats = resp['theaters']
+        someTheats.map( theater => {
+          theaters.push({
+            value: theater['thName'],
+            label: theater['thName']});
         });
-        console.log(resp)
-        resolve(companies)
       });
     }
-  });
+  }
+  
+
+  getCompanies() {
+    var companies = []
+    var accessToken = localStorage.getItem("accessToken")
+    
+    if (accessToken) {
+      var apiClient = new APIClient(accessToken)
+      apiClient.getCompanies().then( resp => {
+        for(var i = 0; i < resp.length; i++) {
+          var companyName = resp[i].comName;
+          companies[i] = {value: companyName, label: companyName}
+        }
+      });
+    
+    }
+    return companies;
+  }
 
   handleFilter(event) {
     event.preventDefault()
@@ -137,14 +162,37 @@ export default class ExploreTheater extends Component {
     if (accessToken) {
       var apiClient = new APIClient(accessToken)
 
-      apiClient.perform('get', '/exploreTheater', this.state).then( resp => {
+      var state = this.state.selectedState
+      if (state) {state = state['value']}
+      var company = this.state.selectedCompany
+      if (company) {company = company['value']}
+      var theater = this.state.selectedTheater
+      if (theater) {theater = theater['value']}
 
+
+      var requestBody = {
+        city: this.state.city,
+        selectedState: state,
+        selectedCompany: company,
+        selectedTheater: theater
+      }
+
+      apiClient.perform('post', '/exploreTheater', requestBody).then( resp => {
+        this.setState({rowData: formatTheaters(resp['theaters'])})
       });
       
     }
   }
 
   handleLogVisit(event) {
+    if(this.state.theaterIndex === null) {
+      window.alert("Please choose a theater")
+      return;
+    }
+    var theater = this.state.rowData[this.state.theaterIndex];
+    var data = {i_thname: theater[0],
+            i_coname: theater[2],
+            i_visitdate: this.state.visitDate}
     var accessToken = localStorage.getItem("accessToken")
     
     if (accessToken) {
@@ -152,16 +200,18 @@ export default class ExploreTheater extends Component {
       this.state.apiClient = apiClient
       console.log(apiClient)
 
-      apiClient.perform('post', '/logVisit', this.state).then( resp => {
+      apiClient.perform('post', '/logVisit', data).then( resp => {
 
       });
-      
       
     }
   }
 
+  checkedTheater(index) {
+    this.setState({theaterIndex: index})
+  }
+
   handleChange(date) {
-    console.log(date)
     this.setState({visitDate: date})
   }
 
@@ -171,6 +221,8 @@ export default class ExploreTheater extends Component {
 
   setSelectedCompany = (selectedCompany) =>  {
     this.setState({selectedCompany})
+    var company = selectedCompany['value']
+    this.getTheatersForCompany(company)
   }
 
   setSelectedState = (selectedState) => {
@@ -184,7 +236,7 @@ export default class ExploreTheater extends Component {
   render () {
     return (
       <div className="main">
-        <div className="card registrationCard">
+        <div className="card exploreTheaterCard">
           <div className="card-header">
             <h2>Explore Theater</h2>
           </div>
@@ -193,10 +245,10 @@ export default class ExploreTheater extends Component {
             <div className="row">
               <div className="form-group form-inline functionalities-form-row col">
                 <label htmlFor="theaterName">Theater Name</label>
-                <AsyncSelect className="functionalities-select"
+                <Select className="functionalities-select"
                   value={this.state.selectedTheater}
                   onChange={this.setSelectedTheater}
-                  options={this.state.theaters}
+                  options={theaters}
                   placeholder="Select"
                 />
               </div>
@@ -205,10 +257,8 @@ export default class ExploreTheater extends Component {
                 <Select className="functionalities-select"
                   value={this.state.selectedCompany}
                   onChange={this.setSelectedCompany}
-                  loadOptions={this.promiseCompanyOptions}
+                  options={this.getCompanies()}
                   cacheOptions 
-                  defaultOptions
-                  placeholder="Select"
                 />
               </div>  
             </div>
@@ -235,6 +285,7 @@ export default class ExploreTheater extends Component {
           <table className="table">
             <thead>
               <tr>
+                <th scope="col">Selected</th>
                 <th scope="col">Theater</th>
                 <th scope="col">Address</th>
                 <th scope="col">Company</th>
@@ -243,12 +294,17 @@ export default class ExploreTheater extends Component {
             <tbody>
               
                 {this.state.rowData.map( (row) => {
+                  var index = this.state.rowData.indexOf(row)
                   return (
-                    <tr key={this.state.rowData.indexOf(row)}>
+                    <tr key={index}>
+                      <td>
+                        <input type="radio" name="optradio" id={index} onClick={ () => this.checkedTheater(index) }/>
+                      </td>
                       <td>{row[0]}</td>
                       <td>{row[1]}</td>
                       <td>{row[2]}</td>
                     </tr>
+
                     
                   );
                 })}
@@ -258,7 +314,7 @@ export default class ExploreTheater extends Component {
           </div>
           <div className="row">
             <div className="col-3">
-              <a className="btn btn-primary" href="/">Back</a>
+              <a className="btn btn-primary" href="/menu">Back</a>
             </div>
             <div className="col functionalities-form-row">
                 <label>Visit Date</label>

@@ -1,25 +1,50 @@
+import dateutil.parser
+
+from app.services.DBService import get_conn
+
+
+
 
 class UserService(object):
 
-def __init__(self, connection):
-        self.connection = connection
+   
+    def ExploreTheater(self, filters):
+        i_thname=filters.get("selectedTheater")
+        i_coname=filters.get("selectedCompany")
+        i_city=filters.get("city")
+        i_state=filters.get("selectedState")
 
-    def ExploreTheater(self, username, filters):
-        i_thname=filters.get("i_thname")
-        i_coname=filters.get("i_coname")
-        i_city=filters.get("i_city")
-        i_state=filters.get("i_state")
+        if i_city == "":
+            i_city = None
 
-        with self.connection.cursor() as cursor:
-            info = "select distinct thName as \"Name\", thStreet as \"Street\", thCity as \"City\", thState as \"State\", thZipcode as \"Zipcode\", comName as \"Company\" from \
-            Theater where ((%s) is NULL or thName = (%s)) \
-            and ((%s) is NULL or thCity = (%s)) \
-            and ((%s) is NULL or thCity = (%s)) \
-            and ((%s) is NULL or thCity = (%s))"
+        data_tuple = (
+            i_thname,
+            i_thname,
+            i_coname,
+            i_coname,
+            i_city,
+            i_city,
+            i_state,
+            i_state)
 
-            cursor.execute(info,(i_thname,i_coname,i_city,i_state))
+        print(data_tuple)
+
+        connection = get_conn()
+        with connection.cursor() as cursor:
+            info = """select distinct thName , thStreet , thCity , thState , thZipcode , comName  from 
+            Theater where ((%s) is NULL or thName = (%s)) 
+            and ((%s) is NULL or comName = (%s)) 
+            and ((%s) is NULL or thCity = (%s)) 
+            and ((%s) is NULL or thState = (%s))"""
+
+
+            cursor.execute(info, data_tuple)
             data=cursor.fetchall()
-            self.connection.commit()
+            connection.commit()
+
+        connection.close()
+        print(data)
+        return data
 
     def LogVisit(self, username, filters):
         i_thname=filters.get("i_thname")
@@ -27,16 +52,24 @@ def __init__(self, connection):
         i_visitdate=filters.get("i_visitdate")
         i_username = username
 
-        with self.connection.cursor() as cursor:
+        i_visitdate = dateutil.parser.parse(i_visitdate).date()
+
+        connection = get_conn()
+        with connection.cursor() as cursor:
             leng="select visitID from UserVisitTheater"
             cursor.execute(leng)
             length=cursor.fetchall()
-            self.connection.commit()
-            new_id= int(len(length.values()))+1
-            info="insert (visitID,username,thName,comName,visitDate) values ((%s),(%s),(%s),(%s),(%s))"
+            connection.commit()
+
+            new_id= len(length) + 1
+
+            info="""insert into UserVisitTheater (visitID, username, thName, comName, visitDate)  values ((%s),(%s),(%s),(%s),(%s))"""
             cursor.execute(info,(new_id,i_username,i_thname,i_coname,i_visitdate))
             data=cursor.fetchall()
-            self.connection.commit()
+            connection.commit()
+
+        connection.close()
+        return True
 
     def VisitHistory(self, username, filters):
         i_comName=filters.get("i_comName")
@@ -44,7 +77,9 @@ def __init__(self, connection):
         i_maxVisitDate =filters.get("i_maxVisitDate")
         i_username = username
 
-        with self.connection.cursor() as cursor:
+        connection = get_conn()
+
+        with connection.cursor() as cursor:
 
 
             info = "select Theater.thName, Theater.thStreet, Theater.thCity, Theater.thState, Theater.thZipcode, Theater.comName, UserVisitTheater.visitDate\
@@ -53,4 +88,7 @@ def __init__(self, connection):
 
             cursor.execute(info, (i_username, i_minVisitDate, i_minVisitDate, i_maxVisitDate, i_maxVisitDate, i_comName, i_comName))
             data = cursor.fetchall()
-            self.connection.commit()
+            connection.commit()
+
+        connection.close()
+        return data

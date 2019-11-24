@@ -6,24 +6,20 @@ from app.util.custom_jwt import create_access_token
 from app.services.LoginService import LoginService
 from app.services.ManagerService import ManagerService
 from app.services.RegisterService import RegisterService
+from app.services.DropDownService import DropDownService
+from app.services.UserService import UserService
 
 
 app = Flask(__name__)
 CORS(app)
 
 
-connection = pymysql.connect(host='localhost',
-                             user='root',
-                             password='1234',
-                             db='moviez',
-                             charset='utf8mb4',
-                             port=3306,
-                             cursorclass=pymysql.cursors.DictCursor)
-
 # create services
-login_service = LoginService(connection)
-register_service = RegisterService(connection)
-manager_service = ManagerService(connection)
+login_service = LoginService()
+register_service = RegisterService()
+manager_service = ManagerService()
+drop_down_service = DropDownService()
+user_service = UserService()
 
 
 #------------LOGIN------------
@@ -110,28 +106,38 @@ def managerCustomerRegister():
   return json_response({'message': 'Bad request parameters'}, 400)
 
 
-#get the list of companies
+#-------DropDownService---------
 @app.route('/getCompanies', methods=['GET'])
 def getCompanies():
-  response = manager_service.getCompanies()
+  response = drop_down_service.CompanyDropDown()
   return json_response(response)
+
+
+@app.route('/theaters/<string:comName>', methods=['GET'])
+@login_required
+def getTheaters(comName):
+
+  theaters = drop_down_service.TheaterDropDown(comName)
+  return json_response({'ok': True, 'theaters': theaters})
   
 
-@app.route('/exploreTheater', methods=['GET'])
+#----------UserService--------------------
+@app.route('/exploreTheater', methods=['POST'])
 @login_required
 def get_explore_theater():
   data = request.get_json()
-  user = g.user
-  print(data)
-  #manager_service.TheaterOverview(user, data['filters'])
+  
+  query_data = user_service.ExploreTheater(data)
+  return json_response({'ok': True, 'theaters': query_data})
 
 @app.route('/logVisit', methods=['POST'])
 @login_required
 def log_visit():
   data = request.get_json()
-  user = g.user
-  print(data)
-  #manager_service.TheaterOverview(user, data['filters'])
+  user = g.user['username']
+
+  user_service.LogVisit(user, data)
+  return json_response({'ok': True})
 
 
 

@@ -28,6 +28,7 @@ class App extends Component {
           
           <NavBar />
           <Route exact path="/" component={() => <Login/>} />
+          <Route exact path="/login" component={() => <Login/>} />
           <Route exact path="/Register-Option" component={RegisterOption}/>
           <Route exact path="/Customer-Registration" component={CustomerRegistration}/>
           <Route exact path="/Manager-Registration" component={ManagerRegistration}/>

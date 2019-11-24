@@ -1,9 +1,6 @@
-
+from app.services.DBService import get_conn
 
 class ManagerService(object):
-
-    def __init__(self, connection):
-        self.connection = connection
 
     def TheaterOverview(self, username, filters):
 
@@ -44,7 +41,9 @@ class ManagerService(object):
                 i_Movie,
                 i_Movie)
 
-        with self.connection.cursor() as cursor:
+        connection = get_conn()
+
+        with connection.cursor() as cursor:
 
             info = "select distinct MoviePlay.movName as \"Movie\", MoviePlay.movReleaseDate as \"Release_Date\", \
             MoviePlay.movPlayDate as \"Play_Date\", Movie.duration as \"Duration\" \
@@ -69,35 +68,40 @@ class ManagerService(object):
 
             cursor.execute(info, data_tuple)
             data=cursor.fetchall()
-            self.connection.commit()
+            connection.commit()
+
+            connection.close()
             return data
 
     def getCompanies(self):
-        with self.connection.cursor() as cursor:
+
+        connection = get_conn()
+
+        with connection.cursor() as cursor:
             sql = """SELECT comName FROM Company"""
             cursor.execute(sql)
             data=cursor.fetchall()
-            self.connection.commit()
+            connection.commit()
+            
+            connection.close()
             return data
 
 
 def ScheduleMovie(self, username, filters):
 
         i_manUsername = username
-
         i_movName = filters.get("i_movName")
-
         i_movReleaseDate = filters.get("i_movReleaseDate")
-
         i_movPlayDate = filters.get("i_movPlayDate")
+        connection = get_conn()
 
-        with self.connection.cursor() as cursor:
+        with connection.cursor() as cursor:
 
             query = cursor.execute("select movName, movReleaseDate from Movie") # movieSchedule1 is the output for Schedule Movie
 
             movieSchedule1 = cursor.fetchall()
 
-            self.connection.commit()
+            connection.commit()
 
             query = "select thName, comName from Theater where manUsername = (%s)"
 
@@ -105,7 +109,7 @@ def ScheduleMovie(self, username, filters):
 
             data2 = cursor.fetchall()
 
-            self.connection.commit()
+            connection.commit()
 
             query = "insert into MoviePlay (thName, comName, movName, movReleaseDate, movPlayDate) values ((%s), (%s), (%s), (%s), (%s))"
 
@@ -113,7 +117,9 @@ def ScheduleMovie(self, username, filters):
 
             data3 = cursor.fetchall()
 
-            self.connection.commit()
+            connection.commit()
+
+            connection.close()
 
 
 

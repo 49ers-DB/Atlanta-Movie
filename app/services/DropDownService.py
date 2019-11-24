@@ -1,41 +1,63 @@
+from app.services.DBService import get_conn
 
 class DropDownService(object):
-
-    def __init__(self, connection):
-        self.connection = connection
 
 
     def CompanyDropDown(self):
 
-        with self.connection.cursor() as cursor:
+        connection = get_conn()
+        with connection.cursor() as cursor:
     #Manager-Only Registration, Manager-Customer Registration, Manage Company, Create Theater
     # Explore Movie, Explore Theater, Visit History
-
-            query = "select comName from Company"
+            
+            sql = """SELECT comName FROM Company"""
+            cursor.execute(sql)
+            data=cursor.fetchall()
+            connection.commit()
+            connection.close()
+            return data
 
 
     def ManagerDropDown(self):
 
-        with self.connection.cursor() as cursor:
+        connection = get_conn()
+
+        with connection.cursor() as cursor:
     #Create Theater
 
             query = "select firstname, lastname from User inner join Manager on Manager.username = User.username"
+        
+            connection.close()
 
 
     def MovieDropDown(self):
 
-        with self.connection.cursor() as cursor:
+        connection = get_conn()
+
+        with connection.cursor() as cursor:
     #Schedule Movie, Explore Movie
 
             query = "select movName from Movie"
 
+            connection.close()
 
-    def TheaterDropDown(self):
 
-        with self.connection.cursor() as cursor:
-    #Explore Theater
+    def TheaterDropDown(self, companyName):
 
-            query = "select thName from Theater"
+        connection = get_conn()
+
+        with connection.cursor() as cursor:
+
+            query = """select thName from Theater
+                    where comName=(%s)"""
+            cursor.execute(query, (companyName))
+            data=cursor.fetchall()
+            connection.commit()
+
+            connection.close()
+            
+            return data
+
 
 
 
