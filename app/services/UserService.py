@@ -12,6 +12,9 @@ class UserService(object):
         i_city=filters.get("city")
         i_state=filters.get("selectedState")
 
+        if i_city == "":
+            i_city = None
+
         data_tuple = (
             i_thname,
             i_thname,
@@ -21,6 +24,8 @@ class UserService(object):
             i_city,
             i_state,
             i_state)
+
+        print(data_tuple)
 
         connection = get_conn()
         with connection.cursor() as cursor:
