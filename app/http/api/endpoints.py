@@ -121,6 +121,7 @@ def getTheaters(comName):
   return json_response({'ok': True, 'theaters': theaters})
   
 
+#----------UserService--------------------
 @app.route('/exploreTheater', methods=['POST'])
 @login_required
 def get_explore_theater():

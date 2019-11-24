@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import DatePicker from "react-datepicker";
 import Select from "react-select";
-import AsyncSelect from 'react-select/async';
 import APIClient from "../../../apiClient"
 
 import "../Functionality.css"

@@ -24,11 +24,11 @@ class UserService(object):
 
         connection = get_conn()
         with connection.cursor() as cursor:
-            info = "select distinct thName as \"Name\", thStreet as \"Street\", thCity as \"City\", thState as \"State\", thZipcode as \"Zipcode\", comName as \"Company\" from \
-            Theater where ((%s) is NULL or thName = (%s)) \
-            and ((%s) is NULL or thCity = (%s)) \
-            and ((%s) is NULL or thCity = (%s)) \
-            and ((%s) is NULL or thCity = (%s))"
+            info = """select distinct thName , thStreet , thCity , thState , thZipcode , comName  from 
+            Theater where ((%s) is NULL or thName = (%s)) 
+            and ((%s) is NULL or thCity = (%s)) 
+            and ((%s) is NULL or thCity = (%s)) 
+            and ((%s) is NULL or thCity = (%s))"""
 
 
             cursor.execute(info, data_tuple)
