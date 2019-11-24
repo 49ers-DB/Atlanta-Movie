@@ -18,7 +18,10 @@ function formatRows(data) {
 
   data.map( row => {
     var addressStr = `${row['thStreet']}, ${row['thCity']}, ${row['thState']}, ${row['thZipcode']}`
-    formatted.push([row['movName'], row['thName'], addressStr, row['comName'], row['movPlayDate']])
+    var date = new Date(row['movPlayDate'])
+    console.log(date)
+    date = date.toDateString()
+    formatted.push([row['movName'], row['thName'], addressStr, row['comName'], date])
   });
   return formatted
 }
