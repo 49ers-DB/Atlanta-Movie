@@ -15,6 +15,7 @@ class UserService(object):
         if i_city == "":
             i_city = None
 
+
         data_tuple = (
             i_thname,
             i_thname,
@@ -31,9 +32,9 @@ class UserService(object):
         with connection.cursor() as cursor:
             info = """select distinct thName , thStreet , thCity , thState , thZipcode , comName  from 
             Theater where ((%s) is NULL or thName = (%s)) 
+            and ((%s) is NULL or comName = (%s)) 
             and ((%s) is NULL or thCity = (%s)) 
-            and ((%s) is NULL or thCity = (%s)) 
-            and ((%s) is NULL or thCity = (%s))"""
+            and ((%s) is NULL or thState = (%s))"""
 
 
             cursor.execute(info, data_tuple)
@@ -56,13 +57,16 @@ class UserService(object):
             cursor.execute(leng)
             length=cursor.fetchall()
             connection.commit()
-            new_id= int(len(length.values()))+1
-            info="insert (visitID,username,thName,comName,visitDate) values ((%s),(%s),(%s),(%s),(%s))"
+
+            new_id= len(length) + 1
+
+            info="""insert into UserVisitTheater (visitID, username, thName, comName, visitDate)  values ((%s),(%s),(%s),(%s),(%s))"""
             cursor.execute(info,(new_id,i_username,i_thname,i_coname,i_visitdate))
             data=cursor.fetchall()
             connection.commit()
 
         connection.close()
+        return True
 
     def VisitHistory(self, username, filters):
         i_comName=filters.get("i_comName")

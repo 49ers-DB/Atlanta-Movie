@@ -22,7 +22,6 @@ class TestManagerService(object):
                              cursorclass=pymysql.cursors.DictCursor)
 
     
-
     def test_TheaterOverview_NoFilters(self):
         
         TOTestDict = {}
@@ -46,6 +45,7 @@ class TestManagerService(object):
         assert len(Expected) == len(Actual)
         assert sorted(Expected, key=functools.cmp_to_key(compare_movie)) == sorted(Actual, key=functools.cmp_to_key(compare_movie))
 
+
     def test_TheaterOverview_MinReleaseDate(self):
         
         TOTestDict = {'i_minReleaseDate':datetime.date(2010,11,26)}
@@ -62,6 +62,7 @@ class TestManagerService(object):
         print(Actual)
         assert len(expected) == len(Actual)
         assert sorted(expected, key=functools.cmp_to_key(compare_movie)) == sorted(Actual, key=functools.cmp_to_key(compare_movie))
+
 
     def test_TheaterOverview_ReleaseDate(self):
         
@@ -81,6 +82,7 @@ class TestManagerService(object):
         print(Actual)
         assert len(Expected) == len(Actual)
         assert sorted(Expected, key=functools.cmp_to_key(compare_movie)) == sorted(Actual, key=functools.cmp_to_key(compare_movie))
+
 
     def test_TheaterOverview_PlayDate(self):
         
@@ -103,6 +105,21 @@ class TestManagerService(object):
         print(Actual)
         assert len(Expected) == len(Actual)
         assert sorted(Expected, key=functools.cmp_to_key(compare_movie)) == sorted(Actual, key=functools.cmp_to_key(compare_movie))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 def compare_movie(item1, item2):
