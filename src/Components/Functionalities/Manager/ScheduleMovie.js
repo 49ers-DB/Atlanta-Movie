@@ -22,13 +22,6 @@ export default class ScheduleMovie extends Component {
     this.handlePlayDateChange = this.handlePlayDateChange.bind(this)
     this.handleAdd = this.handleAdd.bind(this)
     
-    var accessToken = localStorage.getItem("accessToken")
-    
-    if (accessToken) {
-      var apiClient = new APIClient(accessToken)
-      console.log(apiClient)
-      
-    }
   }
 
   setSelectedMovie(event) {
@@ -45,7 +38,18 @@ export default class ScheduleMovie extends Component {
 
   handleAdd(event) {
     event.preventDefault()
-    //TODO ApIcall
+    var accessToken = localStorage.getItem("accessToken")
+    
+    if (accessToken) {
+      var apiClient = new APIClient(accessToken)
+      var requestBody = {
+        i_movName: this.state.selectedMovie,
+        i_movReleaseDate: this.state.releaseDate,
+        i_movPlayDate: this.state.playDate
+      }
+      apiClient.perform("post", "/moviePlay", requestBody);
+      
+    }
   }
 
   render () {
