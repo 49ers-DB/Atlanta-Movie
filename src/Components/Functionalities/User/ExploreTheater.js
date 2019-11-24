@@ -175,9 +175,9 @@ export default class ExploreTheater extends Component {
       return;
     }
     var theater = this.state.rowData[this.state.theaterIndex];
-    var data = {"i_thname": theater[0],
-            "i_coname": theater[2],
-            "i_visitdate": this.state.visitDate}
+    var data = {i_thname: theater[0],
+            i_coname: theater[2],
+            i_visitdate: this.state.visitDate}
     var accessToken = localStorage.getItem("accessToken")
     
     if (accessToken) {

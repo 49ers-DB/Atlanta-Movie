@@ -126,8 +126,7 @@ def getTheaters(comName):
 @login_required
 def get_explore_theater():
   data = request.get_json()
-  user = g.user
-  print(data)
+  
   query_data = user_service.ExploreTheater(data)
   return json_response({'ok': True, 'theaters': query_data})
 
@@ -135,8 +134,8 @@ def get_explore_theater():
 @login_required
 def log_visit():
   data = request.get_json()
-  user = g.user
-  print(data)
+  user = g.user['username']
+
   user_service.LogVisit(user, data)
   return json_response({'ok': True})
 
