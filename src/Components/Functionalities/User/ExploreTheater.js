@@ -79,14 +79,15 @@ export default class ExploreTheater extends Component {
     super(props)
     this.state = {
       apiClient: null,
-      rowData: [["fj","fjdk","fjd"],[],[],[]],
+      rowData: [[],[],[],[]],
       theaters: [],
       companies: [],
       city: "",
       selectedTheater: null,
       selectedCompany: null,
       selectedState: null,
-      visitDate: new Date()
+      visitDate: new Date(),
+      theaterIndex: null,
     }
     
     var accessToken = localStorage.getItem("accessToken")
@@ -107,6 +108,7 @@ export default class ExploreTheater extends Component {
     this.setSelectedCompany = this.setSelectedCompany.bind(this)
     this.setSelectedState = this.setSelectedState.bind(this)
     this.setCity = this.setCity.bind(this)
+    this.checkedTheater = this.checkedTheater.bind(this);
     // this.componentDidMount = this.componentDidMount.bind(this)
     this.getTheatersForCompany = this.getTheatersForCompany.bind(this)
   }
@@ -168,6 +170,7 @@ export default class ExploreTheater extends Component {
 
   handleLogVisit(event) {
     var accessToken = localStorage.getItem("accessToken")
+    console.log(this.state.rowData[this.state.theaterIndex])
     
     if (accessToken) {
       var apiClient = new APIClient(accessToken)
@@ -179,6 +182,10 @@ export default class ExploreTheater extends Component {
       });
       
     }
+  }
+
+  checkedTheater(index) {
+    this.setState({theaterIndex: index})
   }
 
   handleChange(date) {
@@ -264,15 +271,17 @@ export default class ExploreTheater extends Component {
             <tbody>
               
                 {this.state.rowData.map( (row) => {
+                  var index = this.state.rowData.indexOf(row)
                   return (
-                    <tr key={this.state.rowData.indexOf(row)}>
+                    <tr key={index}>
                       <td>
-                        <input type="checkbox" className="form-check-input" id=""/>
+                        <input type="radio" name="optradio" id={index} onClick={ () => this.checkedTheater(index) }/>
                       </td>
                       <td>{row[0]}</td>
                       <td>{row[1]}</td>
                       <td>{row[2]}</td>
                     </tr>
+
                     
                   );
                 })}
