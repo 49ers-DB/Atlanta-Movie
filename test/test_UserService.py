@@ -107,7 +107,7 @@ class TestUserService(object):
       filters = {
         'city':"",
         'selectedState':None,
-        'selectedCompany':'4400 Theater Company',
+        'selectedCompany':{'value':'4400 Theater Company'},
         'selectedTheater':None
       }
 
@@ -133,7 +133,7 @@ class TestUserService(object):
       filters = {
         'city':"",
         'selectedState':None,
-        'selectedCompany':'4400 Theater Company',
+        'selectedCompany':{'value':'4400 Theater Company'},
         'selectedTheater':'Star Movies'
       }
 

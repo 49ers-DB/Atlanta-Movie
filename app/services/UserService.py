@@ -15,6 +15,8 @@ class UserService(object):
         if i_city == "":
             i_city = None
 
+        if i_coname is not None:
+            i_coname = i_coname['value']
 
         data_tuple = (
             i_thname,
