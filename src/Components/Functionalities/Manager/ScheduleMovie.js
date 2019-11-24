@@ -25,15 +25,16 @@ export default class ScheduleMovie extends Component {
   }
 
   setSelectedMovie(event) {
-    this.setState({selectedMovie: event.target.value})
+    this.setState({selectedMovie: event})
   }
 
   handleReleaseDateChange(releaseDate) {
-    this.setState(releaseDate)
+    console.log(releaseDate)
+    this.setState({releaseDate})
   }
 
   handlePlayDateChange(playDate) {
-    this.setState(playDate)
+    this.setState({playDate})
   }
 
   handleAdd(event) {
@@ -66,8 +67,7 @@ export default class ScheduleMovie extends Component {
                   <Select className="functionalities-select"
                     value={this.state.selectedMovie}
                     onChange={this.setSelectedMovie}
-                    options={null}
-                    placeholder="Select"
+                    options={movies()}
                   />
               </div>
               <div className="form-group form-inline functionalities-form-row col">

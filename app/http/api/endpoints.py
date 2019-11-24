@@ -186,8 +186,7 @@ def get_theater_overview():
   return json_response({'ok': True, 'info': response})
 
 
-# #is this right? lol
-@app.route('/ScheduleMovie', methods=['POST'])
+@app.route('/moviePlay', methods=['POST'])
 @login_required
 def ScheduleMovie():
   data=request.get_json()
