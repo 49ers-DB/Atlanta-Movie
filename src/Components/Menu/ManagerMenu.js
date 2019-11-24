@@ -17,7 +17,7 @@ const ManagerMenu = () => {
           <a className="btn btn-primary" href="/auth/explore-theater">Explore Theater</a>
         </div>
         <div className="row">
-          <a className="btn btn-primary" href="">Schedule Movie</a>
+          <a className="btn btn-primary" href="/auth/schedule-movie">Schedule Movie</a>
           <a className="btn btn-primary" href="/auth/visit-history">Visit History</a>
         </div>
         <div className="row">

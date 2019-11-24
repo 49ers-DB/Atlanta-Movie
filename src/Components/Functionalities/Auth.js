@@ -7,6 +7,9 @@ import ViewHistory from './Customer/ViewHistory';
 import ExploreMovie from './Customer/ExploreMovie';
 import TheaterOverview from './Manager/TheaterOverview';
 import ScheduleMovie from './Manager/ScheduleMovie';
+import CreateMovie from './Admin/CreateMovie';
+import ManageCompany from './Admin/ManageCompany';
+import ManageUser from './Admin/ManageUser';
 
 
 export default class Auth extends Component {

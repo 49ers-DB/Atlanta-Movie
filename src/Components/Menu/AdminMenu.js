@@ -21,7 +21,7 @@ const AdminMenu = () => {
           <a className="btn btn-primary" href="/auth/visit-history">Visit History</a>
         </div>
         <div className="row">
-          <a className="btn btn-primary" href="">Create Movie</a>
+          <a className="btn btn-primary" href="/auth/create-movie">Create Movie</a>
           <div className="btn btn-primary" onClick={logout}>Back</div>
         </div>
       </div>
