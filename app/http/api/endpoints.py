@@ -8,6 +8,7 @@ from app.services.ManagerService import ManagerService
 from app.services.RegisterService import RegisterService
 from app.services.DropDownService import DropDownService
 from app.services.UserService import UserService
+from app.services.CustomerService import CustomerService
 
 
 app = Flask(__name__)
@@ -20,6 +21,7 @@ register_service = RegisterService()
 manager_service = ManagerService()
 drop_down_service = DropDownService()
 user_service = UserService()
+customer_service = CustomerService()
 
 
 #------------LOGIN------------
@@ -112,6 +114,10 @@ def getCompanies():
   response = drop_down_service.CompanyDropDown()
   return json_response(response)
 
+@app.route('/movies', methods=['GET'])
+def getMovies():
+  response = drop_down_service.MovieDropDown()
+  return json_response(response)
 
 @app.route('/theaters/<string:comName>', methods=['GET'])
 @login_required
@@ -124,7 +130,7 @@ def getTheaters(comName):
 #----------UserService--------------------
 @app.route('/exploreTheater', methods=['POST'])
 @login_required
-def get_explore_theater():
+def explore_theater():
   data = request.get_json()
   
   query_data = user_service.ExploreTheater(data)
@@ -140,7 +146,19 @@ def log_visit():
   return json_response({'ok': True})
 
 
+#--------CustomerService-------------------
+@app.route('/exploreMovie', methods=['POST'])
+@login_required
+def explore_movie():
+  data = request.get_json()
+  
+  query_data = customer_service.ExploreMovie(data)
+  return json_response({'ok': True, 'moviePlays': query_data})
 
+
+
+
+#----------ManagerService-----------------
 @app.route('/TheaterOverview', methods=['GET'])
 @login_required
 def get_theater_overview():

@@ -33,13 +33,18 @@ class DropDownService(object):
     def MovieDropDown(self):
 
         connection = get_conn()
+        data = {}
 
         with connection.cursor() as cursor:
-    #Schedule Movie, Explore Movie
 
             query = "select movName from Movie"
+            cursor.execute(query)
+            data = cursor.fetchall()
 
-            connection.close()
+            connection.commit()
+
+        connection.close()
+        return data
 
 
     def TheaterDropDown(self, companyName):

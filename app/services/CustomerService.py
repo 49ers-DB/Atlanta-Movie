@@ -3,9 +3,8 @@ from app.services.DBService import get_conn
 class CustomerService(object):
 
 
-    def ExploreMovie(self, username, filters):
+    def ExploreMovie(self, filters):
 
-        i_username = username
         i_movName = filters.get("i_movName")
         i_comName = filters.get("i_comName")
         i_city = filters.get("i_city")
@@ -14,6 +13,7 @@ class CustomerService(object):
         i_maxMovPlayDate = filters.get("i_maxMovPlayDate")
 
         connection = get_conn()
+        data = {}
 
         with connection.cursor() as cursor:
 
@@ -31,6 +31,7 @@ class CustomerService(object):
             connection.commit()
 
         connection.close()
+        return data
 
     def ViewMovie(self, username, filters):
 
