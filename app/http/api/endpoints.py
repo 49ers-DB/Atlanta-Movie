@@ -125,6 +125,14 @@ def getTheaters(comName):
 
   theaters = drop_down_service.TheaterDropDown(comName)
   return json_response({'ok': True, 'theaters': theaters})
+
+@app.route('/creditcard', methods=['GET'])
+@login_required
+def getCreditCardNumbers():
+  username = g.user['username']
+
+  response = drop_down_service.getCreditCardNumbers(username)
+  return json_response(response)
   
 
 #----------UserService--------------------
@@ -155,6 +163,15 @@ def explore_movie():
   query_data = customer_service.ExploreMovie(data)
   return json_response({'ok': True, 'moviePlays': query_data})
 
+
+@app.route('/viewMovie', methods=['POST'])
+@login_required
+def view_movie():
+  data = request.get_json()
+  username = g.user['username']
+  
+  customer_service.ViewMovie(username, data)
+  return json_response({'ok': True})
 
 
 

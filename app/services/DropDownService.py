@@ -63,6 +63,23 @@ class DropDownService(object):
             
             return data
 
+    def getCreditCardNumbers(self, username):
+        
+        connection = get_conn()
+        data = {}
+
+        with connection.cursor() as cursor:
+            
+            query = """select creditCardNum from CustomerCreditCard
+                    where username=(%s)"""
+        
+            cursor.execute(query, (username))
+            data = cursor.fetchall()
+
+        connection.close()
+        return data
+
+
 
 
 

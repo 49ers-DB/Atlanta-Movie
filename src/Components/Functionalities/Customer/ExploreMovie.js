@@ -4,18 +4,30 @@ import Select from 'react-select'
 import DatePicker from 'react-datepicker'
 import stateOptions from "../../../actions/stateOptions"
 import getCompanies from "../../../actions/companies"
+import movies from "../../../actions/movies"
 
 import "../Functionality.css"
+import { isThisISOWeek } from 'date-fns'
 
 
-const movies = []
 
+
+function formatRows(data) {
+  console.log(data)
+  var formatted = []
+
+  data.map( row => {
+    var addressStr = `${row['thStreet']}, ${row['thCity']}, ${row['thState']}, ${row['thZipcode']}`
+    formatted.push([row['movName'], row['thName'], addressStr, row['comName'], row['movPlayDate']])
+  });
+  return formatted
+}
 
 export default class ExploreMovie extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      rowData: [[],[],[],[],[],[]],
+      rowData: [],
       selectedMovie: null,
       selectedCompany: null,
       city: "",
@@ -32,9 +44,11 @@ export default class ExploreMovie extends Component {
     this.setPlayDate1 = this.setPlayDate1.bind(this)
     this.setPlayDate2 = this.setPlayDate2.bind(this)
     this.setCreditCard = this.setCreditCard.bind(this)
-    
+    this.handleFilter = this.handleFilter.bind(this)
+    this.handleView = this.handleView.bind(this)
     
     this.handleFilter(new Event(""))
+    
   }
 
   setSelectedMovie(event) {
@@ -66,7 +80,21 @@ export default class ExploreMovie extends Component {
   }
 
   getCreditCards() {
-    //TODO api call
+    var accessToken = localStorage.getItem("accessToken")
+    
+    var creditcards = []
+    if (accessToken) {
+      var apiClient = new APIClient(accessToken)
+      apiClient.perform("get", "/creditcard").then( resp => {
+
+        resp.map( creditCard => {
+          var num = creditCard['creditCardNum']
+          creditcards.push({value: num, label: num})
+        })
+        
+      });
+    }
+    return creditcards
   }
 
   setCreditCard(selectedCreditCard) {
@@ -80,15 +108,34 @@ export default class ExploreMovie extends Component {
     if (accessToken) {
       var apiClient = new APIClient(accessToken)
       var requestBody = {
-
+        i_movName: this.state.selectedMovie,
+        i_comName: this.state.selectedCompany,
+        i_city: this.state.city,
+        i_state: this.state.selectedState,
+        i_minMovPlayDate: this.state.playDate1,
+        i_maxMovPlayDate: this.state.playDate2
       }
-      apiClient.perform("post", "/exploreMovie", requestBody)
+      apiClient.perform("post", "/exploreMovie", {}).then( resp => {
+        this.setState({rowData: formatRows(resp['moviePlays'])})
+      })
     }
   }
 
   handleView(event) {
     event.preventDefault()
-    //TODO
+    var accessToken = localStorage.getItem("accessToken")
+    
+    if (accessToken && this.state.moviePlayIndex) {
+      var apiClient = new APIClient(accessToken)
+      var requestBody = {
+        i_movName: this.state.rowData[this.state.moviePlayIndex][0],
+        i_thName: this.state.rowData[this.state.moviePlayIndex][1],
+        i_comName: this.state.rowData[this.state.moviePlayIndex][3],
+        i_movPlayDate: this.state.rowData[this.state.moviePlayIndex][4],
+        i_creditCardNum: this.state.selectedCreditCard
+      }
+      apiClient.perform("post", "/viewMovie", requestBody)
+    }
   }
 
   render () {
@@ -106,7 +153,7 @@ export default class ExploreMovie extends Component {
                 <Select className="functionalities-select"
                   value={this.state.selectedMovie}
                   onChange={this.setSelectedMovie}
-                  options={movies}
+                  options={movies()}
                 />
               </div>
               <div className="form-group form-inline functionalities-form-row col">
@@ -174,6 +221,7 @@ export default class ExploreMovie extends Component {
                 <th scope="col">Selected</th>
                 <th scope="col">Movie</th>
                 <th scope="col">Theater</th>
+                <th scope="col">Address</th>
                 <th scope="col">Company</th>
                 <th scope="col">Play Date</th>
               </tr>
@@ -191,6 +239,7 @@ export default class ExploreMovie extends Component {
                       <td>{row[1]}</td>
                       <td>{row[2]}</td>
                       <td>{row[3]}</td>
+                      <td>{row[4]}</td>
                     </tr>
 
                     

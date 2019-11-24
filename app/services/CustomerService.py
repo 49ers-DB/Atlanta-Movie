@@ -38,7 +38,7 @@ class CustomerService(object):
         i_username = username
         i_creditCardNum = filters.get("i_creditCardNum")
         i_movName = filters.get("i_movName")
-        i_movReleaseDate = filters.get("i_movReleaseDate")
+        i_movPlayDate = filters.get("i_movPlayDate")
         i_thName = filters.get("i_thName")
         i_comName = filters.get("i_comName")
 
@@ -50,12 +50,14 @@ class CustomerService(object):
             cursor.execute(query, (i_movName))
             data2 = cursor.fetchall()
             connection.commit()
+            movReleaseDate = data2['movReleaseDate']
 
             query2 = "insert into CustomerViewMovie (creditCardNum, thName, comName, movName, movReleaseDate, movPlayDate) \
             values ((%s), (%s), (%s), (%s), (%s), (%s))"
-            cursor.execute(query2, (i_creditCardNum, i_thName, i_comName, i_movName, data2[movReleaseDate], i_movPlayDate))
+            cursor.execute(query2, (i_creditCardNum, i_thName, i_comName, i_movName, movReleaseDate, i_movPlayDate))
             data3 = cursor.fetchall()
             connection.commit()
+
 
         connection.close()
 
