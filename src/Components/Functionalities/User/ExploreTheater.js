@@ -6,6 +6,7 @@ import APIClient from "../../../apiClient"
 import "../Functionality.css"
 
 import "react-datepicker/dist/react-datepicker.css";
+import { isThisISOWeek } from 'date-fns';
 
 const stateOptions = [
   {value: "AL", label: "AL"},
@@ -169,15 +170,22 @@ export default class ExploreTheater extends Component {
   }
 
   handleLogVisit(event) {
+    if(this.state.theaterIndex === null) {
+      window.alert("Please choose a theater")
+      return;
+    }
+    var theater = this.state.rowData[this.state.theaterIndex];
+    var data = {"i_thname": theater[0],
+            "i_coname": theater[2],
+            "i_visitdate": this.state.visitDate}
     var accessToken = localStorage.getItem("accessToken")
-    console.log(this.state.rowData[this.state.theaterIndex])
     
     if (accessToken) {
       var apiClient = new APIClient(accessToken)
       this.state.apiClient = apiClient
       console.log(apiClient)
 
-      apiClient.perform('post', '/logVisit', this.state).then( resp => {
+      apiClient.perform('post', '/logVisit', data).then( resp => {
 
       });
       
