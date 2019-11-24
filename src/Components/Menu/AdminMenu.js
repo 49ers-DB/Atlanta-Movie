@@ -13,11 +13,11 @@ const AdminMenu = () => {
       </div>
       <div className="card-body">
         <div className="row">
-          <a className="btn btn-primary" href="">Manage User</a>
+          <a className="btn btn-primary" href="/auth/manage-user">Manage User</a>
           <a className="btn btn-primary" href="/auth/explore-theater">Explore Theater</a>
         </div>
         <div className="row">
-          <a className="btn btn-primary" href="">Manage Company</a>
+          <a className="btn btn-primary" href="/auth/manage-company">Manage Company</a>
           <a className="btn btn-primary" href="/auth/visit-history">Visit History</a>
         </div>
         <div className="row">

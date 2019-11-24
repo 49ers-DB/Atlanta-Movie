@@ -5,6 +5,8 @@ import ExploreTheater from './User/ExploreTheater';
 import VisitHistory from './User/VisitHistory';
 import ViewHistory from './Customer/ViewHistory';
 import ExploreMovie from './Customer/ExploreMovie';
+import TheaterOverview from './Manager/TheaterOverview';
+import ScheduleMovie from './Manager/ScheduleMovie';
 
 
 export default class Auth extends Component {
@@ -25,6 +27,11 @@ export default class Auth extends Component {
           <Route exact path="/Auth/Visit-History" component={VisitHistory}/>
           <Route exact path="/Auth/View-History" component={ViewHistory}/>
           <Route exact path="/Auth/Explore-Movie" component={ExploreMovie}/>
+          <Route exact path="/Auth/Schedule-Movie" component={ScheduleMovie}/>
+          <Route exact path="/Auth/Theater-Overview" component={TheaterOverview}/>
+          <Route exact path="/Auth/Create-Movie" component={CreateMovie}/>
+          <Route exact path="/Auth/Manage-Company" component={ManageCompany}/>
+          <Route exact path="/Auth/Manage-User" component={ManageUser}/>
         </Switch>
 
       );
@@ -33,8 +40,8 @@ export default class Auth extends Component {
       return (
         <div className="main">
           <Switch>
-            <Route path="/Auth/Explore-Theater" component={ErrorScreen}/>
-            <Route path="/Auth/" component={ErrorScreen}/>
+            <Route exact path="/Auth/Explore-Theater" component={ErrorScreen}/>
+            <Route exact path="/Auth/" component={ErrorScreen}/>
           </Switch>
           
         </div>

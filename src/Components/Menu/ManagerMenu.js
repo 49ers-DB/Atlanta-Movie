@@ -13,7 +13,7 @@ const ManagerMenu = () => {
       </div>
       <div className="card-body">
         <div className="row">
-          <a className="btn btn-primary" href="">Theater Overview</a>
+          <a className="btn btn-primary" href="/auth/theater-overview">Theater Overview</a>
           <a className="btn btn-primary" href="/auth/explore-theater">Explore Theater</a>
         </div>
         <div className="row">
