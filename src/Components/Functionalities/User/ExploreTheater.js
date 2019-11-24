@@ -62,6 +62,18 @@ const stateOptions = [
 
 var theaters = []
 
+
+function formatTheaters(theaters) {
+  var formatted = []
+  if (theaters) {
+    theaters.map( theater => {
+      var addressStr = `${theater['thStreet']}, ${theater['thCity']}, ${theater['thState']}, ${theater['thZipcode']}`
+      formatted.push([theater['thName'], addressStr, theater['comName']])
+    });
+  }
+  return formatted;
+}
+
 export default class ExploreTheater extends Component {
   constructor(props) {
     super(props)
@@ -84,9 +96,9 @@ export default class ExploreTheater extends Component {
       this.state.apiClient = apiClient
       console.log(apiClient)
       apiClient.exploreTheater(this.state).then(resp => {
-        this.setState({rowData: resp['theaters']})
+        this.setState({rowData: formatTheaters(resp['theaters'])})
+        console.log(resp['theaters'])
       });
-      
     }
     this.handleLogVisit = this.handleLogVisit.bind(this)
     this.handleFilter = this.handleFilter.bind(this)
@@ -148,7 +160,7 @@ export default class ExploreTheater extends Component {
       var apiClient = new APIClient(accessToken)
 
       apiClient.perform('post', '/exploreTheater', this.state).then( resp => {
-        this.setState({rowData: resp['theaters']})
+        this.setState({rowData: formatTheaters(resp['theaters'])})
       });
       
     }
