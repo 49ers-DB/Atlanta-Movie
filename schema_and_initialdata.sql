@@ -155,7 +155,7 @@ Values
 ('does2Much','Approved','Carl','Gauss',MD5('1212121212')),
 ('programerAAL','Approved','Ada','Lovelace',MD5('3131313131')),
 ('radioactivePoRa','Approved','Marie','Curie',MD5('1313131313')),
-('DNAhelix','Approved','Rosalind','Franklin',MD5('777777777'),
+('DNAhelix','Approved','Rosalind','Franklin',MD5('777777777')),
 ('ghcghc','Approved','Grace','Hopper',MD5('666666666')),
 ('RitzLover28','Approved','Abby','Normal',MD5('444444444')),
 ('smith_j','Pending','John','Smith',MD5('333333333')),
