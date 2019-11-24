@@ -96,7 +96,7 @@ export default class ExploreTheater extends Component {
     if (accessToken) {
       var apiClient = new APIClient(accessToken)
       this.state.apiClient = apiClient
-      console.log(apiClient)
+      
       apiClient.exploreTheater(this.state).then(resp => {
         this.setState({rowData: formatTheaters(resp['theaters'])})
         console.log(resp['theaters'])
@@ -162,7 +162,22 @@ export default class ExploreTheater extends Component {
     if (accessToken) {
       var apiClient = new APIClient(accessToken)
 
-      apiClient.perform('post', '/exploreTheater', this.state).then( resp => {
+      var state = this.state.selectedState
+      if (state) {state = state['value']}
+      var company = this.state.selectedCompany
+      if (company) {company = company['value']}
+      var theater = this.state.selectedTheater
+      if (theater) {theater = theater['value']}
+
+
+      var requestBody = {
+        city: this.state.city,
+        selectedState: state,
+        selectedCompany: company,
+        selectedTheater: theater
+      }
+
+      apiClient.perform('post', '/exploreTheater', requestBody).then( resp => {
         this.setState({rowData: formatTheaters(resp['theaters'])})
       });
       

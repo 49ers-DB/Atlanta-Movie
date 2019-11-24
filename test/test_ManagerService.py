@@ -25,7 +25,7 @@ class TestManagerService(object):
     def test_TheaterOverview_NoFilters(self):
         
         TOTestDict = {}
-        manager_service = ManagerService(self.connection)
+        manager_service = ManagerService()
         Actual= manager_service.TheaterOverview('imbatman',TOTestDict)
         Expected =[
             {'Movie':"How to Train Your Dragon",'Release_Date':datetime.date(2010, 3,21),'Play_Date':None,'Duration':98},
@@ -49,7 +49,7 @@ class TestManagerService(object):
     def test_TheaterOverview_MinReleaseDate(self):
         
         TOTestDict = {'i_minReleaseDate':datetime.date(2010,11,26)}
-        manager_service = ManagerService(self.connection)
+        manager_service = ManagerService()
         Actual= manager_service.TheaterOverview('imbatman',TOTestDict)
         expected =[
             {'Movie':"4400 The Movie",'Release_Date':datetime.date(2019,8,12),'Play_Date':None,'Duration':130},
@@ -69,7 +69,7 @@ class TestManagerService(object):
         TOTestDict = {'i_minReleaseDate':datetime.date(1985,8,13),
                     'i_maxReleaseDate':datetime.date(2010,11,26)
         }
-        manager_service = ManagerService(self.connection)
+        manager_service = ManagerService()
         Actual= manager_service.TheaterOverview('imbatman',TOTestDict)
         Expected =[
             {'Movie':"How to Train Your Dragon",'Release_Date':datetime.date(2010, 3,21),'Play_Date':None,'Duration':98},
@@ -89,7 +89,7 @@ class TestManagerService(object):
         TOTestDict = {'i_minPlayDate':datetime.date(2019,3, 19),
                     'i_maxPlayDate':datetime.date(2019, 11, 12)
         }
-        manager_service = ManagerService(self.connection)
+        manager_service = ManagerService()
         Actual= manager_service.TheaterOverview('imbatman',TOTestDict)
         Expected =[
             {'Movie':"4400 The Movie",'Release_Date':datetime.date(2019,8,12),'Play_Date':datetime.date(2019,10,12),'Duration':130}]

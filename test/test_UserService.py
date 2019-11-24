@@ -81,7 +81,7 @@ class TestUserService(object):
 
       filters = {
         'city':"",
-        'selectedState': "CA",
+        'selectedState':'CA',
         'selectedCompany':None,
         'selectedTheater':None
       }
@@ -108,7 +108,7 @@ class TestUserService(object):
       filters = {
         'city':"",
         'selectedState':None,
-        'selectedCompany':{'value':'4400 Theater Company'},
+        'selectedCompany':'4400 Theater Company',
         'selectedTheater':None
       }
 
@@ -134,7 +134,7 @@ class TestUserService(object):
       filters = {
         'city':"",
         'selectedState':None,
-        'selectedCompany':{'value':'4400 Theater Company'},
+        'selectedCompany':'4400 Theater Company',
         'selectedTheater':'Star Movies'
       }
 
@@ -150,7 +150,26 @@ class TestUserService(object):
 
       assert sorted(actual, key=functools.cmp_to_key(compare_theater)) == sorted(expected, key=functools.cmp_to_key(compare_theater))
 
-    
+    def test_Explore_Theater_Bad_state(self):
+      
+      user_service = UserService()
+
+      filters = {
+        'city':"New York",
+        'selectedState':'AL',
+        'selectedCompany':None,
+        'selectedTheater':None
+      }
+
+      actual = user_service.ExploreTheater(filters)
+
+      expected = [
+        
+      ]
+
+      assert len(actual) == len(expected)
+
+      assert sorted(actual, key=functools.cmp_to_key(compare_theater)) == sorted(expected, key=functools.cmp_to_key(compare_theater))
 
     def test_logVisit(self):
 
