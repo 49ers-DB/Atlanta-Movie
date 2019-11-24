@@ -1,8 +1,4 @@
 import pytest
-<<<<<<< HEAD:app/test/test_ManagerService.py
-from ..ManagerService import ManagerService
-=======
->>>>>>> master:test/test_ManagerService.py
 import functools
 import datetime
 
@@ -19,18 +15,13 @@ class TestManagerService(object):
 
     connection = pymysql.connect(host='localhost',
                              user='root',
-                             password='trixie3008',
+                             password='1234',
                              db='moviez',
                              charset='utf8mb4',
                              port=3306,
                              cursorclass=pymysql.cursors.DictCursor)
 
-<<<<<<< HEAD:app/test/test_ManagerService.py
-
-
-=======
     
->>>>>>> master:test/test_ManagerService.py
     def test_TheaterOverview_NoFilters(self):
 
         TOTestDict = {}
