@@ -4,7 +4,7 @@ const BASE_URI = 'http://localhost:4433'
 
 
 const client = axios.create({
-  base_url: BASE_URI,
+  baseURL: BASE_URI,
   json: true
 });
 
@@ -13,9 +13,56 @@ class APIClient {
   constructor(accessToken) {
     this.accessToken = accessToken;
   }
+
+  //-----Register-----
+  registerUser(userData) {
+    return this.perform("post", "/userRegister", userData)
+  }
+
+  registerManager(userData) {
+    return this.perform("post", "/managerRegister", userData)
+  }
+
+  registerCustomer(userData) {
+    return this.perform("post", "/customerRegister", userData)
+  }
+
+  registerManagerCustomer(userData) {
+    return this.perform("post", "/managerCustomerRegister", userData)
+  }
+
+  getCompanies() {
+    return this.perform("get", "/getCompanies")
+  }
   
+
+  //-------User_Type-------
+  getUser(userData) {
+    return this.perform("get", "/user", userData)
+  }
+
+  //---------Data_Getters-----------
+
+  getTheaters(companyName) {
+    return this.perform('get', `/theaters/${companyName}`);
+  }
+
+  getCompanies() {
+    return this.perform('get', '/getCompanies');
+  }
+
+  //-------Explore Theater-------
+  exploreTheater(filters) {
+    return this.perform('post', '/exploreTheater', filters);
+  }
+  
+
   createTheater(theater) {
     return this.perform('post', '/kudos', theater);
+  }
+
+  example() {
+    return this.perform('get', '/example/12');
   }
 
 
@@ -33,3 +80,5 @@ class APIClient {
   }
 
 }
+
+export default (APIClient);

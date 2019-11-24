@@ -1,13 +1,15 @@
 import React, {Component} from "react";
+import userRegister from '../../actions/registerUser.js';
 import "./UserRegistration.css"
+import apiClient from "../../apiClient.js";
 
 
 export default class UserRegistration extends Component {
 
     state = {
-        firstName: '',
-        lastName: '',
-        Username: '',
+        firstname: '',
+        lastname: '',
+        username: '',
         password: '',
         password2: '',
     }
@@ -21,17 +23,17 @@ export default class UserRegistration extends Component {
     register() {
         //Checking to make sure all of the fields are filled out correctly
         console.log(this.state);
-        if(this.state.firstName === '' || 
+        if(this.state.firstname === '' || 
         this.state.lastname === '' || 
-        this.state.Username === '' || 
+        this.state.username === '' || 
         this.state.password === '') {
             window.alert("Please fill out all of the fields");
-        } else if(this.state.firstName.length > 128) {
+        } else if(this.state.firstname.length > 128) {
             window.alert("First name is too long");
-        } else if(this.state.lastName.length > 128) {
+        } else if(this.state.lastname.length > 128) {
             window.alert("Last name is too long");
-        } else if(this.state.Username.length > 128) {
-            window.alert("Username is too long");
+        } else if(this.state.username.length > 128) {
+            window.alert("username is too long");
         } else if(this.state.password.length > 128) {
             window.alert("Password is too long");
         } else if(this.state.password.length < 8) {
@@ -40,7 +42,10 @@ export default class UserRegistration extends Component {
             window.alert("Passwords do not match");
         } else {
             
+            var registration = userRegister(this.state)
+            console.log(registration)
             //post method
+            
         }
     }
     
@@ -57,7 +62,7 @@ export default class UserRegistration extends Component {
                                         First Name
                                     </label>
                                 </div>
-                                <input type="text" name="firstName" onChange={this.handleChange} className="form-control" id="firstName"/>
+                                <input type="text" name="firstname" onChange={this.handleChange} className="form-control" id="firstname"/>
                             </div>
                             <div className="col-6">
                                 <div className="col-4">
@@ -65,18 +70,18 @@ export default class UserRegistration extends Component {
                                         Last Name
                                     </label>
                                 </div>
-                                <input type="text" name="lastName" onChange={this.handleChange} className="form-control" id="lastName"/>
+                                <input type="text" name="lastname" onChange={this.handleChange} className="form-control" id="lastname"/>
                             </div>
                         </div>
                         <div className="row">
                             <div className="col-12">
                                 <div className="col-2">
                                     <label className="registerLabel">
-                                        Username
+                                        username
                                     </label>
                                 </div>
                                 
-                                <input type="Username" name="Username" onChange={this.handleChange} className="form-control" id="Username"/>
+                                <input type="username" name="username" onChange={this.handleChange} className="form-control" id="username"/>
                             </div>
                         </div>
                         <div className="row">
@@ -86,7 +91,7 @@ export default class UserRegistration extends Component {
                                         Password
                                     </label>
                                 </div>
-                                <input type="text" name="password" onChange={this.handleChange} className="form-control" id="password"/>
+                                <input type="password" name="password" onChange={this.handleChange} className="form-control" id="password"/>
                             </div>
                             <div className="col-6">
                                 <div className="col-6">
@@ -94,7 +99,7 @@ export default class UserRegistration extends Component {
                                         Confirm Password
                                     </label>
                                 </div>
-                                <input type="text" name="password2" onChange={this.handleChange} className="form-control" id="password2"/>
+                                <input type="password" name="password2" onChange={this.handleChange} className="form-control" id="password2"/>
                             </div>
                         </div>
                         <div className="row buttonRows">

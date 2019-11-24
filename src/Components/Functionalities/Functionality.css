@@ -1,0 +1,73 @@
+.functionalities-form {
+  display: contents;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  min-width: 50%;
+  max-width: 600px;
+}
+
+.row {
+  padding: 5px;
+}
+
+.functionalities-table {
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.functionalities-form-row {
+  margin: auto
+}
+
+.functionalities-form-row > label {
+  margin: auto;
+  padding: 10px;
+  width: 150px;
+  justify-content: left;
+}
+
+@media (min-width: 576px) {
+  .form-inline .form-control {
+    margin: auto;
+    width: 200px;
+    min-width: 30px;
+  }
+}
+
+
+input.functionalities {
+  width: 200px;
+  min-width: 30px;
+  padding: 10px;
+}
+
+select.functionalities {
+  width: 200px;
+  min-width: 30px;
+  padding: 10px;
+}
+
+.functionalities-select {
+  width: 219px;
+  min-width: 30px;
+  padding: 10px;
+}
+
+.visitHistoryTableCard {
+  margin: 15px;
+}
+
+.visitHistoryCard {
+  width: 900px;
+  margin: auto;
+}
+
+.exploreTheaterCard {
+  width: 900px;
+  margin: auto;
+  padding-bottom: 10px;
+}
+
+.main {
+  padding-bottom: 70px;
+}

@@ -1,8 +1,7 @@
+from app.services.DBService import get_conn
 
 class CustomerService(object):
 
-    def __init__(self, connection):
-        self.connection = connection
 
     def ExploreMovie(self, username, filters):
 
@@ -14,11 +13,13 @@ class CustomerService(object):
         i_minMovPlayDate = filters.get("i_minMovPlayDate")
         i_maxMovPlayDate = filters.get("i_maxMovPlayDate")
 
-        with self.connection.cursor() as cursor:
+        connection = get_conn()
+
+        with connection.cursor() as cursor:
 
             query = "SELECT MoviePlay.movName, MoviePlay.comName, Theater.thStreet, Theater.thCity, Theater.thState, Theater.thZipcode, MoviePlay.movPlayDate\
             FROM MoviePlay INNER JOIN Theater ON Theater.thName = MoviePlay.thName AND Theater.comName = MoviePlay.comName\
-            WHERE (movName = (%s) OR (%s) is NULL) AND \
+            WHERE (MoviePlay.movName = (%s) OR (%s) is NULL) AND \
             (MoviePlay.comName = (%s) OR (%s) is NULL) AND \
             (Theater.thCity = (%s) OR (%s) is NULL) AND \
             (Theater.thState = (%s) OR (%s) is NULL) AND \
@@ -27,7 +28,9 @@ class CustomerService(object):
 
             cursor.execute(query, (i_movName, i_movName, i_comName, i_comName, i_city, i_city, i_state, i_state, i_minMovPlayDate, i_minMovPlayDate, i_maxMovPlayDate, i_maxMovPlayDate))
             data = cursor.fetchall()
-            self.connection.commit()
+            connection.commit()
+
+        connection.close()
 
     def ViewMovie(self, username, filters):
 
@@ -38,25 +41,30 @@ class CustomerService(object):
         i_thName = filters.get("i_thName")
         i_comName = filters.get("i_comName")
 
-        with self.connection.cursor() as cursor:
+        connection = get_conn()
+
+        with connection.cursor() as cursor:
 
             query = "select movReleaseDate MoviePlay where MoviePlay.movName = (%s)"
             cursor.execute(query, (i_movName))
             data2 = cursor.fetchall()
-            self.connection.commit()
+            connection.commit()
 
             query2 = "insert into CustomerViewMovie (creditCardNum, thName, comName, movName, movReleaseDate, movPlayDate) \
             values ((%s), (%s), (%s), (%s), (%s), (%s))"
             cursor.execute(query2, (i_creditCardNum, i_thName, i_comName, i_movName, data2[movReleaseDate], i_movPlayDate))
             data3 = cursor.fetchall()
-            self.connection.commit()
+            connection.commit()
+
+        connection.close()
 
 
     def ViewHistory(self, username, filters):
 
         i_cusUsername = username
+        connection = get_conn()
 
-        with self.connection.cursor() as cursor:
+        with connection.cursor() as cursor:
 
             query2 = "select movName, thName, comName, creditCardNum, movPlayDate \
             from CustomerViewMovie \
@@ -64,7 +72,9 @@ class CustomerService(object):
 
             cursor.execute(query2, i_cusUsername)
             data3 = cursor.fetchall()
-            self.connection.commit()
+            connection.commit()
+
+        connection.close()
 
 
 
