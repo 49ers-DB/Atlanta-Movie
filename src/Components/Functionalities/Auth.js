@@ -4,6 +4,7 @@ import { Route, Switch } from 'react-router-dom'
 import ExploreTheater from './User/ExploreTheater';
 import VisitHistory from './User/VisitHistory';
 import ViewHistory from './Customer/ViewHistory';
+import ExploreMovie from './Customer/ExploreMovie';
 
 
 export default class Auth extends Component {
@@ -20,9 +21,10 @@ export default class Auth extends Component {
     if (this.state.accessToken) {
       return (
         <Switch>
-          <Route exact path="/Auth/Explore-Theater" component={() => <ExploreTheater apiClient={this.props.apiClient}/>}/>
-          <Route exact path="/Auth/Visit-History" component={() => <VisitHistory apiClient={this.props.apiClient}/>}/>
-          <Route exact path="/Auth/View-History" component={() => <ViewHistory apiClient={this.props.apiClient}/>}/>
+          <Route exact path="/Auth/Explore-Theater" component={ExploreTheater}/>
+          <Route exact path="/Auth/Visit-History" component={VisitHistory}/>
+          <Route exact path="/Auth/View-History" component={ViewHistory}/>
+          <Route exact path="/Auth/Explore-Movie" component={ExploreMovie}/>
         </Switch>
 
       );
