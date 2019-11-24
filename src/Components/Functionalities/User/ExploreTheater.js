@@ -6,6 +6,7 @@ import APIClient from "../../../apiClient"
 import "../Functionality.css"
 
 import "react-datepicker/dist/react-datepicker.css";
+import { isThisISOWeek } from 'date-fns';
 
 const stateOptions = [
   {value: "AL", label: "AL"},
@@ -79,14 +80,15 @@ export default class ExploreTheater extends Component {
     super(props)
     this.state = {
       apiClient: null,
-      rowData: [["fj","fjdk","fjd"],[],[],[]],
+      rowData: [[],[],[],[]],
       theaters: [],
       companies: [],
       city: "",
       selectedTheater: null,
       selectedCompany: null,
       selectedState: null,
-      visitDate: new Date()
+      visitDate: new Date(),
+      theaterIndex: null,
     }
     
     var accessToken = localStorage.getItem("accessToken")
@@ -107,6 +109,7 @@ export default class ExploreTheater extends Component {
     this.setSelectedCompany = this.setSelectedCompany.bind(this)
     this.setSelectedState = this.setSelectedState.bind(this)
     this.setCity = this.setCity.bind(this)
+    this.checkedTheater = this.checkedTheater.bind(this);
     // this.componentDidMount = this.componentDidMount.bind(this)
     this.getTheatersForCompany = this.getTheatersForCompany.bind(this)
   }
@@ -167,6 +170,14 @@ export default class ExploreTheater extends Component {
   }
 
   handleLogVisit(event) {
+    if(this.state.theaterIndex === null) {
+      window.alert("Please choose a theater")
+      return;
+    }
+    var theater = this.state.rowData[this.state.theaterIndex];
+    var data = {"i_thname": theater[0],
+            "i_coname": theater[2],
+            "i_visitdate": this.state.visitDate}
     var accessToken = localStorage.getItem("accessToken")
     
     if (accessToken) {
@@ -174,11 +185,15 @@ export default class ExploreTheater extends Component {
       this.state.apiClient = apiClient
       console.log(apiClient)
 
-      apiClient.perform('post', '/logVisit', this.state).then( resp => {
+      apiClient.perform('post', '/logVisit', data).then( resp => {
 
       });
       
     }
+  }
+
+  checkedTheater(index) {
+    this.setState({theaterIndex: index})
   }
 
   handleChange(date) {
@@ -206,7 +221,7 @@ export default class ExploreTheater extends Component {
   render () {
     return (
       <div className="main">
-        <div className="card registrationCard">
+        <div className="card exploreTheaterCard">
           <div className="card-header">
             <h2>Explore Theater</h2>
           </div>
@@ -264,15 +279,17 @@ export default class ExploreTheater extends Component {
             <tbody>
               
                 {this.state.rowData.map( (row) => {
+                  var index = this.state.rowData.indexOf(row)
                   return (
-                    <tr key={this.state.rowData.indexOf(row)}>
+                    <tr key={index}>
                       <td>
-                        <input type="checkbox" className="form-check-input" id=""/>
+                        <input type="radio" name="optradio" id={index} onClick={ () => this.checkedTheater(index) }/>
                       </td>
                       <td>{row[0]}</td>
                       <td>{row[1]}</td>
                       <td>{row[2]}</td>
                     </tr>
+
                     
                   );
                 })}

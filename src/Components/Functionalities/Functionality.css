@@ -61,3 +61,13 @@ select.functionalities {
   width: 900px;
   margin: auto;
 }
+
+.exploreTheaterCard {
+  width: 900px;
+  margin: auto;
+  padding-bottom: 10px;
+}
+
+.main {
+  padding-bottom: 70px;
+}
