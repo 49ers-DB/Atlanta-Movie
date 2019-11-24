@@ -55,7 +55,7 @@ export default class ExploreMovie extends Component {
   }
 
   setSelectedMovie(event) {
-    this.setState({selectedMovie: event.target.value})
+    this.setState({selectedMovie: event})
   }
 
   setSelectedCompany(selectedCompany) {
@@ -110,15 +110,23 @@ export default class ExploreMovie extends Component {
     
     if (accessToken) {
       var apiClient = new APIClient(accessToken)
+      var com = this.state.selectedCompany
+      if (com) {com = com['value']}
+      var mov = this.state.selectedMovie
+      if (mov) {mov = mov['value']}
+      var stateName = this.state.selectedState
+      if (stateName) {stateName = stateName['value']}
+
+
       var requestBody = {
-        i_movName: this.state.selectedMovie,
-        i_comName: this.state.selectedCompany,
+        i_movName: mov,
+        i_comName: com,
         i_city: this.state.city,
-        i_state: this.state.selectedState,
+        i_state: stateName,
         i_minMovPlayDate: this.state.playDate1,
         i_maxMovPlayDate: this.state.playDate2
       }
-      apiClient.perform("post", "/exploreMovie", {}).then( resp => {
+      apiClient.perform("post", "/exploreMovie", requestBody).then( resp => {
         this.setState({rowData: formatRows(resp['moviePlays'])})
       })
     }
@@ -135,7 +143,7 @@ export default class ExploreMovie extends Component {
         i_thName: this.state.rowData[this.state.moviePlayIndex][1],
         i_comName: this.state.rowData[this.state.moviePlayIndex][3],
         i_movPlayDate: this.state.rowData[this.state.moviePlayIndex][4],
-        i_creditCardNum: this.state.selectedCreditCard
+        i_creditCardNum: this.state.selectedCreditCard['value']
       }
       apiClient.perform("post", "/viewMovie", requestBody)
     }
