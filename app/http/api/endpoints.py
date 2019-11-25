@@ -137,6 +137,12 @@ def getCreditCardNumbers():
   response = drop_down_service.getCreditCardNumbers(username)
   return json_response(response)
   
+@app.route('/managers', methods=['GET'])
+@admin_only
+def get_managers():
+
+  response = drop_down_service.ManagerDropDown()
+  return json_response(response)
 
 #----------UserService--------------------
 @app.route('/exploreTheater', methods=['POST'])

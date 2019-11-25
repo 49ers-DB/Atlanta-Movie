@@ -23,11 +23,14 @@ class DropDownService(object):
         connection = get_conn()
 
         with connection.cursor() as cursor:
-    #Create Theater
 
             query = "select firstname, lastname from User inner join Manager on Manager.username = User.username"
+
+            cursor.execute(query)
+            managers = cursor.fetchall()
         
-            connection.close()
+        connection.close()
+        return {'ok':True, 'managers':managers}
 
 
     def MovieDropDown(self):
