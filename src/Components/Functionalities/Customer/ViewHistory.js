@@ -29,12 +29,6 @@ export default class ViewHistory extends Component {
     }
   }
 
-  getData() {
-    
-  }
-
-
-
 
   render () {
     return (
