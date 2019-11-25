@@ -183,8 +183,6 @@ def get_theater_overview():
   user = g.user['username']
   response = manager_service.TheaterOverview(user, data)
   return json_response({'ok': True, "data": response})
-<<<<<<< HEAD
-=======
 
 
 @app.route('/GetVisitHistory', methods=['POST'])
@@ -196,7 +194,6 @@ def get_visit_history():
 
   data = user_service.VisitHistory(user, data)
   return json_response({'data': data})
->>>>>>> master
 
 
 @app.route('/moviePlay', methods=['POST'])
