@@ -45,23 +45,23 @@ class ManagerService(object):
 
         with connection.cursor() as cursor:
 
-            info = """select distinct MoviePlay.movName as \"Movie\", MoviePlay.movReleaseDate as \"Release_Date\", 
-            MoviePlay.movPlayDate as \"Play_Date\", Movie.duration as \"Duration\" 
-            from MoviePlay join Movie on MoviePlay.movName=Movie.movName where MoviePlay.thName in 
-            (select thName from Theater where Theater.manUsername=(%s)) 
+            info = """select distinct MoviePlay.movName as \"Movie\", MoviePlay.movReleaseDate as \"Release_Date\",
+            MoviePlay.movPlayDate as \"Play_Date\", Movie.duration as \"Duration\"
+            from MoviePlay join Movie on MoviePlay.movName=Movie.movName where MoviePlay.thName in
+            (select thName from Theater where Theater.manUsername=(%s))
             and ((%s) is NULL or Movie.movReleaseDate >=(%s))
             and ((%s) is NULL or Movie.movReleaseDate <=(%s))
             and ((%s) is NULL or MoviePlay.movPlayDate <=(%s))
-            and ((%s) is NULL or MoviePlay.movPlayDate >=(%s)) 
+            and ((%s) is NULL or MoviePlay.movPlayDate >=(%s))
             and ((%s) is NULL or Movie.duration <=(%s))
             and ((%s) is NULL or Movie.duration >=(%s))
             and ((%s) is NULL or Movie.movName like(%s))
             and ((%s) is NULL or MoviePlay.movPlayDate!=NULL)
-            Union 
-            select Movie.movName as \"Movie\", Movie.movReleaseDate as \"Release_Date\", 
+            Union
+            select Movie.movName as \"Movie\", Movie.movReleaseDate as \"Release_Date\",
             cast(NULL as date) as \"Play_Date\", Movie.duration as \"Duration\" from Movie
-            where ((%s) is NULL or Movie.movReleaseDate >=(%s)) 
-            and ((%s) is NULL or Movie.movReleaseDate <=(%s)) 
+            where ((%s) is NULL or Movie.movReleaseDate >=(%s))
+            and ((%s) is NULL or Movie.movReleaseDate <=(%s))
             and ((%s) is NULL or Movie.duration >=(%s))
             and ((%s) is NULL or Movie.duration <=(%s))
             and ((%s) is NULL or Movie.movName like(%s))"""
@@ -94,13 +94,13 @@ class ManagerService(object):
 
             cursor.execute(query, (i_manUsername))
 
-            data2 = cursor.fetchall()
+            data2 = cursor.fetchall()[0]
 
             connection.commit()
 
             query = "insert into MoviePlay (thName, comName, movName, movReleaseDate, movPlayDate) values ((%s), (%s), (%s), (%s), (%s))"
 
-            cursor.execute(query, (data2[thName], data2[comName], i_movName, i_movReleaseDate, i_movPlayDate))
+            cursor.execute(query, (data2['thName'], data2['comName'], i_movName, i_movReleaseDate, i_movPlayDate))
 
             data3 = cursor.fetchall()
 
