@@ -76,8 +76,14 @@ class UserService(object):
             i_comName=None
         else:
             i_comName=filters.get("selectedCompany").get("value")
-        i_minVisitDate =dateutil.parser.parse(filters.get("visitDate1"))
-        i_maxVisitDate =dateutil.parser.parse(filters.get("visitDate2"))
+        if(filters.get("visitDate1") == None):
+            i_minVisitDate = None
+        else :
+            i_minVisitDate =dateutil.parser.parse(filters.get("visitDate1"))
+        if(filters.get("visitDate2") == None):
+            i_maxVisitDate = None
+        else: 
+            i_maxVisitDate =dateutil.parser.parse(filters.get("visitDate2"))
         i_username = username
 
         connection = get_conn()

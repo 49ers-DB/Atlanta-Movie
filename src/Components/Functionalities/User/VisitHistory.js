@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import DatePicker from "react-datepicker";
 import Select from "react-select";
 import APIClient from "../../../apiClient"
+import toDateString from '../../../actions/date'
 
 import "../Functionality.css"
 
@@ -30,10 +31,10 @@ export default class VisitHistory extends Component {
 
       
 
-    //   apiClient.perform('post', '/visitHistory', this.state).then(resp => {
-    //     var rowData = resp
-    //     this.state.rowData = rowData
-    //   });
+      apiClient.perform('post', '/GetVisitHistory', this.state ).then( resp => {
+        this.setState({rowData: resp['data']},
+        console.log(resp))
+      });
       
     }
     this.handleFilter = this.handleFilter.bind(this)
@@ -174,8 +175,8 @@ export default class VisitHistory extends Component {
                   
                 this.state.rowData.map( (row) => {
                   if(this.state.rowData.length > 0) {
-                    var date = new Date(row['visitDate'])
-                  var address = row['thStreet'] + ' ' + row['thStreet'] + ', ' + row['thCity'] + ', ' + row['thState'] + ' ' + row['thZipCode']
+                    var date = toDateString(row['visitDate'])
+                  var address = row['thStreet']  + ', ' + row['thCity'] + ', ' + row['thState'] + ' ' + row['thZipcode']
                   return (
                     <tr key={this.state.rowData.indexOf(row)}>
                       <td>{row['thName']}</td>
