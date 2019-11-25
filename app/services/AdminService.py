@@ -59,6 +59,7 @@ class AdminService(object):
 
         connection.close()
 
+        return data
 
     def ManageCompany(self, username, filters):
 
@@ -120,8 +121,11 @@ class AdminService(object):
         connection = get_conn()
         with connection.cursor() as cursor:
 
+
             query2 = "insert into Theater (thName, comName, capacity, thStreet, thCity, thState, thZipcode, manUsername) \
             values ((%s), (%s), (%s), (%s), (%s), (%s), (%s), (%s))"
+
+
 
             cursor.execute(query2, (i_thName, i_comName, i_capacity, i_thStreet, i_thCity, i_thState, i_thZipcode, i_manUsername))
             data2 = cursor.fetchall()
@@ -130,6 +134,28 @@ class AdminService(object):
         connection.close()
 
     def CompanyDetail(self, username, filters):
+        i_comName = filters.get("i_comName")
+
+        with self.connection.cursor() as cursor:
+            #returns all employees and the company name
+            query1 = "select user.firstname, user.lastname, manager.comName from user join manager on user.username=manager.username \
+            where user.username in (select manager.username from manager) and manager.comName in (select company.comName from company where company.comName = (%s))"
+
+            cursor.execute(query1, (i_comName))
+            employees = cursor.fetchall()
+            self.connection.commit()
+            #returns theater details for the company
+            query2 = "select theater.thName, user.firstname, user.lastname, theater.thCity, theater.thState, theater.capacity \
+            from theater join user on user.username=theater.manUsername where theater.comName=(%s)"
+
+
+            cursor.execute(query2, (i_comName))
+            theaters = cursor.fetchall()
+            self.connection.commit()
+
+            return employees
+            return theaters
+
 
 
 
@@ -143,9 +169,12 @@ class AdminService(object):
         connection = get_conn()
         with connection.cursor() as cursor:
 
+
             query3 = "insert into Movie (movName, movReleaseDate, duration) \
             values ((%s), (%s), (%s))"
 
             cursor.execute(query3, (i_movName, i_movReleaseDate, i_duration))
             data3 = cursor.fetchall()
             connection.commit()
+
+        connection.close()

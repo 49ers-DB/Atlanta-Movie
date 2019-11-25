@@ -42,7 +42,6 @@ class APIClient {
   }
 
   //---------Data_Getters-----------
-
   getTheaters(companyName) {
     return this.perform('get', `/theaters/${companyName}`);
   }
@@ -50,6 +49,12 @@ class APIClient {
   getCompanies() {
     return this.perform('get', '/getCompanies');
   }
+
+  getMovies() {
+    return this.perform('get', '/movies');
+  }
+
+  
 
   //-------Explore Theater-------
   exploreTheater(filters) {
@@ -63,6 +68,10 @@ class APIClient {
 
   example() {
     return this.perform('get', '/example/12');
+  }
+
+  getUserType() {
+    return this.perform('get', '/user', 12);
   }
 
 

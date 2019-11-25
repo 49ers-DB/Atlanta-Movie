@@ -60,6 +60,7 @@ select.functionalities {
 .visitHistoryCard {
   width: 900px;
   margin: auto;
+  margin-bottom: 300px;
 }
 
 .exploreTheaterCard {

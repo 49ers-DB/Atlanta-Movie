@@ -23,7 +23,7 @@ class TestManagerService(object):
 
     
     def test_TheaterOverview_NoFilters(self):
-        
+
         TOTestDict = {}
         manager_service = ManagerService()
         Actual= manager_service.TheaterOverview('imbatman',TOTestDict)
@@ -47,7 +47,7 @@ class TestManagerService(object):
 
 
     def test_TheaterOverview_MinReleaseDate(self):
-        
+
         TOTestDict = {'i_minReleaseDate':datetime.date(2010,11,26)}
         manager_service = ManagerService()
         Actual= manager_service.TheaterOverview('imbatman',TOTestDict)
@@ -58,14 +58,14 @@ class TestManagerService(object):
             {'Movie':"Spider-Man: Into the Spider-Verse",'Release_Date':datetime.date(2018,12,1),'Play_Date':None,'Duration':117},
             {'Movie':"Calculus Returns: A ML Story",'Release_Date':datetime.date(2019,9,19),'Play_Date':None,'Duration':314},
             {'Movie':"4400 The Movie",'Release_Date':datetime.date(2019,8,12),'Play_Date':datetime.date(2019,10,12),'Duration':130}]
-        
+
         print(Actual)
         assert len(expected) == len(Actual)
         assert sorted(expected, key=functools.cmp_to_key(compare_movie)) == sorted(Actual, key=functools.cmp_to_key(compare_movie))
 
 
     def test_TheaterOverview_ReleaseDate(self):
-        
+
         TOTestDict = {'i_minReleaseDate':datetime.date(1985,8,13),
                     'i_maxReleaseDate':datetime.date(2010,11,26)
         }
@@ -85,7 +85,7 @@ class TestManagerService(object):
 
 
     def test_TheaterOverview_PlayDate(self):
-        
+
         TOTestDict = {'i_minPlayDate':datetime.date(2019,3, 19),
                     'i_maxPlayDate':datetime.date(2019, 11, 12)
         }
@@ -131,13 +131,13 @@ def compare_movie(item1, item2):
         return compare_play_date(item1, item2)
 
 def compare_play_date(item1, item2):
-    if item1['Play_Date'] is None and item2['Play_Date'] is None: 
+    if item1['Play_Date'] is None and item2['Play_Date'] is None:
         return 0
     elif item1['Play_Date'] is None:
         return 1
     elif item2['Play_Date'] is None:
         return -1
-    
+
     if item1['Play_Date'] < item2['Play_Date']:
         return -1
     elif item1['Play_Date'] > item2['Play_Date']:
