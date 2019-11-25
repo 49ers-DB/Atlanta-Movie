@@ -8,25 +8,22 @@ export default class TheaterOverview extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      apiClient: null,
       rowData: [[],[],[],[],[],[]],
+      movieName: "",
+      movieDuration1: "",
+      movieDuration2: "",
+      movieReleaseDate1: null,
+      movieReleaseDate2: null,
+      moviePlayDate1: null,
+      moviePlayDate2: null,
+      includeNotPlayed: false
     }
     
     var accessToken = localStorage.getItem("accessToken")
     
     if (accessToken) {
       var apiClient = new APIClient(accessToken)
-      this.state.apiClient = apiClient
-      console.log(apiClient)
 
-
-      
-
-    //   apiClient.perform('post', '/visitHistory', this.state).then(resp => {
-    //     var rowData = resp
-    //     this.state.rowData = rowData
-    //   });
-      
     }
   }
 
@@ -72,36 +69,33 @@ export default class TheaterOverview extends Component {
                 <label> Only include not played movies</label>
               </div>
             </div>
-
-
             
-          <div className="functionalities-table">
-          <table className="table">
-            <thead>
-              <tr>
-                <th scope="col">Movie Name</th>
-                <th scope="col">Duration</th>
-                <th scope="col">Release Date</th>
-                <th scope="col">Play Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              
-                {this.state.rowData.map( (row) => {
-                  return (
-                    <tr key={this.state.rowData.indexOf(row)}>
-                      <td>{row[0]}</td>
-                      <td>{row[1]}</td>
-                      <td>{row[2]}</td>
-                      <td>{row[3]}</td>
-                    </tr>
-                  );
-                })}
-    
-            </tbody>
-          </table>
-          </div>
-
+            <div className="functionalities-table">
+            <table className="table">
+              <thead>
+                <tr>
+                  <th scope="col">Movie Name</th>
+                  <th scope="col">Duration</th>
+                  <th scope="col">Release Date</th>
+                  <th scope="col">Play Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  {this.state.rowData.map( (row) => {
+                    return (
+                      <tr key={this.state.rowData.indexOf(row)}>
+                        <td>{row[0]}</td>
+                        <td>{row[1]}</td>
+                        <td>{row[2]}</td>
+                        <td>{row[3]}</td>
+                      </tr>
+                    );
+                  })}
+      
+              </tbody>
+            </table>
+            </div>
           </div>
           
           <div className="row">
@@ -109,10 +103,7 @@ export default class TheaterOverview extends Component {
               <a className="btn btn-primary" href="/menu">Back</a>
             </div>
           </div>
-          
-
-        </div>
-          
+        </div>     
       </div>
     )
   }
