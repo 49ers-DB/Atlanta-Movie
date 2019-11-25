@@ -1,27 +1,27 @@
 from app.services.DBService import get_conn
-
+import dateutil.parser
 
 class AdminService(object):
 
-    def ApproveUser(self, username, filters):
+    def ApproveUser(self, username):
 
         i_username = username
         connection = get_conn()
 
         with connection.cursor() as cursor:
-            query1 = "update User set Status = \"Approved\" where username = (%s)"
+            query1 = "update User set status = 'Approved' where username = (%s)"
             cursor.execute(query1, (i_username))
             data1 = cursor.fetchall()
             connection.commit()
         connection.close()
 
-    def DeclineUser(self, username, filters):
+    def DeclineUser(self, username):
 
         i_username = username
         connection = get_conn()
 
         with connection.cursor() as cursor:
-            query4 = "update User set Status = \"Declined\" where username = (%s)"
+            query4 = "update User set Status = 'Declined' where username = (%s)"
             cursor.execute(query4, (i_username))
             data1 = cursor.fetchall()
             connection.commit()
@@ -50,7 +50,7 @@ class AdminService(object):
             union \
             select user.username as \"Username\", \"User\" as \"User Type\" from user where user.username in (select user.username from user) and user.username not in (select manager.username from manager inner join customer where manager.username = customer.username) and user.username not in (select customer.username from customer) and user.username not in (select manager.username from manager)) as Table2 \
             where ((%s) is null or user.username = (%s)) AND \
-            (user.status = (%s) or (%s) = "ALL") \
+            (user.status = (%s) or (%s) = 'ALL') \
             order by (%s) (%s)"
 
             cursor.execute(query, (i_username, i_username, i_status, i_status, i_sortBy, i_sortDirection))
@@ -100,9 +100,8 @@ class AdminService(object):
             data = cursor.execute(query, (i_comName,i_comName,i_minCity,i_minCity,i_maxCity,i_maxCity,i_minTheater,i_minTheater,i_maxTheater,i_maxTheater,i_minEmployee,i_minEmployee,i_maxEmployee,i_maxEmployee,i_comName,i_comName,i_minCity,i_minCity,i_maxCity,i_maxCity,i_minTheater,i_minTheater,i_maxTheater,i_maxTheater,i_minEmployee,i_minEmployee,i_maxEmployee,i_maxEmployee))
             info = cursor.fetchall()
             connection.commit()
-            return info
-
         connection.close()
+        return info
 
 
 
@@ -153,8 +152,8 @@ class AdminService(object):
             theaters = cursor.fetchall()
             self.connection.commit()
 
-            return employees
-            return theaters
+        return employees
+        return theaters
 
 
 

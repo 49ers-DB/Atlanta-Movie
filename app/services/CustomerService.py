@@ -29,7 +29,7 @@ class CustomerService(object):
             i_state,
             i_state,
             i_minMovPlayDate,
-            i_minMovPlayDate, 
+            i_minMovPlayDate,
             i_maxMovPlayDate,
             i_maxMovPlayDate)
 
@@ -86,7 +86,7 @@ class CustomerService(object):
         connection.close()
 
 
-    def ViewHistory(self, username, filters):
+    def ViewHistory(self, username):
 
         i_cusUsername = username
         connection = get_conn()
