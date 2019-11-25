@@ -41,7 +41,7 @@ export default class ScheduleMovie extends Component {
     event.preventDefault()
     var accessToken = localStorage.getItem("accessToken")
     
-    if (accessToken) {
+    if (accessToken && this.state.playDate && this.state.releaseDate && this.state.selectedMovie) {
       var apiClient = new APIClient(accessToken)
       var requestBody = {
         i_movName: this.state.selectedMovie,
