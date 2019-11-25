@@ -86,7 +86,7 @@ class CustomerService(object):
         connection.close()
 
 
-    def ViewHistory(self, username, filters):
+    def ViewHistory(self, username):
 
         i_cusUsername = username
         connection = get_conn()
@@ -102,6 +102,7 @@ class CustomerService(object):
             connection.commit()
 
         connection.close()
+        return data3
 
 
 

@@ -225,3 +225,15 @@ def get_user_type():
 
 def json_response(payload, status_code=200):
    return json.dumps(payload), status_code, {'Content-type': 'application/json'}
+
+
+
+#----------CustomerService--------------------
+@app.route('/viewHistory', methods=['POST'])
+@login_required
+def viewHistory():
+  user = g.user['username']
+  print(user)
+
+  data = customer_service.ViewHistory(user)
+  return json_response({'data': data})
