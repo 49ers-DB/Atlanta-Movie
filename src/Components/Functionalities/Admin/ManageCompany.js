@@ -9,7 +9,14 @@ export default class ManageCompany extends Component {
     super(props)
     this.state = {
       apiClient: null,
-      rowData: [],
+      rowData: [[],[]],
+      selectedComName: null,
+      numCitiesCov1: "",
+      numCitiesCov2: "",
+      numTheaters1: "",
+      numTheaters2: "",
+      numEmployees1: "",
+      numEmployees2: "",
     }
     
     var accessToken = localStorage.getItem("accessToken")
@@ -86,8 +93,10 @@ export default class ManageCompany extends Component {
               <tbody>
                 
                   {this.state.rowData.map( (row) => {
+                    var index= this.state.rowData.indexOf(row)
                     return (
                       <tr key={this.state.rowData.indexOf(row)}>
+                        <td><input type="radio" id={index}/></td>
                         <td>{row[0]}</td>
                         <td>{row[1]}</td>
                         <td>{row[2]}</td>
