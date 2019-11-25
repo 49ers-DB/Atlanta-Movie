@@ -83,6 +83,7 @@ class ManagerService(object):
         connection = get_conn()
 
         with connection.cursor() as cursor:
+
             query = cursor.execute("select movName, movReleaseDate from Movie") # movieSchedule1 is the output for Schedule Movie
 
             movieSchedule1 = cursor.fetchall()
@@ -93,13 +94,13 @@ class ManagerService(object):
 
             cursor.execute(query, (i_manUsername))
 
-            data2 = cursor.fetchall()
+            data2 = cursor.fetchall()[0]
 
             connection.commit()
 
             query = "insert into MoviePlay (thName, comName, movName, movReleaseDate, movPlayDate) values ((%s), (%s), (%s), (%s), (%s))"
 
-            cursor.execute(query, (data2[thName], data2[comName], i_movName, i_movReleaseDate, i_movPlayDate))
+            cursor.execute(query, (data2['thName'], data2['comName'], i_movName, i_movReleaseDate, i_movPlayDate))
 
             data3 = cursor.fetchall()
 
