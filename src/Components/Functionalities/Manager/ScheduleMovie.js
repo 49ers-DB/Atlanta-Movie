@@ -43,8 +43,11 @@ export default class ScheduleMovie extends Component {
     
     if (accessToken && this.state.playDate && this.state.releaseDate && this.state.selectedMovie) {
       var apiClient = new APIClient(accessToken)
+      var movName = this.state.selectedMovie
+      if (movName) {movName = movName['value']}
+      
       var requestBody = {
-        i_movName: this.state.selectedMovie,
+        i_movName: movName,
         i_movReleaseDate: this.state.releaseDate,
         i_movPlayDate: this.state.playDate
       }
