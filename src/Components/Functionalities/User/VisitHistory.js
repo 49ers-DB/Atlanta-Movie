@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import DatePicker from "react-datepicker";
 import Select from "react-select";
 import APIClient from "../../../apiClient"
+import toDateString from '../../../actions/date'
 
 import "../Functionality.css"
 
@@ -13,38 +14,20 @@ export default class VisitHistory extends Component {
     super(props)
     this.state = {
       apiClient: null,
-      rowData: [[],[],[],[],[]],
+      rowData: [],
       companies: [],
       selectedCompany: null,
       visitDate1: null,
       visitDate2: null,
     }
     
-    var accessToken = localStorage.getItem("accessToken")
-    
-    if (accessToken) {
-      var apiClient = new APIClient(accessToken)
-      this.state.apiClient = apiClient
-      console.log(apiClient)
-
-
-      
-
-    //   apiClient.perform('post', '/visitHistory', this.state).then(resp => {
-    //     var rowData = resp
-    //     this.state.rowData = rowData
-    //   });
-      
-    }
     this.handleFilter = this.handleFilter.bind(this)
     this.handleChange1 = this.handleChange1.bind(this)
     this.handleChange2 = this.handleChange2.bind(this)
     this.setSelectedCompany = this.setSelectedCompany.bind(this)
+
+    this.handleFilter(new Event(""))
   }
-
-
-  promiseTheaterOptions = inputValue =>
-  new Promise();
 
 
   getCompanies() {
@@ -60,22 +43,30 @@ export default class VisitHistory extends Component {
   }
 
   handleFilter(event) {
-      if(this.state.visitDate1 > this.state.visitDate2) {
-          window.alert("Invalid Date Rage")
-      } else {
-        event.preventDefault()
-        var accessToken = localStorage.getItem("accessToken")
-        
-        if (accessToken) {
-          var apiClient = new APIClient(accessToken)
+      
+    event.preventDefault()
+    var accessToken = localStorage.getItem("accessToken")
     
-        //   apiClient.perform('post', '/visitHistory', this.state ).then( resp => {
-    
-        //   });
-          
-        }
+    if (accessToken) {
+      var apiClient = new APIClient(accessToken)
 
+      var requestBody = JSON.parse(JSON.stringify(this.state))
+      if (requestBody.visitDate1) {
+        requestBody.visitDate1 = toDateString(this.state.visitDate1.toDateString())
       }
+      
+      if (requestBody.visitDate2) {
+        requestBody.visitDate2 = toDateString(this.state.visitDate2.toDateString())
+      }
+
+      apiClient.perform('post', '/GetVisitHistory', requestBody ).then( resp => {
+        this.setState({rowData: resp['data']},
+        console.log(resp))
+      });
+      
+    }
+
+      
     
   }
 
@@ -169,15 +160,22 @@ export default class VisitHistory extends Component {
             </thead>
             <tbody>
               
-                {this.state.rowData.map( (row) => {
+                {
+                  
+                this.state.rowData.map( (row) => {
+                  if(this.state.rowData.length > 0) {
+                    var date = toDateString(row['visitDate'])
+                  var address = row['thStreet']  + ', ' + row['thCity'] + ', ' + row['thState'] + ' ' + row['thZipcode']
                   return (
                     <tr key={this.state.rowData.indexOf(row)}>
-                      <td>{row[0]}</td>
-                      <td>{row[1]}</td>
-                      <td>{row[2]}</td>
-                      <td>{row[3]}</td>
+                      <td>{row['thName']}</td>
+                      <td>{address}</td>
+                      <td>{row['comName']}</td>
+                      <td>{date}</td>
                     </tr>
                   );
+                  }
+                  
                 })}
     
             </tbody>

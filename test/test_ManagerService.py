@@ -5,7 +5,9 @@ import datetime
 import pymysql
 import sys
 import os
+
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from app.services.DBService import get_conn
 
 
 from app.services.ManagerService import ManagerService
@@ -13,15 +15,7 @@ from app.services.ManagerService import ManagerService
 
 class TestManagerService(object):
 
-    connection = pymysql.connect(host='localhost',
-                             user='root',
-                             password='1234',
-                             db='moviez',
-                             charset='utf8mb4',
-                             port=3306,
-                             cursorclass=pymysql.cursors.DictCursor)
 
-    
     def test_TheaterOverview_NoFilters(self):
 
         TOTestDict = {}
@@ -118,6 +112,7 @@ class TestManagerService(object):
         assert sorted(Expected, key=functools.cmp_to_key(compare_movie)) == sorted(Actual, key=functools.cmp_to_key(compare_movie))
 
 
+<<<<<<< HEAD
     def test_TheaterOverview_maxDurFilter(self):
 
         TOTestDict = {
@@ -207,12 +202,34 @@ class TestManagerService(object):
         print(Actual)
         assert len(Expected) == len(Actual)
         assert sorted(Expected, key=functools.cmp_to_key(compare_movie)) == sorted(Actual, key=functools.cmp_to_key(compare_movie))
+=======
+    def test_Schedule_Movie(self):
+
+        filterz = {'i_movName':'Spaceballs','i_movReleaseDate':datetime.date(1987,6,24),'i_movPlayDate':datetime.date(2030,6,24)}
 
 
+        connection = get_conn()
+        with connection.cursor() as cursor:
+            sql_del = """delete From MoviePlay where movPlayDate = '2030-06-24'"""
+            cursor.execute(sql_del)
+            connection.commit()
 
+            manager_service = ManagerService()
+>>>>>>> master
 
+            manager_service.ScheduleMovie('imbatman',filterz)
 
+            cursor.execute("select * from MoviePlay where movPlayDate = '2030-06-24'")
+            data=cursor.fetchall()
+            connection.commit()
 
+            sql_del = """delete From MoviePlay where movPlayDate = '2030-06-24'"""
+            cursor.execute(sql_del)
+            connection.commit()
+
+        connection.close()
+
+        assert len(data)==1
 
 
 

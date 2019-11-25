@@ -1,7 +1,11 @@
 import React, { Component } from 'react'
 import APIClient from "../../../apiClient"
+import movies from "../../../actions/movies"
+import Select from 'react-select'
+import  DatePicker from 'react-datepicker'
 
 import "../Functionality.css"
+
 
 export default class ScheduleMovie extends Component {
   constructor(props) {
@@ -9,28 +13,53 @@ export default class ScheduleMovie extends Component {
     this.state = {
       apiClient: null,
       rowData: [[],[],[],[],[],[]],
+      selectedMovie: null,
+      releaseDate: null,
+      playDate: null
     }
+    this.setSelectedMovie = this.setSelectedMovie.bind(this)
+    this.handleReleaseDateChange = this.handleReleaseDateChange.bind(this)
+    this.handlePlayDateChange = this.handlePlayDateChange.bind(this)
+    this.handleAdd = this.handleAdd.bind(this)
     
-    var accessToken = localStorage.getItem("accessToken")
-    
-    if (accessToken) {
-      var apiClient = new APIClient(accessToken)
-      this.state.apiClient = apiClient
-      console.log(apiClient)
-
-
-      
-
-    //   apiClient.perform('post', '/visitHistory', this.state).then(resp => {
-    //     var rowData = resp
-    //     this.state.rowData = rowData
-    //   });
-      
-    }
   }
 
+  setSelectedMovie(event) {
+    this.setState({selectedMovie: event})
+  }
 
+  handleReleaseDateChange(releaseDate) {
+    console.log(releaseDate)
+    this.setState({releaseDate})
+  }
 
+  handlePlayDateChange(playDate) {
+    this.setState({playDate})
+  }
+
+  handleAdd(event) {
+    event.preventDefault()
+    var accessToken = localStorage.getItem("accessToken")
+    
+    if (accessToken && this.state.playDate && this.state.releaseDate && this.state.selectedMovie) {
+      var apiClient = new APIClient(accessToken)
+      var movName = this.state.selectedMovie
+      if (movName) {movName = movName['value']}
+      
+      var requestBody = {
+        i_movName: movName,
+        i_movReleaseDate: this.state.releaseDate,
+        i_movPlayDate: this.state.playDate
+      }
+      apiClient.perform("post", "/moviePlay", requestBody).catch( error => {
+        window.alert("Could not add movie")
+      })
+
+      
+    } else {
+      window.alert("Could not add movie");
+    }
+  }
 
   render () {
     return (
@@ -39,41 +68,42 @@ export default class ScheduleMovie extends Component {
           <div className="card-header">
             <h2>Schedule Movie</h2>
           </div>
-          <div className="card visitHistoryTableCard">
-          <div className="functionalities-table">
-          <table className="table">
-            <thead>
-              <tr>
-                <th scope="col">Movie</th>
-                <th scope="col">Theater</th>
-                <th scope="col">Company</th>
-                <th scope="col">Card#</th>
-                <th scope="col">View Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              
-                {this.state.rowData.map( (row) => {
-                  return (
-                    <tr key={this.state.rowData.indexOf(row)}>
-                      <td>{row[0]}</td>
-                      <td>{row[1]}</td>
-                      <td>{row[2]}</td>
-                      <td>{row[3]}</td>
-                      <td>{row[4]}</td>
-                    </tr>
-                  );
-                })}
-    
-            </tbody>
-          </table>
-          </div>
-
+          <div className="card-body">
+            <div className="row">
+              <div className="form-group form-inline functionalities-form-row col">
+                  <label htmlFor="theaterName">Movie Name</label>
+                  <Select className="functionalities-select"
+                    value={this.state.selectedMovie}
+                    onChange={this.setSelectedMovie}
+                    options={movies()}
+                  />
+              </div>
+              <div className="form-group form-inline functionalities-form-row col">
+                  <label htmlFor="theaterName">Release Date</label>
+                  <DatePicker className="form-control"
+                    selected={this.state.releaseDate}
+                    onChange={this.handleReleaseDateChange}
+                  />
+              </div>
+            </div>
+            <div className="row">
+              <div className=" functionalities-form-row col">
+                <label htmlFor="theaterName">Play Date</label>
+                <DatePicker className="form-control"
+                  selected={this.state.playDate}
+                  onChange={this.handlePlayDateChange}
+                />
+              </div>
+            </div>
           </div>
           
           <div className="row">
-            <div className="col-12">
+            <div className="col-3">
               <a className="btn btn-primary" href="/menu">Back</a>
+            </div>
+            <div className="col-6"></div>
+            <div className="col-3">
+              <button className="btn btn-primary" onClick={this.handleAdd}>Add</button>
             </div>
           </div>
           
