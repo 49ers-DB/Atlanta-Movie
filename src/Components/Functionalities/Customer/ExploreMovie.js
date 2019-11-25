@@ -126,6 +126,7 @@ export default class ExploreMovie extends Component {
         i_minMovPlayDate: this.state.playDate1,
         i_maxMovPlayDate: this.state.playDate2
       }
+      console.log(requestBody)
       apiClient.perform("post", "/exploreMovie", requestBody).then( resp => {
         this.setState({rowData: formatRows(resp['moviePlays'])})
       })

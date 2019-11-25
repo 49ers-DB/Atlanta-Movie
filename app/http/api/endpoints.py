@@ -140,7 +140,7 @@ def getCreditCardNumbers():
 @login_required
 def explore_theater():
   data = request.get_json()
-  
+  print(data)  
   query_data = user_service.ExploreTheater(data)
   return json_response({'ok': True, 'theaters': query_data})
 

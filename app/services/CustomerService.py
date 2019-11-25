@@ -12,12 +12,32 @@ class CustomerService(object):
         i_minMovPlayDate = filters.get("i_minMovPlayDate")
         i_maxMovPlayDate = filters.get("i_maxMovPlayDate")
 
+        if i_city == "":
+            i_city = None
+
+        if i_state == "":
+            i_state = None
+
+        data_tuple = (
+            i_movName,
+            i_movName,
+            i_comName,
+            i_comName,
+            i_city,
+            i_city,
+            i_state,
+            i_state,
+            i_minMovPlayDate,
+            i_minMovPlayDate, 
+            i_maxMovPlayDate,
+            i_maxMovPlayDate)
+
         connection = get_conn()
         data = {}
 
         with connection.cursor() as cursor:
 
-            query = "SELECT MoviePlay.movName, MoviePlay.comName, Theater.thStreet, Theater.thCity, Theater.thState, Theater.thZipcode, MoviePlay.movPlayDate\
+            query = "SELECT MoviePlay.movName, MoviePlay.comName,Theater.thName, Theater.thStreet, Theater.thCity, Theater.thState, Theater.thZipcode, MoviePlay.movPlayDate\
             FROM MoviePlay INNER JOIN Theater ON Theater.thName = MoviePlay.thName AND Theater.comName = MoviePlay.comName\
             WHERE (MoviePlay.movName = (%s) OR (%s) is NULL) AND \
             (MoviePlay.comName = (%s) OR (%s) is NULL) AND \
@@ -26,7 +46,7 @@ class CustomerService(object):
             (MoviePlay.movPlayDate >= (%s) OR (%s) is NULL) AND \
             (MoviePlay.movPlayDate <= (%s) OR (%s) is NULL)"
 
-            cursor.execute(query, (i_movName, i_movName, i_comName, i_comName, i_city, i_city, i_state, i_state, i_minMovPlayDate, i_minMovPlayDate, i_maxMovPlayDate, i_maxMovPlayDate))
+            cursor.execute(query, data_tuple)
             data = cursor.fetchall()
             connection.commit()
 
