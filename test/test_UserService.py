@@ -206,7 +206,7 @@ class TestUserService(object):
 
 
 
-    def visit_history(self):
+    def test_visit_history(self):
       filterz = {'i_comName':'4400 Theater Company','i_minVisitDate':datetime.date(2005,11,25),'i_maxVisitDate':datetime.date(2012,11,30)}
 
 
@@ -217,7 +217,7 @@ class TestUserService(object):
 
         user_service.VisitHistory('imready',filterz)
 
-        cursor.execute("select * from UserVisitTheater where username=imready")
+        cursor.execute("select * from UserVisitTheater where username='imready'")
         data=cursor.fetchall()
         connection.commit()
 
@@ -226,7 +226,7 @@ class TestUserService(object):
       assert len(data)==1
 
 
-    def visit_history_empty(self):
+    def test_visit_history_empty(self):
       filterz = {}
 
 
@@ -237,7 +237,7 @@ class TestUserService(object):
 
         user_service.VisitHistory('calcwizard',filterz)
 
-        cursor.execute("select * from UserVisitTheater where username=calcwizard")
+        cursor.execute("select * from UserVisitTheater where username='calcwizard'")
         data=cursor.fetchall()
         connection.commit()
 
