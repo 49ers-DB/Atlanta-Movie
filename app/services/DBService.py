@@ -1,4 +1,5 @@
 import pymysql
+import os
 
 
 def get_conn():
@@ -11,3 +12,5 @@ def get_conn():
                             cursorclass=pymysql.cursors.DictCursor)
   return connection
 
+def db_reset():
+  os.system("mysql < schema_and_initialdata.sql -u flask --password=1234")
