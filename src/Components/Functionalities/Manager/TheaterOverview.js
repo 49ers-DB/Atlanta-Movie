@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import DatePicker from 'react-datepicker'
 import APIClient from "../../../apiClient"
+import toDateString from '../../../actions/date'
 
 import "../Functionality.css"
 
@@ -8,7 +9,7 @@ export default class TheaterOverview extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      rowData: [[],[],[],[],[],[]],
+      rowData: [],
       movieName: "",
       movieDuration1: "",
       movieDuration2: "",
@@ -37,6 +38,32 @@ export default class TheaterOverview extends Component {
     
     if (accessToken) {
       var apiClient = new APIClient(accessToken)
+      var requestBody = {
+        i_Movie: this.state.movieName,
+        i_minDuration: this.state.movieDuration1,
+        i_maxDuration: this.state.movieDuration2,
+        i_minReleaseDate: this.state.movieReleaseDate1,
+        i_maxReleaseDate: this.state.movieReleaseDate2,
+        i_minPlayDate: this.state.moviePlayDate1,
+        i_maxPlayDate: this.state.moviePlayDate2,
+        i_notplayed: this.state.includeNotPlayed
+      }
+      console.log(requestBody)
+
+      apiClient.perform("post", "/theaterOverview", requestBody).then(resp => {
+        console.log(resp)
+        var formatted = []
+        
+        resp.data.map( row => {
+          var relDate = toDateString(row['Release_Date'])
+          var playDate = toDateString(row['Play_Date'])
+          formatted.push([row['Movie'], row['Duration'], relDate, playDate])
+        })
+        this.setState({rowData: formatted})
+
+      }).catch( error => {
+        window.alert(`There was an error communicating with the server: ${error.message}`)
+      })
 
     }
   }

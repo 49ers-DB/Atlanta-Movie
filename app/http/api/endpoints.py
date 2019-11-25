@@ -176,12 +176,13 @@ def view_movie():
 
 
 #----------ManagerService-----------------
-@app.route('/TheaterOverview', methods=['GET'])
+@app.route('/theaterOverview', methods=['POST'])
 @login_required
 def get_theater_overview():
   data = request.get_json()
-  user = g.user
-  manager_service.TheaterOverview(user, data['filters'])
+  user = g.user['username']
+  response = manager_service.TheaterOverview(user, data)
+  return json_response({'ok': True, "data": response})
 
 
 # #is this right? lol

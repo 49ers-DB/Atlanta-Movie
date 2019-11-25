@@ -14,6 +14,15 @@ class ManagerService(object):
         i_Movie=filters.get("i_Movie")
         i_notplayed=filters.get("i_notplayed")
 
+        if i_Movie == "":
+            i_Movie = None
+        
+        if i_minDuration == "":
+            i_minDuration = None
+
+        if i_maxDuration == "":
+            i_maxDuration = None
+
         data_tuple = (i_username,
                 i_minReleaseDate,
                 i_minReleaseDate,
@@ -71,7 +80,8 @@ class ManagerService(object):
             connection.commit()
 
             connection.close()
-            return data
+
+        return data
 
     def getCompanies(self):
 
