@@ -6,9 +6,11 @@ import "../Functionality.css"
 export default class CompanyDetail extends Component {
   constructor(props) {
     super(props)
+    var comName = this.props.match.params["name"]
     this.state = {
-      apiClient: null,
+      emplList: ["Cole h", "rebecka", "jjj"],
       rowData: [[],[],[],[],[],[]],
+      comName: comName
     }
     console.log(props)
     
@@ -16,40 +18,55 @@ export default class CompanyDetail extends Component {
     
     if (accessToken) {
       var apiClient = new APIClient(accessToken)
-      this.state.apiClient = apiClient
       console.log(apiClient)
 
-
-      
-
-    //   apiClient.perform('post', '/visitHistory', this.state).then(resp => {
-    //     var rowData = resp
-    //     this.state.rowData = rowData
-    //   });
-      
     }
   }
-
-
 
 
   render () {
     return (
       <div className="main">
-        <div className="card visitHistoryCard">
+        <div className="card">
           <div className="card-header">
-            <h2>Create Movie</h2>
+            <h2>Company Detail</h2>
           </div>
-          <div className="card visitHistoryTableCard">
+          <div className="card-body">
+            <div className="row">
+              <h4 className="col-3">Name: </h4>
+              <div className="col text-left">{this.state.comName}</div>
+            </div>
+          
+            <div className="row">
+              <h4 className="col-3">Employees: </h4>
+              <div className="col text-left">
+                {this.state.emplList.map( empl => {
+                  var keyV = this.state.emplList.indexOf(empl)
+                  var element = <span key={keyV}>{empl}, </span>
+                  if (keyV >= this.state.emplList.length - 1) {
+                    element = <span key={keyV}>{empl}</span>
+                  }
+                  return (
+                    element
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="row">
+              <h3 className="col">Theaters</h3>
+            </div>
+
+
           <div className="functionalities-table">
           <table className="table">
             <thead>
               <tr>
-                <th scope="col">Movie</th>
-                <th scope="col">Theater</th>
-                <th scope="col">Company</th>
-                <th scope="col">Card#</th>
-                <th scope="col">View Date</th>
+                <th scope="col">Name</th>
+                <th scope="col">Manager</th>
+                <th scope="col">City</th>
+                <th scope="col">State</th>
+                <th scope="col">Capacity</th>
               </tr>
             </thead>
             <tbody>
