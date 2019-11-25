@@ -149,6 +149,17 @@ def get_theater_overview():
   manager_service.TheaterOverview(user, data['filters'])
 
 
+@app.route('/GetVisitHistory', methods=['POST'])
+@login_required
+def get_visit_history():
+  data = request.get_json()
+  
+  user = g.user['username']
+
+  data = user_service.VisitHistory(user, data)
+  return json_response({'data': data})
+
+
 # #is this right? lol
 # @app.route('/ScheduleMovie', methods=['GET'])
 # @login_required

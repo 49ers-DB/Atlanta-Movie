@@ -13,7 +13,7 @@ export default class VisitHistory extends Component {
     super(props)
     this.state = {
       apiClient: null,
-      rowData: [[],[],[],[],[]],
+      rowData: [],
       companies: [],
       selectedCompany: null,
       visitDate1: null,
@@ -69,9 +69,10 @@ export default class VisitHistory extends Component {
         if (accessToken) {
           var apiClient = new APIClient(accessToken)
     
-        //   apiClient.perform('post', '/visitHistory', this.state ).then( resp => {
-    
-        //   });
+          apiClient.perform('post', '/GetVisitHistory', this.state ).then( resp => {
+            this.setState({rowData: resp['data']},
+            console.log(resp))
+          });
           
         }
 
@@ -169,15 +170,22 @@ export default class VisitHistory extends Component {
             </thead>
             <tbody>
               
-                {this.state.rowData.map( (row) => {
+                {
+                  
+                this.state.rowData.map( (row) => {
+                  if(this.state.rowData.length > 0) {
+                    var date = new Date(row['visitDate'])
+                  var address = row['thStreet'] + ' ' + row['thStreet'] + ', ' + row['thCity'] + ', ' + row['thState'] + ' ' + row['thZipCode']
                   return (
                     <tr key={this.state.rowData.indexOf(row)}>
-                      <td>{row[0]}</td>
-                      <td>{row[1]}</td>
-                      <td>{row[2]}</td>
-                      <td>{row[3]}</td>
+                      <td>{row['thName']}</td>
+                      <td>{address}</td>
+                      <td>{row['comName']}</td>
+                      <td>{date}</td>
                     </tr>
                   );
+                  }
+                  
                 })}
     
             </tbody>
