@@ -8,6 +8,7 @@ from app.services.ManagerService import ManagerService
 from app.services.RegisterService import RegisterService
 from app.services.DropDownService import DropDownService
 from app.services.UserService import UserService
+from app.services.CustomerService import CustomerService
 
 
 app = Flask(__name__)
@@ -20,6 +21,7 @@ register_service = RegisterService()
 manager_service = ManagerService()
 drop_down_service = DropDownService()
 user_service = UserService()
+customer_service = CustomerService()
 
 
 #------------LOGIN------------
@@ -176,3 +178,15 @@ def example_endpoint(param_1):
 
 def json_response(payload, status_code=200):
    return json.dumps(payload), status_code, {'Content-type': 'application/json'}
+
+
+
+#----------CustomerService--------------------
+@app.route('/viewHistory', methods=['POST'])
+@login_required
+def viewHistory():
+  user = g.user['username']
+  print(user)
+
+  data = customer_service.ViewHistory(user)
+  return json_response({'data': data})
