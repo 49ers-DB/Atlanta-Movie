@@ -1,4 +1,5 @@
 from app.services.DBService import get_conn
+import dateutil.parser
 
 class ManagerService(object):
 
@@ -13,6 +14,15 @@ class ManagerService(object):
         i_maxDuration=filters.get("i_maxDuration")
         i_Movie=filters.get("i_Movie")
         i_notplayed=filters.get("i_notplayed")
+
+        if i_Movie == "":
+            i_Movie = None
+        
+        if i_minDuration == "":
+            i_minDuration = None
+
+        if i_maxDuration == "":
+            i_maxDuration = None
 
         data_tuple = (i_username,
                 i_minReleaseDate,
@@ -34,10 +44,10 @@ class ManagerService(object):
                 i_minReleaseDate,
                 i_maxReleaseDate,
                 i_maxReleaseDate,
-                i_maxDuration,
-                i_maxDuration,
                 i_minDuration,
                 i_minDuration,
+                i_maxDuration,
+                i_maxDuration,
                 i_Movie,
                 i_Movie)
 
@@ -45,23 +55,23 @@ class ManagerService(object):
 
         with connection.cursor() as cursor:
 
-            info = """select distinct MoviePlay.movName as \"Movie\", MoviePlay.movReleaseDate as \"Release_Date\", 
-            MoviePlay.movPlayDate as \"Play_Date\", Movie.duration as \"Duration\" 
-            from MoviePlay join Movie on MoviePlay.movName=Movie.movName where MoviePlay.thName in 
-            (select thName from Theater where Theater.manUsername=(%s)) 
+            info = """select distinct MoviePlay.movName as \"Movie\", MoviePlay.movReleaseDate as \"Release_Date\",
+            MoviePlay.movPlayDate as \"Play_Date\", Movie.duration as \"Duration\"
+            from MoviePlay join Movie on MoviePlay.movName=Movie.movName where MoviePlay.thName in
+            (select thName from Theater where Theater.manUsername=(%s))
             and ((%s) is NULL or Movie.movReleaseDate >=(%s))
             and ((%s) is NULL or Movie.movReleaseDate <=(%s))
             and ((%s) is NULL or MoviePlay.movPlayDate <=(%s))
-            and ((%s) is NULL or MoviePlay.movPlayDate >=(%s)) 
+            and ((%s) is NULL or MoviePlay.movPlayDate >=(%s))
             and ((%s) is NULL or Movie.duration <=(%s))
             and ((%s) is NULL or Movie.duration >=(%s))
             and ((%s) is NULL or Movie.movName like(%s))
             and ((%s) is NULL or MoviePlay.movPlayDate!=NULL)
-            Union 
-            select Movie.movName as \"Movie\", Movie.movReleaseDate as \"Release_Date\", 
+            Union
+            select Movie.movName as \"Movie\", Movie.movReleaseDate as \"Release_Date\",
             cast(NULL as date) as \"Play_Date\", Movie.duration as \"Duration\" from Movie
-            where ((%s) is NULL or Movie.movReleaseDate >=(%s)) 
-            and ((%s) is NULL or Movie.movReleaseDate <=(%s)) 
+            where ((%s) is NULL or Movie.movReleaseDate >=(%s))
+            and ((%s) is NULL or Movie.movReleaseDate <=(%s))
             and ((%s) is NULL or Movie.duration >=(%s))
             and ((%s) is NULL or Movie.duration <=(%s))
             and ((%s) is NULL or Movie.movName like(%s))"""
@@ -71,29 +81,20 @@ class ManagerService(object):
             connection.commit()
 
             connection.close()
-            return data
 
-    def getCompanies(self):
-
-        connection = get_conn()
-
-        with connection.cursor() as cursor:
-            sql = """SELECT comName FROM Company"""
-            cursor.execute(sql)
-            data=cursor.fetchall()
-            connection.commit()
-            
-            connection.close()
-            return data
+        return data
 
 
-def ScheduleMovie(self, username, filters):
+    def ScheduleMovie(self, username, filters):
 
         i_manUsername = username
         i_movName = filters.get("i_movName")
         i_movReleaseDate = filters.get("i_movReleaseDate")
         i_movPlayDate = filters.get("i_movPlayDate")
         connection = get_conn()
+
+        i_movPlayDate = dateutil.parser.parse(i_movPlayDate).date()
+        i_movReleaseDate = dateutil.parser.parse(i_movReleaseDate).date()
 
         with connection.cursor() as cursor:
 
@@ -107,19 +108,19 @@ def ScheduleMovie(self, username, filters):
 
             cursor.execute(query, (i_manUsername))
 
-            data2 = cursor.fetchall()
+            data2 = cursor.fetchall()[0]
 
             connection.commit()
 
             query = "insert into MoviePlay (thName, comName, movName, movReleaseDate, movPlayDate) values ((%s), (%s), (%s), (%s), (%s))"
 
-            cursor.execute(query, (data2[thName], data2[comName], i_movName, i_movReleaseDate, i_movPlayDate))
+            cursor.execute(query, (data2['thName'], data2['comName'], i_movName, i_movReleaseDate, i_movPlayDate))
 
             data3 = cursor.fetchall()
 
             connection.commit()
 
-            connection.close()
+        connection.close()
 
 
 

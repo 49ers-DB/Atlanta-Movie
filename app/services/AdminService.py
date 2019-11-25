@@ -1,36 +1,36 @@
 from app.services.DBService import get_conn
-
+import dateutil.parser
 
 class AdminService(object):
 
-    def ApproveUser(self, username, filters):
+    def ApproveUser(self,filters):
 
-        i_username = username
+        i_username = filters.get('i_username')
         connection = get_conn()
 
         with connection.cursor() as cursor:
-            query1 = "update User set Status = \"Approved\" where username = (%s)"
+            query1 = "update User set status = 'Approved' where username = (%s)"
             cursor.execute(query1, (i_username))
             data1 = cursor.fetchall()
             connection.commit()
         connection.close()
 
-    def DeclineUser(self, username, filters):
+    def DeclineUser(self,filters):
 
-        i_username = username
+        i_username = filters.get('i_username')
         connection = get_conn()
 
         with connection.cursor() as cursor:
-            query4 = "update User set Status = \"Declined\" where username = (%s)"
+            query4 = "update User set Status = 'Declined' where username = (%s)"
             cursor.execute(query4, (i_username))
             data1 = cursor.fetchall()
             connection.commit()
 
         connection.close()
 
-    def FilterUser(self, username, filters):
+    def FilterUser(self, filters):
 
-        i_username = username
+        i_username = filters.get('username')
         i_status = filters.get("i_status")
         i_sortBy = filters.get("i_sortBy")
         i_sortDirection = filters.get("i_sortDirection")
@@ -218,18 +218,18 @@ class AdminService(object):
             theaters = cursor.fetchall()
             self.connection.commit()
 
-            return employees
-            return theaters
+        return employees
+        return theaters
 
 
 
 
-    def CreateMovie(self, username, filters):
+    def CreateMovie(self, username):
 
         i_adminUsername = username
-        i_movName = filters.get("i_movName")
-        i_movDuration = filters.get("i_movDuration")
-        i_movReleaseDate = filters.get("i_movReleaseDate")
+        # i_movName = filters.get("i_movName")
+        # i_movDuration = filters.get("i_movDuration")
+        # i_movReleaseDate = filters.get("i_movReleaseDate")
 
         connection = get_conn()
         with connection.cursor() as cursor:

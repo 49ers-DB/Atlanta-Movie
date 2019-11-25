@@ -11,7 +11,7 @@ status  ENUM('Pending', 'Approved', 'Declined') NOT NULL,
 PRIMARY KEY(username),
 CHECK(LENGTH(password) >= 8)
 );
-	
+
 CREATE TABLE Employee (
 username VARCHAR(75) NOT NULL,
 FOREIGN KEY(username) REFERENCES user(username)
@@ -132,7 +132,7 @@ ON DELETE CASCADE   ON UPDATE CASCADE
 use moviez;
 
 Insert into User (username,status,firstname,lastname,password)
-Values 
+Values
 ("georgep","Approved","George P.","Burdell",MD5('111111111')),
 ('calcwizard','Approved','Issac','Newton',MD5('222222222')),
 ('calcultron','Approved','Dwight','Schrute',MD5('333333333')),
@@ -221,7 +221,7 @@ values('entropyRox',"200 Cool Place","San Francisco",'CA',94016,"4400 Theater Co
 );
 
 insert into moviez.Theater (comName,thName,capacity,thStreet,thCity,thState,thZipcode,manUsername)
-values 
+values
 ("EZ Theater Company","Main Movies",3,"123 Main St","New York",'NY',10001,'fatherAI'),
 ("EZ Theater Company",'Star Movies',2,'745 GT St','Atlanta','GA',30332,'calcultron'),
 ('4400 Theater Company','Cinema Star',4,'100 Cool Place','San Francisco','CA',94016,'entropyRox'),
@@ -231,7 +231,7 @@ values
 ('AI Theater Company','ML Movies',3,'314 Pi St','Pallet Town','KS',31415,'ghcghc');
 
 insert into moviez.CustomerCreditCard (username,creditCardNum)
-values 
+values
 ('georgep',1111111111111111),
 ('georgep',1111111111111110),
 ('georgep',1111111111111100),

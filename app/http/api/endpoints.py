@@ -179,21 +179,35 @@ def view_movie():
 
 
 #----------ManagerService-----------------
-@app.route('/TheaterOverview', methods=['GET'])
+@app.route('/theaterOverview', methods=['POST'])
 @login_required
 def get_theater_overview():
   data = request.get_json()
-  user = g.user
-  manager_service.TheaterOverview(user, data['filters'])
+  user = g.user['username']
+  response = manager_service.TheaterOverview(user, data)
+  return json_response({'ok': True, "data": response})
 
 
-# #is this right? lol
-# @app.route('/ScheduleMovie', methods=['GET'])
-# @login_required
-# def ScheduleMovie():
-#   data=request.get_json()
-#   user=g.user
-#   manager_service.ScheduleMovie
+@app.route('/GetVisitHistory', methods=['POST'])
+@login_required
+def get_visit_history():
+  data = request.get_json()
+  
+  user = g.user['username']
+
+  data = user_service.VisitHistory(user, data)
+  return json_response({'data': data})
+
+
+@app.route('/moviePlay', methods=['POST'])
+@login_required
+def ScheduleMovie():
+  data=request.get_json()
+  user=g.user['username']
+
+  manager_service.ScheduleMovie(user, data)
+
+  return json_response({'ok': True})
 
 
 
@@ -233,3 +247,15 @@ def get_user_type():
 
 def json_response(payload, status_code=200):
    return json.dumps(payload), status_code, {'Content-type': 'application/json'}
+
+
+
+#----------CustomerService--------------------
+@app.route('/viewHistory', methods=['POST'])
+@login_required
+def viewHistory():
+  user = g.user['username']
+  print(user)
+
+  data = customer_service.ViewHistory(user)
+  return json_response({'data': data})

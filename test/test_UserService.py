@@ -1,34 +1,20 @@
 import pytest
-
 import functools
 import datetime
 import dateutil.parser
-
 import pymysql
 import sys
 import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from app.services.DBService import get_conn
-
-
-
 from app.services.UserService import UserService
 
 
 class TestUserService(object):
 
-    connection = pymysql.connect(host='localhost',
-                             user='root',
-                             password='1234',
-                             db='moviez',
-                             charset='utf8mb4',
-                             port=3306,
-                             cursorclass=pymysql.cursors.DictCursor)
-
-    
 
     def test_Explore_Theater_NoFilters(self):
-      
+
       user_service = UserService()
 
       filters = {
@@ -56,7 +42,7 @@ class TestUserService(object):
 
 
     def test_Explore_Theater_CityFilter(self):
-      
+
       user_service = UserService()
 
       filters = {
@@ -102,7 +88,7 @@ class TestUserService(object):
 
 
     def test_Explore_Theater_Company_Filter(self):
-      
+
       user_service = UserService()
 
       filters = {
@@ -115,11 +101,11 @@ class TestUserService(object):
       actual = user_service.ExploreTheater(filters)
 
       expected = [
-        
+
         {'comName':'4400 Theater Company','thName':'Cinema Star','thStreet':'100 Cool Place','thCity':'San Francisco','thState':'CA','thZipcode':'94016'},
         {'comName':'4400 Theater Company','thName':'Star Movies','thStreet':'4400 Rocks Ave','thCity':'Boulder','thState':'CA','thZipcode':'80301'},
         {'comName':'4400 Theater Company','thName':"Jonathan's Movies",'thStreet':'67 Pearl Dr','thCity':'Seattle','thState':'WA','thZipcode':'98101'}
-        
+
       ]
 
       assert len(actual) == len(expected)
@@ -128,7 +114,7 @@ class TestUserService(object):
 
 
     def test_Explore_Theater_Theater_filter(self):
-      
+
       user_service = UserService()
 
       filters = {
@@ -141,9 +127,9 @@ class TestUserService(object):
       actual = user_service.ExploreTheater(filters)
 
       expected = [
-        
+
         {'comName':'4400 Theater Company','thName':'Star Movies','thStreet':'4400 Rocks Ave','thCity':'Boulder','thState':'CA','thZipcode':'80301'}
-        
+
       ]
 
       assert len(actual) == len(expected)
@@ -151,7 +137,7 @@ class TestUserService(object):
       assert sorted(actual, key=functools.cmp_to_key(compare_theater)) == sorted(expected, key=functools.cmp_to_key(compare_theater))
 
     def test_Explore_Theater_Bad_state(self):
-      
+
       user_service = UserService()
 
       filters = {
@@ -164,7 +150,7 @@ class TestUserService(object):
       actual = user_service.ExploreTheater(filters)
 
       expected = [
-        
+
       ]
 
       assert len(actual) == len(expected)
@@ -220,6 +206,50 @@ class TestUserService(object):
 
 
 
+    def test_visit_history(self):
+      filterz = {'i_comName':'4400 Theater Company','i_minVisitDate':datetime.date(2005,11,25),'i_maxVisitDate':datetime.date(2012,11,30)}
+
+
+      connection = get_conn()
+      with connection.cursor() as cursor:
+
+        user_service = UserService()
+
+        user_service.VisitHistory('imready',filterz)
+
+        cursor.execute("select * from UserVisitTheater where username='imready'")
+        data=cursor.fetchall()
+        connection.commit()
+
+      connection.close()
+
+      assert len(data)==1
+
+
+    def test_visit_history_empty(self):
+      filterz = {}
+
+
+      connection = get_conn()
+      with connection.cursor() as cursor:
+
+        user_service = UserService()
+
+        user_service.VisitHistory('calcwizard',filterz)
+
+        cursor.execute("select * from UserVisitTheater where username='calcwizard'")
+        data=cursor.fetchall()
+        connection.commit()
+
+      connection.close()
+
+      assert len(data)==3
+
+
+
+
+
+
 
 def compare_theater(item1, item2):
     if item1['comName'] < item2['comName']:
@@ -230,7 +260,7 @@ def compare_theater(item1, item2):
         return compare_theater_name(item1, item2)
 
 def compare_theater_name(item1, item2):
-    
+
     if item1['thName'] < item2['thName']:
         return -1
     elif item1['thName'] > item2['thName']:

@@ -1,27 +1,18 @@
 import pytest
 import functools
 import datetime
-
 import pymysql
 import sys
 import os
+
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-
+from app.services.DBService import get_conn
 from app.services.ManagerService import ManagerService
 
 
 class TestManagerService(object):
 
-    connection = pymysql.connect(host='localhost',
-                             user='root',
-                             password='1234',
-                             db='moviez',
-                             charset='utf8mb4',
-                             port=3306,
-                             cursorclass=pymysql.cursors.DictCursor)
 
-    
     def test_TheaterOverview_NoFilters(self):
 
         TOTestDict = {}
@@ -92,7 +83,18 @@ class TestManagerService(object):
         manager_service = ManagerService()
         Actual= manager_service.TheaterOverview('imbatman',TOTestDict)
         Expected =[
-            {'Movie':"4400 The Movie",'Release_Date':datetime.date(2019,8,12),'Play_Date':datetime.date(2019,10,12),'Duration':130}]
+            {'Movie':"How to Train Your Dragon",'Release_Date':datetime.date(2010, 3,21),'Play_Date':None,'Duration':98},
+            {'Movie':"4400 The Movie",'Release_Date':datetime.date(2019,8,12),'Play_Date':None,'Duration':130},
+            {'Movie':"The First Pokemon Movie",'Release_Date':datetime.date(1998,7,19),'Play_Date':None,'Duration':75},
+            {'Movie':"The King's Speech",'Release_Date':datetime.date(2010,11,26),'Play_Date':None,'Duration':119},
+            {'Movie':"Avengers: Endgame",'Release_Date':datetime.date(2019,4,26),'Play_Date':None,'Duration':181},
+            {'Movie':'Spaceballs','Release_Date':datetime.date(1987,6,24),'Play_Date':None,'Duration':96},
+            {'Movie':"Spider-Man: Into the Spider-Verse",'Release_Date':datetime.date(2018,12,1),'Play_Date':None,'Duration':117},
+            {'Movie':"Georgia Tech The Movie",'Release_Date':datetime.date(1985,8,13),'Play_Date':None,'Duration':100},
+            {'Movie':"George P Burdell's Life Story",'Release_Date':datetime.date(1927,8,12),'Play_Date':None,'Duration':100},
+            {'Movie':"Calculus Returns: A ML Story",'Release_Date':datetime.date(2019,9,19),'Play_Date':None,'Duration':314},
+            {'Movie':"4400 The Movie",'Release_Date':datetime.date(2019,8,12),'Play_Date':datetime.date(2019,10,12),'Duration':130}
+        ]
         print(Actual)
         assert len(Expected) == len(Actual)
         assert sorted(Expected, key=functools.cmp_to_key(compare_movie)) == sorted(Actual, key=functools.cmp_to_key(compare_movie))
@@ -107,16 +109,124 @@ class TestManagerService(object):
         assert sorted(Expected, key=functools.cmp_to_key(compare_movie)) == sorted(Actual, key=functools.cmp_to_key(compare_movie))
 
 
+    def test_TheaterOverview_maxDurFilter(self):
+
+        TOTestDict = {
+            "i_maxDuration": 100
+        }
+        manager_service = ManagerService()
+        Actual= manager_service.TheaterOverview('imbatman',TOTestDict)
+        Expected =[
+            {'Movie':"How to Train Your Dragon",'Release_Date':datetime.date(2010, 3,21),'Play_Date':None,'Duration':98},
+            {'Movie':"The First Pokemon Movie",'Release_Date':datetime.date(1998,7,19),'Play_Date':None,'Duration':75},
+            {'Movie':'Spaceballs','Release_Date':datetime.date(1987,6,24),'Play_Date':None,'Duration':96},
+            {'Movie':"Georgia Tech The Movie",'Release_Date':datetime.date(1985,8,13),'Play_Date':None,'Duration':100},
+            {'Movie':"George P Burdell's Life Story",'Release_Date':datetime.date(1927,8,12),'Play_Date':None,'Duration':100},
+            {'Movie':"The First Pokemon Movie",'Release_Date':datetime.date(1998,7,19),'Play_Date':datetime.date(2018,7,19),'Duration':75},
+            {'Movie':'Georgia Tech The Movie','Release_Date':datetime.date(1985,8,13),'Play_Date':datetime.date(1985,8,13),'Duration':100}
+
+        ]
+        print(Actual)
+        assert len(Expected) == len(Actual)
+        assert sorted(Expected, key=functools.cmp_to_key(compare_movie)) == sorted(Actual, key=functools.cmp_to_key(compare_movie))
 
 
+    def test_TheaterOverview_durFilters(self):
+
+        TOTestDict = {
+            "i_maxDuration": 100,
+            "i_minDuration": 96
+        }
+        manager_service = ManagerService()
+        Actual= manager_service.TheaterOverview('imbatman',TOTestDict)
+        Expected =[
+            {'Movie':"How to Train Your Dragon",'Release_Date':datetime.date(2010, 3,21),'Play_Date':None,'Duration':98},
+            {'Movie':'Spaceballs','Release_Date':datetime.date(1987,6,24),'Play_Date':None,'Duration':96},
+            {'Movie':"Georgia Tech The Movie",'Release_Date':datetime.date(1985,8,13),'Play_Date':None,'Duration':100},
+            {'Movie':"George P Burdell's Life Story",'Release_Date':datetime.date(1927,8,12),'Play_Date':None,'Duration':100},
+            {'Movie':'Georgia Tech The Movie','Release_Date':datetime.date(1985,8,13),'Play_Date':datetime.date(1985,8,13),'Duration':100}
+        ]
+        print(Actual)
+        assert len(Expected) == len(Actual)
+        assert sorted(Expected, key=functools.cmp_to_key(compare_movie)) == sorted(Actual, key=functools.cmp_to_key(compare_movie))
 
 
+    def test_TheaterOverview_include_false(self):
+
+        TOTestDict = {
+            "i_notplayed": False
+        }
+        manager_service = ManagerService()
+        Actual= manager_service.TheaterOverview('imbatman',TOTestDict)
+        Expected =[
+            {'Movie':"How to Train Your Dragon",'Release_Date':datetime.date(2010, 3,21),'Play_Date':None,'Duration':98},
+            {'Movie':"4400 The Movie",'Release_Date':datetime.date(2019,8,12),'Play_Date':None,'Duration':130},
+            {'Movie':"The First Pokemon Movie",'Release_Date':datetime.date(1998,7,19),'Play_Date':None,'Duration':75},
+            {'Movie':"The King's Speech",'Release_Date':datetime.date(2010,11,26),'Play_Date':None,'Duration':119},
+            {'Movie':"Avengers: Endgame",'Release_Date':datetime.date(2019,4,26),'Play_Date':None,'Duration':181},
+            {'Movie':'Spaceballs','Release_Date':datetime.date(1987,6,24),'Play_Date':None,'Duration':96},
+            {'Movie':"Spider-Man: Into the Spider-Verse",'Release_Date':datetime.date(2018,12,1),'Play_Date':None,'Duration':117},
+            {'Movie':"Georgia Tech The Movie",'Release_Date':datetime.date(1985,8,13),'Play_Date':None,'Duration':100},
+            {'Movie':"George P Burdell's Life Story",'Release_Date':datetime.date(1927,8,12),'Play_Date':None,'Duration':100},
+            {'Movie':"Calculus Returns: A ML Story",'Release_Date':datetime.date(2019,9,19),'Play_Date':None,'Duration':314},
+            {'Movie':"4400 The Movie",'Release_Date':datetime.date(2019,8,12),'Play_Date':datetime.date(2019,10,12),'Duration':130},
+            {'Movie':"The First Pokemon Movie",'Release_Date':datetime.date(1998,7,19),'Play_Date':datetime.date(2018,7,19),'Duration':75},
+            {'Movie':'Georgia Tech The Movie','Release_Date':datetime.date(1985,8,13),'Play_Date':datetime.date(1985,8,13),'Duration':100}]
+        print(Actual)
+        assert len(Expected) == len(Actual)
+        assert sorted(Expected, key=functools.cmp_to_key(compare_movie)) == sorted(Actual, key=functools.cmp_to_key(compare_movie))
 
 
+    def test_TheaterOverview_include_True(self):
+
+        TOTestDict = {
+            "i_notplayed": True
+        }
+        manager_service = ManagerService()
+        Actual= manager_service.TheaterOverview('imbatman',TOTestDict)
+        Expected = [
+            {'Movie':"How to Train Your Dragon",'Release_Date':datetime.date(2010, 3,21),'Play_Date':None,'Duration':98},
+            {'Movie':"4400 The Movie",'Release_Date':datetime.date(2019,8,12),'Play_Date':None,'Duration':130},
+            {'Movie':"The First Pokemon Movie",'Release_Date':datetime.date(1998,7,19),'Play_Date':None,'Duration':75},
+            {'Movie':"The King's Speech",'Release_Date':datetime.date(2010,11,26),'Play_Date':None,'Duration':119},
+            {'Movie':"Avengers: Endgame",'Release_Date':datetime.date(2019,4,26),'Play_Date':None,'Duration':181},
+            {'Movie':'Spaceballs','Release_Date':datetime.date(1987,6,24),'Play_Date':None,'Duration':96},
+            {'Movie':"Spider-Man: Into the Spider-Verse",'Release_Date':datetime.date(2018,12,1),'Play_Date':None,'Duration':117},
+            {'Movie':"Georgia Tech The Movie",'Release_Date':datetime.date(1985,8,13),'Play_Date':None,'Duration':100},
+            {'Movie':"George P Burdell's Life Story",'Release_Date':datetime.date(1927,8,12),'Play_Date':None,'Duration':100},
+            {'Movie':"Calculus Returns: A ML Story",'Release_Date':datetime.date(2019,9,19),'Play_Date':None,'Duration':314},
+        ]
+        print(Actual)
+        assert len(Expected) == len(Actual)
+        assert sorted(Expected, key=functools.cmp_to_key(compare_movie)) == sorted(Actual, key=functools.cmp_to_key(compare_movie))
 
 
+    def test_Schedule_Movie(self):
+
+        filterz = {'i_movName':'Spaceballs','i_movReleaseDate':datetime.date(1987,6,24),'i_movPlayDate':datetime.date(2030,6,24)}
 
 
+        connection = get_conn()
+        with connection.cursor() as cursor:
+            sql_del = """delete From MoviePlay where movPlayDate = '2030-06-24'"""
+            cursor.execute(sql_del)
+            connection.commit()
+
+            manager_service = ManagerService()
+
+            manager_service.ScheduleMovie('imbatman',filterz)
+
+            cursor.execute("select * from MoviePlay where movPlayDate = '2030-06-24'")
+            data=cursor.fetchall()
+            connection.commit()
+
+            sql_del = """delete From MoviePlay where movPlayDate = '2030-06-24'"""
+            cursor.execute(sql_del)
+            connection.commit()
+
+        connection.close()
+
+        assert len(data)==1
 
 
 
