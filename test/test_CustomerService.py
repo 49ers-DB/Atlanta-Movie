@@ -88,13 +88,14 @@ class TestCustomerService(object):
 
         customer_service.ViewHistory('georgep')
 
-        cursor.execute("select * from CustomerViewMovie inner join CustomerCreditCard where username='georgep'")
+        cursor.execute("select movName, thName, comName, creditCardNum, movPlayDate from CustomerViewMovie where CustomerViewMovie.creditCardNum in (select creditCardNum from CustomerCreditCard where CustomerCreditCard.username = 'calcwizard')")
         data=cursor.fetchall()
         connection.commit()
 
       connection.close()
 
-      assert len(data)==4
+      assert len(data)==0
+
 
 
     # def test_ViewHistory_empty(self):
