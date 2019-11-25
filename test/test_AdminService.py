@@ -14,9 +14,9 @@ class TestAdminService(object):
 
     def test_Approve_User(self):
         connection = get_conn()
-        i_username = 'smith_j'
+        filters={'i_username':'smith_j'}
         admin_service = AdminService()
-        admin_service.ApproveUser(i_username)
+        admin_service.ApproveUser(filters)
         with connection.cursor() as cursor:
             query = "select * from user where username = 'smith_j'"
             cursor.execute(query)
@@ -28,9 +28,9 @@ class TestAdminService(object):
 
     def test_Decline_User(self):
         connection = get_conn()
-        i_username = 'smith_j'
+        filters = {'i_username':'smith_j'}
         admin_service = AdminService()
-        admin_service.DeclineUser(i_username)
+        admin_service.DeclineUser(filters)
         with connection.cursor() as cursor:
             query = "select * from user where username = 'smith_j'"
             cursor.execute(query)
@@ -38,3 +38,11 @@ class TestAdminService(object):
             connection.commit()
         connection.close()
         assert Actual[0]['status']=="Declined"
+
+    def test_filter_user(self):
+        connection = get_conn()
+        filterz = {'i_status':"Declined",'i_sortBy':"User Type",'i_sortDirection':"desc"}
+        admin_service = AdminService()
+        actual = admin_service.FilterUser(filterz)
+        print(actual)
+

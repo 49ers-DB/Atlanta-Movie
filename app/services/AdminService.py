@@ -3,9 +3,9 @@ import dateutil.parser
 
 class AdminService(object):
 
-    def ApproveUser(self, username):
+    def ApproveUser(self,filters):
 
-        i_username = username
+        i_username = filters.get('i_username')
         connection = get_conn()
 
         with connection.cursor() as cursor:
@@ -15,9 +15,9 @@ class AdminService(object):
             connection.commit()
         connection.close()
 
-    def DeclineUser(self, username):
+    def DeclineUser(self,filters):
 
-        i_username = username
+        i_username = filters.get('i_username')
         connection = get_conn()
 
         with connection.cursor() as cursor:
@@ -28,9 +28,9 @@ class AdminService(object):
 
         connection.close()
 
-    def FilterUser(self, username, filters):
+    def FilterUser(self, filters):
 
-        i_username = username
+        i_username = filters.get('username')
         i_status = filters.get("i_status")
         i_sortBy = filters.get("i_sortBy")
         i_sortDirection = filters.get("i_sortDirection")
@@ -50,7 +50,7 @@ class AdminService(object):
             union \
             select user.username as \"Username\", \"User\" as \"User Type\" from user where user.username in (select user.username from user) and user.username not in (select manager.username from manager inner join customer where manager.username = customer.username) and user.username not in (select customer.username from customer) and user.username not in (select manager.username from manager)) as Table2 \
             where ((%s) is null or user.username = (%s)) AND \
-            (user.status = (%s) or (%s) = 'ALL') \
+            (user.status = (%s) or (%s) is null) \
             order by (%s) (%s)"
 
             cursor.execute(query, (i_username, i_username, i_status, i_status, i_sortBy, i_sortDirection))
