@@ -39,10 +39,35 @@ class TestAdminService(object):
         connection.close()
         assert Actual[0]['status']=="Declined"
 
+
     def test_filter_user(self):
         connection = get_conn()
         filterz = {'i_status':"Declined",'i_sortBy':"User Type",'i_sortDirection':"desc"}
         admin_service = AdminService()
         actual = admin_service.FilterUser(filterz)
         print(actual)
+
+
+    def test_CreateMovie(self):
+
+        connection = get_conn()
+        with connection.cursor() as cursor:
+            sql_del = """delete from Movie where movName = "4400 The Movie" and movReleaseDate = '20190812' """
+            cursor.execute(sql_del)
+            connection.commit()
+
+            admin_service = AdminService()
+            admin_service.CreateMovie('cool_class4400')
+
+            cursor.execute("insert into Movie (movName,movReleaseDate,duration) values (('4400 The Movie', '20190812', 130)")
+            data = cursor.fetchall()
+            connection.commit()
+
+            sql_del = """delete from Movie where movName = "4400 The Movie" and movReleaseDate = '20190812' """
+            cursor.execute(sql_del)
+            connection.commit()
+
+        connection.close()
+
+        assert len(data) == 1
 

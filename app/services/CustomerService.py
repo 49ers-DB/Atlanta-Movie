@@ -1,4 +1,5 @@
 from app.services.DBService import get_conn
+import dateutil.parser
 
 class CustomerService(object):
 
@@ -62,18 +63,21 @@ class CustomerService(object):
         i_thName = filters.get("i_thName")
         i_comName = filters.get("i_comName")
 
+        i_movPlayDate = dateutil.parser.parse(i_movPlayDate)
+
         connection = get_conn()
 
         with connection.cursor() as cursor:
 
-            query = "select movReleaseDate MoviePlay where MoviePlay.movName = (%s)"
+            query = "select movReleaseDate from MoviePlay where MoviePlay.movName = (%s)"
             cursor.execute(query, (i_movName))
             data2 = cursor.fetchall()
             connection.commit()
-            movReleaseDate = data2['movReleaseDate']
+            movReleaseDate = data2[0]['movReleaseDate']
 
-            query2 = "insert into CustomerViewMovie (creditCardNum, thName, comName, movName, movReleaseDate, movPlayDate) \
-            values ((%s), (%s), (%s), (%s), (%s), (%s))"
+            query2 = """insert into CustomerViewMovie (creditCardNum, thName, comName, movName, movReleaseDate, movPlayDate)
+            values ((%s), (%s), (%s), (%s), (%s), (%s))"""
+            print((i_creditCardNum, i_thName, i_comName, i_movName, movReleaseDate, i_movPlayDate))
             cursor.execute(query2, (i_creditCardNum, i_thName, i_comName, i_movName, movReleaseDate, i_movPlayDate))
             data3 = cursor.fetchall()
             connection.commit()
