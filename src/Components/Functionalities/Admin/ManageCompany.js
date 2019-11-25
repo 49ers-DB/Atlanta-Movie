@@ -20,8 +20,10 @@ export default class ManageCompany extends Component {
       numEmployees2: "",
       companyIndex: null
     }
-    
-    
+    this.handleFilter = this.handleFilter.bind(this)
+    this.handleCompDetail = this.handleCompDetail.bind(this)
+
+    this.handleFilter(new Event(""))
   }
 
   handleFilter(event) {
@@ -32,7 +34,13 @@ export default class ManageCompany extends Component {
     if (accessToken) {
       var apiClient = new APIClient(accessToken)
       var requestBody = {
-
+        i_comName: this.state.selectedComName,
+        i_minCity: this.state.numCitiesCov1,
+        i_maxCity: this.state.numCitiesCov2,
+        i_minTheater: this.state.numTheaters1,
+        i_maxTheater: this.state.numTheaters2,
+        i_minEmployee: this.state.numEmployees1,
+        i_maxEmployee: this.state.numEmployees2
       }
       
       apiClient.perform('post', '/manageCompany', requestBody)
@@ -65,7 +73,7 @@ export default class ManageCompany extends Component {
                 <label>Name</label>
                 <Select className="functionalities-select"
                 value={this.selectedComName}
-                onChange={this.setSelectedComName}
+                onChange={(selected) => this.setState({selectedComName: selected})}
                 options={getCompanies()}
                 />
                 <label>Num. Cities Covered</label>

@@ -96,9 +96,8 @@ class AdminService(object):
 
         return data
 
-    def ManageCompany(self, username, filters):
+    def ManageCompany(self, filters):
 
-        i_adminUsername = username
         i_comName = filters.get("i_comName")
         i_minCity = filters.get("i_minCity")
         i_maxCity = filters.get("i_maxCity")
@@ -106,8 +105,38 @@ class AdminService(object):
         i_maxTheater = filters.get("i_maxTheater")
         i_minEmployee = filters.get("i_minEmployee")
         i_maxEmployee = filters.get("i_maxEmployee")
-        i_sortBy
-        i_sortDirection
+
+        data_tuple = (
+                    i_comName,
+                    i_comName,
+                    i_minCity,
+                    i_minCity,
+                    i_maxCity,
+                    i_maxCity,
+                    i_minTheater,
+                    i_minTheater,
+                    i_maxTheater,
+                    i_maxTheater,
+                    i_minEmployee,
+                    i_minEmployee,
+                    i_maxEmployee,
+                    i_maxEmployee,
+                    i_comName,
+                    i_comName,
+                    i_minCity,
+                    i_minCity,
+                    i_maxCity,
+                    i_maxCity,
+                    i_minTheater,
+                    i_minTheater,
+                    i_maxTheater,
+                    i_maxTheater,
+                    i_minEmployee,
+                    i_minEmployee,
+                    i_maxEmployee,
+                    i_maxEmployee
+        )
+        
 
         connection = get_conn()
         with connection.cursor() as cursor:
@@ -132,12 +161,13 @@ class AdminService(object):
             and (where (%s) is Null or count(distinct manager.username)>=0),\
             and (where (%s) is Null or count(distinct manager.username)<=0)"
 
-            data = cursor.execute(query, (i_comName,i_comName,i_minCity,i_minCity,i_maxCity,i_maxCity,i_minTheater,i_minTheater,i_maxTheater,i_maxTheater,i_minEmployee,i_minEmployee,i_maxEmployee,i_maxEmployee,i_comName,i_comName,i_minCity,i_minCity,i_maxCity,i_maxCity,i_minTheater,i_minTheater,i_maxTheater,i_maxTheater,i_minEmployee,i_minEmployee,i_maxEmployee,i_maxEmployee))
+            cursor.execute(query, data_tuple)
             info = cursor.fetchall()
             connection.commit()
-            return info
+            
 
         connection.close()
+        return {'ok':True, 'data':info}
 
 
 

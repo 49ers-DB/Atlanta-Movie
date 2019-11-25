@@ -1,4 +1,4 @@
-from middleware import login_required
+from middleware import login_required, admin_only
 from flask import Flask, json, g, request
 from flask_cors import CORS
 import pymysql.cursors
@@ -200,11 +200,11 @@ def get_theater_overview():
 #------------Admin Service-------------
 @app.route('/manageCompany', methods=['POST'])
 @login_required
+@admin_only
 def manage_company():
   data = request.get_json()
-  user = g.user['username']
-  response = admin_service.ManageCompany(user, data)
-  return json_response({'ok': True, 'data': response})
+  response = admin_service.ManageCompany(data)
+  return json_response(response)
 
 
 
