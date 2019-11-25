@@ -48,8 +48,13 @@ export default class ScheduleMovie extends Component {
         i_movReleaseDate: this.state.releaseDate,
         i_movPlayDate: this.state.playDate
       }
-      apiClient.perform("post", "/moviePlay", requestBody);
+      apiClient.perform("post", "/moviePlay", requestBody).catch( error => {
+        window.alert("Could not add movie")
+      })
+
       
+    } else {
+      window.alert("Could not add movie");
     }
   }
 
