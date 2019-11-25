@@ -33,13 +33,18 @@ class DropDownService(object):
     def MovieDropDown(self):
 
         connection = get_conn()
+        data = {}
 
         with connection.cursor() as cursor:
-    #Schedule Movie, Explore Movie
 
             query = "select movName from Movie"
+            cursor.execute(query)
+            data = cursor.fetchall()
 
-            connection.close()
+            connection.commit()
+
+        connection.close()
+        return data
 
 
     def TheaterDropDown(self, companyName):
@@ -57,6 +62,23 @@ class DropDownService(object):
             connection.close()
             
             return data
+
+    def getCreditCardNumbers(self, username):
+        
+        connection = get_conn()
+        data = {}
+
+        with connection.cursor() as cursor:
+            
+            query = """select creditCardNum from CustomerCreditCard
+                    where username=(%s)"""
+        
+            cursor.execute(query, (username))
+            data = cursor.fetchall()
+
+        connection.close()
+        return data
+
 
 
 

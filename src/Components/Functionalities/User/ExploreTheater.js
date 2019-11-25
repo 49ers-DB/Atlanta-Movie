@@ -2,64 +2,14 @@ import React, { Component } from 'react'
 import DatePicker from "react-datepicker";
 import Select from "react-select";
 import APIClient from "../../../apiClient"
+import stateOptions from "../../../actions/stateOptions"
+import getCompanies from "../../../actions/companies"
 
 import "../Functionality.css"
 
 import "react-datepicker/dist/react-datepicker.css";
 import { isThisISOWeek } from 'date-fns';
 
-const stateOptions = [
-  {value: "AL", label: "AL"},
-  {value: "AK", label: "AK"},
-  {value: "AZ", label: "AZ"},
-  {value: "AR", label: "AR"},
-  {value: "CA", label: "CA"},
-  {value: "CO", label: "CO"},
-  {value: "CT", label: "CT"},
-  {value: "DE", label: "DE"},
-  {value: "FL", label: "FL"},
-  {value: "GA", label: "GA"},
-  {value: "HI", label: "HI"},
-  {value: "ID", label: "ID"},
-  {value: "IL", label: "IL"},
-  {value: "IN", label: "IN"},
-  {value: "IA", label: "IA"},
-  {value: "KS", label: "KS"},
-  {value: "KY", label: "KY"},
-  {value: "LA", label: "LA"},
-  {value: "ME", label: "ME"},
-  {value: "MD", label: "MD"},
-  {value: "MA", label: "MA"},
-  {value: "MI", label: "MI"},
-  {value: "MN", label: "MN"},
-  {value: "MS", label: "MS"},
-  {value: "MO", label: "MO"},
-  {value: "MT", label: "MT"},
-  {value: "NE", label: "NE"},
-  {value: "NV", label: "NV"},
-  {value: "NH", label: "NH"},
-  {value: "NJ", label: "NJ"},
-  {value: "NM", label: "NM"},
-  {value: "NY", label: "NY"},
-  {value: "NC", label: "NC"},
-  {value: "ND", label: "ND"},
-  {value: "OH", label: "OH"},
-  {value: "OK", label: "OK"},
-  {value: "OR", label: "OR"},
-  {value: "PA", label: "PA"},
-  {value: "RI", label: "RI"},
-  {value: "SC", label: "SC"},
-  {value: "SD", label: "SD"},
-  {value: "TN", label: "TN"},
-  {value: "TX", label: "TX"},
-  {value: "UT", label: "UT"},
-  {value: "VT", label: "VT"},
-  {value: "VA", label: "VA"},
-  {value: "WA", label: "WA"},
-  {value: "WV", label: "WV"},
-  {value: "WI", label: "WI"},
-  {value: "WY", label: "WY"},
-]
 
 var theaters = []
 
@@ -110,13 +60,9 @@ export default class ExploreTheater extends Component {
     this.setSelectedState = this.setSelectedState.bind(this)
     this.setCity = this.setCity.bind(this)
     this.checkedTheater = this.checkedTheater.bind(this);
-    // this.componentDidMount = this.componentDidMount.bind(this)
     this.getTheatersForCompany = this.getTheatersForCompany.bind(this)
   }
 
-  // componentDidMount() {
-  //   this.getTheatersForCompany("")
-  // }
 
   getTheatersForCompany(companyName) {
     var accessToken = localStorage.getItem("accessToken")
@@ -137,23 +83,6 @@ export default class ExploreTheater extends Component {
     }
   }
   
-
-  getCompanies() {
-    var companies = []
-    var accessToken = localStorage.getItem("accessToken")
-    
-    if (accessToken) {
-      var apiClient = new APIClient(accessToken)
-      apiClient.getCompanies().then( resp => {
-        for(var i = 0; i < resp.length; i++) {
-          var companyName = resp[i].comName;
-          companies[i] = {value: companyName, label: companyName}
-        }
-      });
-    
-    }
-    return companies;
-  }
 
   handleFilter(event) {
     event.preventDefault()
@@ -257,7 +186,7 @@ export default class ExploreTheater extends Component {
                 <Select className="functionalities-select"
                   value={this.state.selectedCompany}
                   onChange={this.setSelectedCompany}
-                  options={this.getCompanies()}
+                  options={getCompanies()}
                   cacheOptions 
                 />
               </div>  
@@ -272,7 +201,7 @@ export default class ExploreTheater extends Component {
                 <Select className="functionalities-select"
                   value={this.state.selectedState}
                   onChange={this.setSelectedState}
-                  options={stateOptions}
+                  options={stateOptions()}
                   placeholder="Select"
                 />
               </div>  
