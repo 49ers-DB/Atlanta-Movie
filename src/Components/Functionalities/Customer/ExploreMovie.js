@@ -132,10 +132,15 @@ export default class ExploreMovie extends Component {
   handleView(event) {
     event.preventDefault()
     var accessToken = localStorage.getItem("accessToken")
+    var ind = -1
 
+    if (this.state.moviePlayIndex || this.state.moviePlayIndex === 0) {
+      ind = this.state.moviePlayIndex
+    }
     
-    if (accessToken && this.state.moviePlayIndex && this.state.selectedCreditCard) {
+    if (accessToken && this.state.selectedCreditCard && (ind >= 0)) {
       var apiClient = new APIClient(accessToken)
+      
   
       var requestBody = {
         i_movName: this.state.rowData[this.state.moviePlayIndex][0],
@@ -144,6 +149,7 @@ export default class ExploreMovie extends Component {
         i_movPlayDate: this.state.rowData[this.state.moviePlayIndex][4],
         i_creditCardNum: this.state.selectedCreditCard['value']
       }
+      console.log(requestBody)
       apiClient.perform("post", "/viewMovie", requestBody).then( resp => {
         
       }).catch(error => {
