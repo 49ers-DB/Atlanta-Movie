@@ -5,6 +5,7 @@ import DatePicker from 'react-datepicker'
 import stateOptions from "../../../actions/stateOptions"
 import getCompanies from "../../../actions/companies"
 import movies from "../../../actions/movies"
+import toDateString from "../../../actions/date"
 
 import "../Functionality.css"
 import { isThisISOWeek } from 'date-fns'
@@ -13,14 +14,11 @@ import { isThisISOWeek } from 'date-fns'
 
 
 function formatRows(data) {
-  console.log(data)
   var formatted = []
 
   data.map( row => {
     var addressStr = `${row['thStreet']}, ${row['thCity']}, ${row['thState']}, ${row['thZipcode']}`
-    var date = new Date(row['movPlayDate'])
-    console.log(date)
-    date = date.toDateString()
+    var date = toDateString(row['movPlayDate'])
     formatted.push([row['movName'], row['thName'], addressStr, row['comName'], date])
   });
   return formatted
@@ -101,7 +99,7 @@ export default class ExploreMovie extends Component {
   }
 
   setCreditCard(selectedCreditCard) {
-    this.setState(selectedCreditCard)
+    this.setState({selectedCreditCard})
   }
 
   handleFilter(event) {
@@ -135,9 +133,16 @@ export default class ExploreMovie extends Component {
   handleView(event) {
     event.preventDefault()
     var accessToken = localStorage.getItem("accessToken")
+    var ind = -1
+
+    if (this.state.moviePlayIndex || this.state.moviePlayIndex === 0) {
+      ind = this.state.moviePlayIndex
+    }
     
-    if (accessToken && this.state.moviePlayIndex) {
+    if (accessToken && this.state.selectedCreditCard && (ind >= 0)) {
       var apiClient = new APIClient(accessToken)
+      
+  
       var requestBody = {
         i_movName: this.state.rowData[this.state.moviePlayIndex][0],
         i_thName: this.state.rowData[this.state.moviePlayIndex][1],
@@ -145,7 +150,13 @@ export default class ExploreMovie extends Component {
         i_movPlayDate: this.state.rowData[this.state.moviePlayIndex][4],
         i_creditCardNum: this.state.selectedCreditCard['value']
       }
-      apiClient.perform("post", "/viewMovie", requestBody)
+      apiClient.perform("post", "/viewMovie", requestBody).then( resp => {
+        
+      }).catch(error => {
+        window.alert("Already Viewed That Movie")
+      })
+    } else {
+      window.alert("Missing selected Movie Play or Credit Card")
     }
   }
 
