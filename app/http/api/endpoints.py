@@ -185,6 +185,16 @@ def get_theater_overview():
 
   return json_response({'ok': True, 'info': response})
 
+@app.route('/GetVisitHistory', methods=['POST'])
+@login_required
+def get_visit_history():
+  data = request.get_json()
+  
+  user = g.user['username']
+
+  data = user_service.VisitHistory(user, data)
+  return json_response({'data': data})
+
 
 @app.route('/moviePlay', methods=['POST'])
 @login_required
