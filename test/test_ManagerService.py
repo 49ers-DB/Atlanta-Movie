@@ -109,11 +109,6 @@ class TestManagerService(object):
         assert sorted(Expected, key=functools.cmp_to_key(compare_movie)) == sorted(Actual, key=functools.cmp_to_key(compare_movie))
 
 
-<<<<<<< HEAD
-
-=======
-<<<<<<< HEAD
->>>>>>> master
     def test_TheaterOverview_maxDurFilter(self):
 
         TOTestDict = {
@@ -181,6 +176,7 @@ class TestManagerService(object):
         assert len(Expected) == len(Actual)
         assert sorted(Expected, key=functools.cmp_to_key(compare_movie)) == sorted(Actual, key=functools.cmp_to_key(compare_movie))
 
+
     def test_TheaterOverview_include_True(self):
 
         TOTestDict = {
@@ -203,11 +199,8 @@ class TestManagerService(object):
         print(Actual)
         assert len(Expected) == len(Actual)
         assert sorted(Expected, key=functools.cmp_to_key(compare_movie)) == sorted(Actual, key=functools.cmp_to_key(compare_movie))
-<<<<<<< HEAD
 
-=======
-=======
->>>>>>> master
+
     def test_Schedule_Movie(self):
 
         filterz = {'i_movName':'Spaceballs','i_movReleaseDate':datetime.date(1987,6,24),'i_movPlayDate':datetime.date(2030,6,24)}
@@ -220,10 +213,6 @@ class TestManagerService(object):
             connection.commit()
 
             manager_service = ManagerService()
-<<<<<<< HEAD
-=======
->>>>>>> master
->>>>>>> master
 
             manager_service.ScheduleMovie('imbatman',filterz)
 
