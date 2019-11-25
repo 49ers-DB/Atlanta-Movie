@@ -150,7 +150,6 @@ export default class ExploreMovie extends Component {
         i_movPlayDate: this.state.rowData[this.state.moviePlayIndex][4],
         i_creditCardNum: this.state.selectedCreditCard['value']
       }
-      console.log(requestBody)
       apiClient.perform("post", "/viewMovie", requestBody).then( resp => {
         
       }).catch(error => {
