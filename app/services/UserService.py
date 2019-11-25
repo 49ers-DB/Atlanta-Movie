@@ -2,12 +2,9 @@ import dateutil.parser
 
 from app.services.DBService import get_conn
 
-
-
-
 class UserService(object):
 
-   
+
     def ExploreTheater(self, filters):
         i_thname=filters.get("selectedTheater")
         i_coname=filters.get("selectedCompany")
@@ -31,10 +28,10 @@ class UserService(object):
 
         connection = get_conn()
         with connection.cursor() as cursor:
-            info = """select distinct thName , thStreet , thCity , thState , thZipcode , comName  from 
-            Theater where ((%s) is NULL or thName = (%s)) 
-            and ((%s) is NULL or comName = (%s)) 
-            and ((%s) is NULL or thCity = (%s)) 
+            info = """select distinct thName , thStreet , thCity , thState , thZipcode , comName  from
+            Theater where ((%s) is NULL or thName = (%s))
+            and ((%s) is NULL or comName = (%s))
+            and ((%s) is NULL or thCity = (%s))
             and ((%s) is NULL or thState = (%s))"""
 
 

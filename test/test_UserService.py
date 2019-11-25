@@ -1,17 +1,12 @@
 import pytest
-
 import functools
 import datetime
 import dateutil.parser
-
 import pymysql
 import sys
 import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from app.services.DBService import get_conn
-
-
-
 from app.services.UserService import UserService
 
 
@@ -208,6 +203,50 @@ class TestUserService(object):
       connection.close()
 
       assert len(data) == 1
+
+
+
+    def test_visit_history(self):
+      filterz = {'i_comName':'4400 Theater Company','i_minVisitDate':datetime.date(2005,11,25),'i_maxVisitDate':datetime.date(2012,11,30)}
+
+
+      connection = get_conn()
+      with connection.cursor() as cursor:
+
+        user_service = UserService()
+
+        user_service.VisitHistory('imready',filterz)
+
+        cursor.execute("select * from UserVisitTheater where username='imready'")
+        data=cursor.fetchall()
+        connection.commit()
+
+      connection.close()
+
+      assert len(data)==1
+
+
+    def test_visit_history_empty(self):
+      filterz = {}
+
+
+      connection = get_conn()
+      with connection.cursor() as cursor:
+
+        user_service = UserService()
+
+        user_service.VisitHistory('calcwizard',filterz)
+
+        cursor.execute("select * from UserVisitTheater where username='calcwizard'")
+        data=cursor.fetchall()
+        connection.commit()
+
+      connection.close()
+
+      assert len(data)==3
+
+
+
 
 
 
