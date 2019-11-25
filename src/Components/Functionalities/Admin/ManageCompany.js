@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
+import {Redirect} from 'react-router-dom'
 import APIClient from "../../../apiClient"
 import Select from 'react-select'
+
 
 import "../Functionality.css"
 import getCompanies from '../../../actions/companies'
@@ -9,8 +11,8 @@ export default class ManageCompany extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      apiClient: null,
-      rowData: [],
+      redirect: false,
+      rowData: [['ABC Company']],
       selectedComName: null,
       numCitiesCov1: "",
       numCitiesCov2: "",
@@ -22,6 +24,7 @@ export default class ManageCompany extends Component {
     }
     this.handleFilter = this.handleFilter.bind(this)
     this.handleCompDetail = this.handleCompDetail.bind(this)
+    this.renderRedirect = this.renderRedirect.bind(this)
 
     this.handleFilter(new Event(""))
   }
@@ -55,14 +58,26 @@ export default class ManageCompany extends Component {
   }
 
   handleCompDetail(event) {
-    event.preventDefault()
+    console.log('redirecting')
+    if (this.state.companyIndex || this.state.companyIndex === 0) {
+      this.setState({redirect: true})
+    } else {
+      window.alert("Please Select a Company from the Table")
+    }
   }
 
+  renderRedirect = () => {
+    if (this.state.redirect) {
+      var comName = this.state.rowData[this.state.companyIndex][0]
+      return <Redirect to={'/Auth/Company-Detail/' + comName}/>
+    }
+  }
 
 
   render () {
     return (
       <div className="main">
+        {this.renderRedirect()}
         <div className="card">
           <div className="card-header">
             <h2>Manage Company</h2>
@@ -112,7 +127,7 @@ export default class ManageCompany extends Component {
             <div className="row">
               <button className="btn btn-primary col-3" onClick={this.handleFilter}>Filter</button>
               <div className="col-3"></div>
-              <a className="btn btn-primary col-2" href="/create-theater">Create Theater</a>
+              <a className="btn btn-primary col-2" href="/auth/create-theater">Create Theater</a>
               <button className="btn btn-primary col-2" onClick={this.handleCompDetail}>Detail</button>
             </div>
             
