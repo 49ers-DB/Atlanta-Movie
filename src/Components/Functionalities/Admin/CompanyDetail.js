@@ -8,18 +8,26 @@ export default class CompanyDetail extends Component {
     super(props)
     var comName = this.props.match.params["name"]
     this.state = {
-      emplList: ["Cole h", "rebecka", "jjj"],
-      rowData: [[],[],[],[],[],[]],
+      emplList: [],
+      rowData: [],
       comName: comName
     }
-    console.log(props)
     
     var accessToken = localStorage.getItem("accessToken")
     
     if (accessToken) {
       var apiClient = new APIClient(accessToken)
-      console.log(apiClient)
 
+      apiClient.perform("get", "/companyDetail/" + this.state.comName).then( resp => {
+        console.log(resp)
+        this.setState({
+          emplList: resp['employees'],
+          rowData: resp['theaters']
+        })
+        
+      }).catch( error => {
+        window.alert("Could not find that company")
+      })
     }
   }
 
@@ -42,9 +50,10 @@ export default class CompanyDetail extends Component {
               <div className="col text-left">
                 {this.state.emplList.map( empl => {
                   var keyV = this.state.emplList.indexOf(empl)
-                  var element = <span key={keyV}>{empl}, </span>
+                  var name = empl['firstname'] + " " + empl['lastname']
+                  var element = <span key={keyV}>{name}, </span>
                   if (keyV >= this.state.emplList.length - 1) {
-                    element = <span key={keyV}>{empl}</span>
+                    element = <span key={keyV}>{name}</span>
                   }
                   return (
                     element
@@ -72,13 +81,14 @@ export default class CompanyDetail extends Component {
             <tbody>
               
                 {this.state.rowData.map( (row) => {
+                  var manager = row['firstname'] + " " + row['lastname']
                   return (
                     <tr key={this.state.rowData.indexOf(row)}>
-                      <td>{row[0]}</td>
-                      <td>{row[1]}</td>
-                      <td>{row[2]}</td>
-                      <td>{row[3]}</td>
-                      <td>{row[4]}</td>
+                      <td>{row['thName']}</td>
+                      <td>{manager}</td>
+                      <td>{row["thCity"]}</td>
+                      <td>{row['thState']}</td>
+                      <td>{row['capacity']}</td>
                     </tr>
                   );
                 })}
