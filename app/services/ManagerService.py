@@ -43,10 +43,10 @@ class ManagerService(object):
                 i_minReleaseDate,
                 i_maxReleaseDate,
                 i_maxReleaseDate,
-                i_maxDuration,
-                i_maxDuration,
                 i_minDuration,
                 i_minDuration,
+                i_maxDuration,
+                i_maxDuration,
                 i_Movie,
                 i_Movie)
 

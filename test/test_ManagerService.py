@@ -107,7 +107,46 @@ class TestManagerService(object):
         assert sorted(Expected, key=functools.cmp_to_key(compare_movie)) == sorted(Actual, key=functools.cmp_to_key(compare_movie))
 
 
+    def test_TheaterOverview_maxDurFilter(self):
 
+        TOTestDict = {
+            "i_maxDuration": 100
+        }
+        manager_service = ManagerService()
+        Actual= manager_service.TheaterOverview('imbatman',TOTestDict)
+        Expected =[
+            {'Movie':"How to Train Your Dragon",'Release_Date':datetime.date(2010, 3,21),'Play_Date':None,'Duration':98},
+            {'Movie':"The First Pokemon Movie",'Release_Date':datetime.date(1998,7,19),'Play_Date':None,'Duration':75},
+            {'Movie':'Spaceballs','Release_Date':datetime.date(1987,6,24),'Play_Date':None,'Duration':96},
+            {'Movie':"Georgia Tech The Movie",'Release_Date':datetime.date(1985,8,13),'Play_Date':None,'Duration':100},
+            {'Movie':"George P Burdell's Life Story",'Release_Date':datetime.date(1927,8,12),'Play_Date':None,'Duration':100},
+            {'Movie':"The First Pokemon Movie",'Release_Date':datetime.date(1998,7,19),'Play_Date':datetime.date(2018,7,19),'Duration':75},
+            {'Movie':'Georgia Tech The Movie','Release_Date':datetime.date(1985,8,13),'Play_Date':datetime.date(1985,8,13),'Duration':100}
+
+        ]
+        print(Actual)
+        assert len(Expected) == len(Actual)
+        assert sorted(Expected, key=functools.cmp_to_key(compare_movie)) == sorted(Actual, key=functools.cmp_to_key(compare_movie))
+
+
+    def test_TheaterOverview_durFilters(self):
+
+        TOTestDict = {
+            "i_maxDuration": 100,
+            "i_minDuration": 96
+        }
+        manager_service = ManagerService()
+        Actual= manager_service.TheaterOverview('imbatman',TOTestDict)
+        Expected =[
+            {'Movie':"How to Train Your Dragon",'Release_Date':datetime.date(2010, 3,21),'Play_Date':None,'Duration':98},
+            {'Movie':'Spaceballs','Release_Date':datetime.date(1987,6,24),'Play_Date':None,'Duration':96},
+            {'Movie':"Georgia Tech The Movie",'Release_Date':datetime.date(1985,8,13),'Play_Date':None,'Duration':100},
+            {'Movie':"George P Burdell's Life Story",'Release_Date':datetime.date(1927,8,12),'Play_Date':None,'Duration':100},
+            {'Movie':'Georgia Tech The Movie','Release_Date':datetime.date(1985,8,13),'Play_Date':datetime.date(1985,8,13),'Duration':100}
+        ]
+        print(Actual)
+        assert len(Expected) == len(Actual)
+        assert sorted(Expected, key=functools.cmp_to_key(compare_movie)) == sorted(Actual, key=functools.cmp_to_key(compare_movie))
 
 
 
