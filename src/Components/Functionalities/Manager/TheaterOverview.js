@@ -19,6 +19,14 @@ export default class TheaterOverview extends Component {
       includeNotPlayed: false
     }
     this.setMovieName = this.setMovieName.bind(this)
+    this.setMovieDur1 = this.setMovieDur1.bind(this)
+    this.setMovieDur2 = this.setMovieDur2.bind(this)
+    this.setMovRelDate1 = this.setMovRelDate1.bind(this)
+    this.setMovRelDate2 = this.setMovRelDate2.bind(this)
+    this.setMovPlayDate1 = this.setMovPlayDate1.bind(this)
+    this.setMovPlayDate2 = this.setMovPlayDate2.bind(this)
+    this.setInclude = this.setInclude.bind(this)
+    this.handleFilter = this.handleFilter.bind(this)
     
     this.handleFilter(new Event(""))
   }
