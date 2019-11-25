@@ -9,6 +9,8 @@ from app.services.RegisterService import RegisterService
 from app.services.DropDownService import DropDownService
 from app.services.UserService import UserService
 from app.services.CustomerService import CustomerService
+from app.services.AdminService import AdminService
+
 
 
 app = Flask(__name__)
@@ -22,6 +24,7 @@ manager_service = ManagerService()
 drop_down_service = DropDownService()
 user_service = UserService()
 customer_service = CustomerService()
+admin_service = AdminService()
 
 
 #------------LOGIN------------
@@ -193,6 +196,15 @@ def get_theater_overview():
 #   manager_service.ScheduleMovie
 
 
+
+#------------Admin Service-------------
+@app.route('/manageComany', methods=['POST'])
+@login_required
+def manage_company():
+  data = request.get_json()
+  user = g.user['username']
+  response = admin_service.ManageCompany(user, data)
+  return json_response({'ok': True, 'data': response})
 
 
 
