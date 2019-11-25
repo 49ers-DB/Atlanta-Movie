@@ -70,6 +70,10 @@ class APIClient {
     return this.perform('get', '/example/12');
   }
 
+  getUserType() {
+    return this.perform('get', '/user', 12);
+  }
+
 
   async perform (method, resource, data) {
     return client({

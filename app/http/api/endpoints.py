@@ -201,10 +201,20 @@ def get_theater_overview():
 def example_endpoint(param_1):
   print(param_1)
   user = g.user
+  # response = json_response({'userType': 'user'}, 200)
+  # userType = login_service.findUserType(user['username'])
+  # response = json_response({'userType': userType}, 200)
+
+
+  return json_response({'ok':True})
+
+@app.route("/user", methods=['GET'])
+@login_required
+def get_user_type():
+  user = g.user
   response = json_response({'userType': 'user'}, 200)
   userType = login_service.findUserType(user['username'])
   response = json_response({'userType': userType}, 200)
-
 
   return response
   
