@@ -21,31 +21,13 @@ export default class VisitHistory extends Component {
       visitDate2: null,
     }
     
-    var accessToken = localStorage.getItem("accessToken")
-    
-    if (accessToken) {
-      var apiClient = new APIClient(accessToken)
-      this.state.apiClient = apiClient
-      console.log(apiClient)
-
-
-      
-
-      apiClient.perform('post', '/GetVisitHistory', this.state ).then( resp => {
-        this.setState({rowData: resp['data']},
-        console.log(resp))
-      });
-      
-    }
     this.handleFilter = this.handleFilter.bind(this)
     this.handleChange1 = this.handleChange1.bind(this)
     this.handleChange2 = this.handleChange2.bind(this)
     this.setSelectedCompany = this.setSelectedCompany.bind(this)
+
+    this.handleFilter(new Event(""))
   }
-
-
-  promiseTheaterOptions = inputValue =>
-  new Promise();
 
 
   getCompanies() {
@@ -61,23 +43,30 @@ export default class VisitHistory extends Component {
   }
 
   handleFilter(event) {
-      if(this.state.visitDate1 > this.state.visitDate2) {
-          window.alert("Invalid Date Rage")
-      } else {
-        event.preventDefault()
-        var accessToken = localStorage.getItem("accessToken")
-        
-        if (accessToken) {
-          var apiClient = new APIClient(accessToken)
+      
+    event.preventDefault()
+    var accessToken = localStorage.getItem("accessToken")
     
-          apiClient.perform('post', '/GetVisitHistory', this.state ).then( resp => {
-            this.setState({rowData: resp['data']},
-            console.log(resp))
-          });
-          
-        }
+    if (accessToken) {
+      var apiClient = new APIClient(accessToken)
 
+      var requestBody = JSON.parse(JSON.stringify(this.state))
+      if (requestBody.visitDate1) {
+        requestBody.visitDate1 = toDateString(this.state.visitDate1.toDateString())
       }
+      
+      if (requestBody.visitDate2) {
+        requestBody.visitDate2 = toDateString(this.state.visitDate2.toDateString())
+      }
+
+      apiClient.perform('post', '/GetVisitHistory', requestBody ).then( resp => {
+        this.setState({rowData: resp['data']},
+        console.log(resp))
+      });
+      
+    }
+
+      
     
   }
 
