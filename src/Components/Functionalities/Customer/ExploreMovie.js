@@ -13,7 +13,6 @@ import { isThisISOWeek } from 'date-fns'
 
 
 function formatRows(data) {
-  console.log(data)
   var formatted = []
 
   data.map( row => {
@@ -124,7 +123,6 @@ export default class ExploreMovie extends Component {
         i_minMovPlayDate: this.state.playDate1,
         i_maxMovPlayDate: this.state.playDate2
       }
-      console.log(requestBody)
       apiClient.perform("post", "/exploreMovie", requestBody).then( resp => {
         this.setState({rowData: formatRows(resp['moviePlays'])})
       })
@@ -138,7 +136,7 @@ export default class ExploreMovie extends Component {
     
     if (accessToken && this.state.moviePlayIndex && this.state.selectedCreditCard) {
       var apiClient = new APIClient(accessToken)
-      console.log("sending")
+  
       var requestBody = {
         i_movName: this.state.rowData[this.state.moviePlayIndex][0],
         i_thName: this.state.rowData[this.state.moviePlayIndex][1],
@@ -146,7 +144,11 @@ export default class ExploreMovie extends Component {
         i_movPlayDate: this.state.rowData[this.state.moviePlayIndex][4],
         i_creditCardNum: this.state.selectedCreditCard['value']
       }
-      apiClient.perform("post", "/viewMovie", requestBody)
+      apiClient.perform("post", "/viewMovie", requestBody).then( resp => {
+        
+      }).catch(error => {
+        window.alert("Already Viewed That Movie")
+      })
     } else {
       window.alert("Missing selected Movie Play or Credit Card")
     }
