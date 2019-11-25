@@ -5,6 +5,7 @@ import DatePicker from 'react-datepicker'
 import stateOptions from "../../../actions/stateOptions"
 import getCompanies from "../../../actions/companies"
 import movies from "../../../actions/movies"
+import toDateString from "../../../actions/date"
 
 import "../Functionality.css"
 import { isThisISOWeek } from 'date-fns'
@@ -17,7 +18,7 @@ function formatRows(data) {
 
   data.map( row => {
     var addressStr = `${row['thStreet']}, ${row['thCity']}, ${row['thState']}, ${row['thZipcode']}`
-    var date = (new Date(row['movPlayDate'])).toDateString()
+    var date = toDateString(row['movPlayDate'])
     formatted.push([row['movName'], row['thName'], addressStr, row['comName'], date])
   });
   return formatted
