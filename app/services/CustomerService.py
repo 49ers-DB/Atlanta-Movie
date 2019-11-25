@@ -102,6 +102,7 @@ class CustomerService(object):
             connection.commit()
 
         connection.close()
+        return data3
 
 
 

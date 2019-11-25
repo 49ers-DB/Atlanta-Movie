@@ -73,6 +73,9 @@ class Login extends React.Component {
               this.setState({authenticated: true});
             }
           }
+        }).catch( error => {
+          this.handleAlert("Could Not Login", `${error.message}`);
+
         })
         
     }

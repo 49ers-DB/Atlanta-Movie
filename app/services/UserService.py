@@ -69,12 +69,24 @@ class UserService(object):
         return True
 
     def VisitHistory(self, username, filters):
-        i_comName=filters.get("i_comName")
-        i_minVisitDate =filters.get("i_minVisitDate")
-        i_maxVisitDate =filters.get("i_maxVisitDate")
+        if(filters.get("selectedCompany") == None):
+            i_comName=None
+        else:
+            i_comName=filters.get("selectedCompany").get("value")
+        if(filters.get("visitDate1") == None):
+            i_minVisitDate = None
+        else :
+            i_minVisitDate =dateutil.parser.parse(filters.get("visitDate1"))
+        if(filters.get("visitDate2") == None):
+            i_maxVisitDate = None
+        else: 
+            i_maxVisitDate =dateutil.parser.parse(filters.get("visitDate2"))
         i_username = username
 
         connection = get_conn()
+
+
+
 
         with connection.cursor() as cursor:
 
@@ -86,6 +98,9 @@ class UserService(object):
             cursor.execute(info, (i_username, i_minVisitDate, i_minVisitDate, i_maxVisitDate, i_maxVisitDate, i_comName, i_comName))
             data = cursor.fetchall()
             connection.commit()
+
+
+            
 
         connection.close()
         return data
