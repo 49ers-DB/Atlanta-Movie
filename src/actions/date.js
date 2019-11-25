@@ -1,7 +1,11 @@
 
 
 const toDateString = (date) => {
-  return date.substring(0,16)
+  if (date) {
+    return date.substring(0,16)
+  }
+  return date
+  
 }
 
 export default (toDateString)
