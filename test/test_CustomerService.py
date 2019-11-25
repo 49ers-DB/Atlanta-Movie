@@ -7,7 +7,7 @@ import sys
 import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-
+from app.services.DBService import get_conn
 from app.services.CustomerService import CustomerService
 from app.services.DBService import db_reset
 
@@ -77,6 +77,53 @@ class TestCustomerService(object):
     assert sorted(actual, key=functools.cmp_to_key(compare_movie)) == sorted(expected, key=functools.cmp_to_key(compare_movie))
 
 
+
+
+  def test_ViewHistory(self):
+
+      connection = get_conn()
+      with connection.cursor() as cursor:
+
+        customer_service = CustomerService()
+
+        customer_service.ViewHistory('georgep')
+
+        cursor.execute("select movName, thName, comName, creditCardNum, movPlayDate from CustomerViewMovie where CustomerViewMovie.creditCardNum in (select creditCardNum from CustomerCreditCard where CustomerCreditCard.username = 'calcwizard')")
+        data=cursor.fetchall()
+        connection.commit()
+
+      connection.close()
+
+      assert len(data)==0
+
+
+
+    # def test_ViewHistory_empty(self):
+    #   filterz = {}
+
+
+    #   connection = get_conn()
+    #   with connection.cursor() as cursor:
+
+    #     user_service = UserService()
+
+    #     user_service.VisitHistory('calcwizard',filterz)
+
+    #     cursor.execute("select * from UserVisitTheater where username='calcwizard'")
+    #     data=cursor.fetchall()
+    #     connection.commit()
+
+    #   connection.close()
+
+    #   assert len(data)==3
+
+
+
+
+
+
+
+
 def compare_movie(item1, item2):
     if item1['movName'] < item2['movName']:
         return -1
@@ -94,7 +141,7 @@ def compare_theater_name(item1, item2):
         return compare_play_date(item1, item2)
 
 def compare_play_date(item1, item2):
-    
+
     if item1['movPlayDate'] < item2['movPlayDate']:
         return -1
     elif item1['movPlayDate'] > item2['movPlayDate']:
