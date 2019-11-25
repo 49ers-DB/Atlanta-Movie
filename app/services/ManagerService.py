@@ -1,4 +1,5 @@
 from app.services.DBService import get_conn
+import dateutil.parser
 
 class ManagerService(object):
 
@@ -81,6 +82,9 @@ class ManagerService(object):
         i_movReleaseDate = filters.get("i_movReleaseDate")
         i_movPlayDate = filters.get("i_movPlayDate")
         connection = get_conn()
+
+        i_movPlayDate = dateutil.parser.parse(i_movPlayDate).date()
+        i_movReleaseDate = dateutil.parser.parse(i_movReleaseDate).date()
 
         with connection.cursor() as cursor:
 
