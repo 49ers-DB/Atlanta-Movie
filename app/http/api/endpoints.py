@@ -198,7 +198,7 @@ def get_theater_overview():
 
 
 #------------Admin Service-------------
-@app.route('/manageComany', methods=['POST'])
+@app.route('/manageCompany', methods=['POST'])
 @login_required
 def manage_company():
   data = request.get_json()
