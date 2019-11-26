@@ -27,6 +27,7 @@ class TestAdminService(object):
 
 
     def test_Decline_User(self):
+        db_reset()
         connection = get_conn()
         filters = {'i_username':'smith_j'}
         admin_service = AdminService()
@@ -38,6 +39,19 @@ class TestAdminService(object):
             connection.commit()
         connection.close()
         assert Actual[0]['status']=="Declined"
+
+    def test_Decline_already_approved_User(self):
+        connection = get_conn()
+        filters = {'i_username':'manager1'}
+        admin_service = AdminService()
+        admin_service.DeclineUser(filters)
+        with connection.cursor() as cursor:
+            query = "select * from user where username = 'manager1'"
+            cursor.execute(query)
+            Actual = cursor.fetchall()
+            connection.commit()
+        connection.close()
+        assert Actual[0]['status']=="Approved"
 
 
     def test_filter_user(self):

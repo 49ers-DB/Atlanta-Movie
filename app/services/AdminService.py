@@ -22,7 +22,8 @@ class AdminService(object):
         connection = get_conn()
 
         with connection.cursor() as cursor:
-            query4 = "update User set Status = 'Declined' where username = (%s)"
+            query4 = """update User set Status = 'Declined' where status='Pending'
+            and username = (%s)"""
             cursor.execute(query4, (i_username))
             data1 = cursor.fetchall()
             connection.commit()
