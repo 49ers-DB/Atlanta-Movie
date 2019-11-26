@@ -1,8 +1,13 @@
 import React, { Component } from 'react'
 import Select from 'react-select'
 import APIClient from "../../../apiClient"
-
 import "../Functionality.css"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {
+  faSortAlphaUp,
+  faSortAlphaDown
+} from '@fortawesome/free-solid-svg-icons'
+ 
 
 const statuses = [
   {value:"All", label:"All"},
@@ -18,9 +23,17 @@ export default class ManageUser extends Component {
       username: "",
       rowData: [[],[],[],[],[],[]],
       selectedStatus: null,
+      reverseUsernameCol: false,
+      reverseCreCardCountCol: false,
+      reverseUserTypeCol: false,
+      reverseStatusCol: false,
+      userIndex: null,
 
     }
-    
+  }
+
+  handleFilter(event) {
+    event.preventDefault()
     var accessToken = localStorage.getItem("accessToken")
     
     if (accessToken) {
@@ -31,10 +44,36 @@ export default class ManageUser extends Component {
     }
   }
 
+  handleApprove(event) {
 
+  }
+
+  handleDecline(event) {
+    
+  }
 
 
   render () {
+    var usernameIcon = faSortAlphaUp
+    var revUsername = this.state.reverseUsernameCol
+    if (this.state.reverseUsernameCol) {
+      usernameIcon = faSortAlphaDown
+    }
+    var creditCardIcon = faSortAlphaUp
+    var revCredCard = this.state.reverseCreCardCountCol
+    if (this.state.reverseCreCardCountCol) {
+      creditCardIcon = faSortAlphaDown
+    }
+    var userTypeIcon = faSortAlphaUp
+    var revUserType = this.state.reverseUserTypeCol
+    if (this.state.reverseUserTypeCol) {
+      userTypeIcon = faSortAlphaDown
+    }
+    var statusIcon = faSortAlphaUp
+    var revStatus = this.state.reverseStatusCol
+    if (this.state.reverseStatusCol) {
+      statusIcon = faSortAlphaDown
+    }
     return (
       <div className="main">
         <div className="card visitHistoryCard">
@@ -57,28 +96,48 @@ export default class ManageUser extends Component {
               </div>
             </div>
             <div className="row">
-                <button className="btn btn-primary col-2">Filter</button>
+                <button className="btn btn-primary col-2" onClick={this.handleFilter}>Filter</button>
                 <div className="col-3"></div>
                 <button className="btn btn-primary col-2">Approve</button>
                 <button className="btn btn-primary col-2">Decline</button>
             </div>
           <div className="functionalities-table">
+          <i className="fas fa-sort-alpha-up"></i>
           <table className="table">
             <thead>
               <tr>
-                <th scope="col">Selected</th>
-                <th scope="col">Username</th>
-                <th scope="col">Credit Card Count</th>
-                <th scope="col">User Type</th>
-                <th scope="col">Status</th>
+                <th scope="col">
+                  Selected
+                </th>
+                <th scope="col">Username  <FontAwesomeIcon
+                  icon={usernameIcon} 
+                  onClick={() => this.setState({reverseUsernameCol: !revUsername})}
+                  />
+                </th>
+                <th scope="col">Credit Card Count  <FontAwesomeIcon
+                  icon={creditCardIcon}
+                  onClick={() => this.setState({reverseCreCardCountCol: !revCredCard})}
+                  />
+                </th>
+                <th scope="col">User Type  <FontAwesomeIcon
+                  icon={userTypeIcon}
+                  onClick={() => this.setState({reverseUserTypeCol: !revUserType})}
+                  />
+                </th>
+                <th scope="col">Status  <FontAwesomeIcon
+                 icon={statusIcon}
+                 onClick={() => this.setState({reverseStatusCol: !revUserType})}
+                 />
+                </th>
               </tr>
             </thead>
             <tbody>
               
                 {this.state.rowData.map( (row) => {
+                  var keyV = this.state.rowData.indexOf(row)
                   return (
-                    <tr key={this.state.rowData.indexOf(row)}>
-                      <td><input type="radio" name="radioclass"/></td>
+                    <tr key={keyV}>
+                      <td><input type="radio" name="radioclass" onClick={() => this.setState({userIndex: keyV})}/></td>
                       <td>{row[0]}</td>
                       <td>{row[1]}</td>
                       <td>{row[2]}</td>
