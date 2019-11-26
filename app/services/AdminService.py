@@ -224,22 +224,32 @@ class AdminService(object):
 
 
 
-    def CreateMovie(self, username):
+    def CreateMovie(self, filters):
 
-        i_adminUsername = username
-        # i_movName = filters.get("i_movName")
-        # i_movDuration = filters.get("i_movDuration")
-        # i_movReleaseDate = filters.get("i_movReleaseDate")
+        i_movName = filters.get("movieName")
+        i_movDuration = filters.get("duration")
+
+        i_movReleaseDate = (dateutil.parser.parse(filters.get("releaseDate"))).date()
+
+
 
         connection = get_conn()
         with connection.cursor() as cursor:
 
-
-            query3 = "insert into Movie (movName, movReleaseDate, duration) \
-            values ((%s), (%s), (%s))"
-
-            cursor.execute(query3, (i_movName, i_movReleaseDate, i_duration))
-            data3 = cursor.fetchall()
+            query7 = "SELECT movName FROM Movie WHERE (movName=(%s)) AND (movReleaseDate=(%s))"
+            cursor.execute(query7, (i_movName, i_movReleaseDate))
+            data = cursor.fetchall()
             connection.commit()
+            print(data)
+            if len(data) < 1:
+                query3 = "insert into Movie (movName, movReleaseDate, duration) \
+                values ((%s), (%s), (%s))"
+
+                cursor.execute(query3, (i_movName, i_movReleaseDate, i_movDuration))
+                connection.commit()
+            else:
+                connection.close()
+                return("Movie name and release date combination already taken")
 
         connection.close()
+        return("Movie Registered")

@@ -248,6 +248,14 @@ def get_user_type():
 def json_response(payload, status_code=200):
    return json.dumps(payload), status_code, {'Content-type': 'application/json'}
 
+@app.route('/createMovie', methods=['POST'])
+@login_required
+@admin_only
+def create_movie():
+  data = request.get_json()
+  resp = admin_service.CreateMovie(data)
+  return json_response({"data": resp})
+
 
 
 #----------CustomerService--------------------
