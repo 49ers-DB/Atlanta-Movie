@@ -98,13 +98,13 @@ DELIMITER ;
 
 DROP PROCEDURE IF EXISTS admin_filter_user;
 DELIMITER $$
-CREATE PROCEDURE `admin_filter_user`(IN i_username VARCHAR(50), IN i_status ENUM('ALL','Pending', 'Approved', 'Declined'), IN i_sortBy ENUM('username', 'creditCardNum', 'userType', 'status'), IN i_sortDirection ENUM('ASC', 'DESC'))
+CREATE PROCEDURE `admin_filter_user`(IN i_username VARCHAR(50), IN i_status ENUM('ALL','Pending', 'Approved', 'Declined'), IN i_sortBy ENUM('username', 'creditCardCount', 'userType', 'status'), IN i_sortDirection ENUM('ASC', 'DESC'))
 BEGIN
 	select i_username, i_status, i_sortBy, i_sortDirection;
     DROP TABLE IF EXISTS AdFilterUser;
     CREATE TABLE AdFilterUser
         select * from
-             (select user.username, count(CustomerCreditCard.creditCardNum) as "creditCardNum", user.status
+             (select user.username, count(CustomerCreditCard.creditCardNum) as "creditCardCount", user.status
              from user
              inner join CustomerCreditCard on user.username = CustomerCreditCard.username group by User.username
              union
@@ -180,7 +180,7 @@ BEGIN
                   ELSE
                        CASE WHEN i_sortBy = NULL THEN Table1.username
                             WHEN i_sortBy = 'username' THEN Table1.username
-                            WHEN i_sortBy = 'creditCardCount' THEN Table1.creditCardNum
+                            WHEN i_sortBy = 'creditCardCount' THEN Table1.creditCardCount
                             WHEN i_sortBy = 'userType' THEN Table2.userType
                             WHEN i_sortBy = 'status' THEN Table1.status
                        END
@@ -189,7 +189,7 @@ BEGIN
                   ELSE
                        CASE WHEN i_sortBy = NULL THEN Table1.username
                             WHEN i_sortBy = 'username' THEN Table1.username
-                            WHEN i_sortBy = 'creditCardCount' THEN Table1.creditCardNum
+                            WHEN i_sortBy = 'creditCardCount' THEN Table1.creditCardCount
                             WHEN i_sortBy = 'userType' THEN Table2.userType
                             WHEN i_sortBy = 'status' THEN Table1.status
                        END
