@@ -121,28 +121,32 @@ class AdminService(object):
             i_comName = filters.get("i_comName")["value"]
         else:
             i_comName = None
-        i_minCity = filters.get("i_minCity")
-        i_maxCity = filters.get("i_maxCity")
-        i_minTheater = filters.get("i_minTheater")
-        i_maxTheater = filters.get("i_maxTheater")
-        i_minEmployee = filters.get("i_minEmployee")
-        i_maxEmployee = filters.get("i_maxEmployee")
+        if(filters.get("i_minCity") != ''):
+            i_minCity = filters.get("i_minCity")
+        else:
+            i_minCity = "0"
+        if(filters.get("i_maxCity") != ''):
+            i_maxCity = filters.get("i_maxCity")
+        else:
+            i_maxCity = "9999999"
+        if(filters.get("i_minTheater") != ''):
+            i_minTheater = filters.get("i_minTheater")
+        else:
+            i_minTheater = "0"
+        if(filters.get("i_maxTheater") != ''):
+            i_maxTheater = filters.get("i_maxTheater")
+        else:
+            i_maxTheater = "9999999"
+        if(filters.get("i_minEmployee") != ''):
+            i_minEmployee = filters.get("i_minEmployee")
+        else:
+            i_minEmployee = "0"
+        if(filters.get("i_maxEmployee") != ''):
+            i_maxEmployee = filters.get("i_maxEmployee")
+        else:
+            i_maxEmployee = "9999999"
 
         data_tuple = (
-                    i_comName,
-                    i_comName,
-                    i_minCity,
-                    i_minCity,
-                    i_maxCity,
-                    i_maxCity,
-                    i_minTheater,
-                    i_minTheater,
-                    i_maxTheater,
-                    i_maxTheater,
-                    i_minEmployee,
-                    i_minEmployee,
-                    i_maxEmployee,
-                    i_maxEmployee,
                     i_comName,
                     i_comName,
                     i_minCity,
@@ -153,29 +157,22 @@ class AdminService(object):
                     i_maxEmployee,
         )
 
+        print(data_tuple)
+
 
         connection = get_conn()
         with connection.cursor() as cursor:
             query = "select manager.comName as \"Company\", count(distinct theater.thCity) as \"City Count\", \
             count(distinct theater.thName) \"Theater Count\", count(distinct Manager.username) as \"Employee Count\" \
             from theater join Manager on theater.comName=Manager.comName group by theater.comName  \
-            where ((%s) is Null or Manager.comName = (%s)),\
-            and (where (%s) is Null or count(distinct theater.thCity)>=(%s)),\
-            and (where (%s) is Null or count(distinct theater.thCity)<=(%s)),\
-            and (where (%s) is Null or count(distinct theater.thName)>=(%s)),\
-            and (where (%s) is Null or count(distinct theater.thName)<=(%s)),\
-            and (where (%s) is Null or count(distinct manager.username)>=(%s)),\
-            and (where (%s) is Null or count(distinct manager.username)<=(%s)),\
-            union select company.comName as \"Company\", 0 as \"City Count\", 0 as \"Theater Count\",\
-            0 as \"Employee Count\" from company where company.comName not in (select Manager.comName from\
-            Manager) and\
-            where (%s) is Null or Manager.comName = (%s),\
-            and (where (%s) is Null or count(distinct theater.thCity)>=0),\
-            and (where (%s) is Null or count(distinct theater.thCity)<=0),\
-            and (where (%s) is Null or count(distinct theater.thName)>=0),\
-            and (where (%s) is Null or count(distinct theater.thName)<=0),\
-            and (where (%s) is Null or count(distinct manager.username)>=0),\
-            and (where (%s) is Null or count(distinct manager.username)<=0)"
+            having\
+            ((%s) is NULL or manager.comName = (%s))\
+			and (count(distinct theater.thCity) >=(%s))\
+            and (count(distinct theater.thCity) <=(%s))\
+            and (count(distinct theater.thName) >=(%s))\
+            and (count(distinct theater.thName) <=(%s))\
+            and (count(distinct Manager.username) >=(%s))\
+            and (count(distinct Manager.username)<=(%s))"
 
             cursor.execute(query, data_tuple)
             info = cursor.fetchall()
@@ -185,17 +182,7 @@ class AdminService(object):
         connection.close()
         return {'ok':True, 'data':info}
 
-# select distinct manager.comName as "Company", count(distinct theater.thCity) as "City Count",
-#             count(distinct theater.thName) "Theater Count", count(distinct Manager.username) as "Employee Count"
-#             from theater join Manager on theater.comName=Manager.comName where
-#             ((NULL) is NULL or manager.comName = (NULL))
-#             and ( "City Count" >=(0))
-#             and ("City Count" <=(5))
-#             and ("Theater Count" <=(5))
-#             and ("Theater Count" >=(0))
-#             and ("Employee Count" <=(5))
-#             and ("Employee Count" >=(0))
-#             group by theater.comName
+
 
 
 
