@@ -199,7 +199,7 @@ BEGIN
                             WHEN i_sortBy = 'userType' THEN Table2.userType
                             WHEN i_sortBy = 'status' THEN Table1.status
                        END
-                  END ASC
+                  END ASC;
 
 END$$
 DELIMITER ;
@@ -239,7 +239,7 @@ BEGIN
                             WHEN i_sortBy = 'userType' THEN count(distinct theater.thName)
                             WHEN i_sortBy = 'status' THEN count(distinct Manager.username)
                        END
-                  END ASC
+                  END ASC;
 END$$
 DELIMITER ;
 
