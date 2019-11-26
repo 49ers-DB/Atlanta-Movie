@@ -7,15 +7,15 @@ BEGIN
     CREATE TABLE UserLogin
         select user.username, user.status,
             CASE "isCustomer"
-                WHEN (user.i_username in (select username from customer)) THEN 1
+                WHEN (user.username in (select username from customer)) THEN 1
                 ELSE 0
             END as "isCustomer",
             CASE "isManager"
-                WHEN (user.i_username in (select username from manager)) THEN 1
+                WHEN (user.username in (select username from manager)) THEN 1
                 ELSE 0
             END as "isManager",
             CASE "isAdmin"
-                WHEN (user.i_username in (select username from admin)) THEN 1
+                WHEN (user.username in (select username from admin)) THEN 1
                 ELSE 0
             END as "isAdmin"
     FROM user
