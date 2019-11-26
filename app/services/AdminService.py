@@ -157,7 +157,6 @@ class AdminService(object):
                     i_maxEmployee,
         )
 
-        print(data_tuple)
 
 
         connection = get_conn()

@@ -224,7 +224,7 @@ def manage_company():
 @login_required
 @admin_only
 def company_detail(name):
-  response = admin_service.ManageCompany(name)
+  response = admin_service.CompanyDetail(name)
   return json_response(response)
 
 
