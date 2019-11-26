@@ -1,4 +1,4 @@
-from middleware import login_required
+from middleware import login_required, admin_only
 from flask import Flask, json, g, request
 from flask_cors import CORS
 import pymysql.cursors
@@ -9,6 +9,8 @@ from app.services.RegisterService import RegisterService
 from app.services.DropDownService import DropDownService
 from app.services.UserService import UserService
 from app.services.CustomerService import CustomerService
+from app.services.AdminService import AdminService
+
 
 
 app = Flask(__name__)
@@ -22,6 +24,7 @@ manager_service = ManagerService()
 drop_down_service = DropDownService()
 user_service = UserService()
 customer_service = CustomerService()
+admin_service = AdminService()
 
 
 #------------LOGIN------------
@@ -207,6 +210,15 @@ def ScheduleMovie():
   return json_response({'ok': True})
 
 
+
+#------------Admin Service-------------
+@app.route('/manageCompany', methods=['POST'])
+@login_required
+@admin_only
+def manage_company():
+  data = request.get_json()
+  response = admin_service.ManageCompany(data)
+  return json_response(response)
 
 
 

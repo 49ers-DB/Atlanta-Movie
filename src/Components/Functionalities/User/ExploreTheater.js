@@ -192,7 +192,7 @@ export default class ExploreTheater extends Component {
               </div>  
             </div>
             <div className="row">
-            <div className="form-group form-inline functionalities-form-row col">
+              <div className="form-group form-inline functionalities-form-row col">
                 <label htmlFor="theaterName">City</label>
                 <input className="form-control functionalities" value={this.state.city} onChange={this.setCity}/>
               </div>
