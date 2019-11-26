@@ -220,6 +220,13 @@ def manage_company():
   response = admin_service.ManageCompany(data)
   return json_response(response)
 
+@app.route('/companyDetail/<string:name>', methods=['GET'])
+@login_required
+@admin_only
+def company_detail(name):
+  response = admin_service.CompanyDetail(name)
+  return json_response(response)
+
 
 
 @app.route("/example/<int:param_1>", methods=['GET'])
