@@ -12,7 +12,7 @@ export default class ManageCompany extends Component {
     super(props)
     this.state = {
       redirect: false,
-      rowData: [['ABC Company']],
+      rowData: [],
       selectedComName: null,
       numCitiesCov1: "",
       numCitiesCov2: "",
@@ -48,7 +48,10 @@ export default class ManageCompany extends Component {
       
       apiClient.perform('post', '/manageCompany', requestBody)
       .then( resp => {
-        
+        this.setState({rowData: resp['data']},
+        function() {
+          console.log(this.state.rowData)
+        })
       })
       .catch( error => {
         window.alert(`Error talking to server ${error.message}`)
@@ -68,7 +71,7 @@ export default class ManageCompany extends Component {
 
   renderRedirect = () => {
     if (this.state.redirect) {
-      var comName = this.state.rowData[this.state.companyIndex][0]
+      var comName = this.state.rowData[this.state.companyIndex]["Company"]
       return <Redirect to={'/Auth/Company-Detail/' + comName}/>
     }
   }
@@ -149,11 +152,10 @@ export default class ManageCompany extends Component {
                     return (
                       <tr key={this.state.rowData.indexOf(row)}>
                         <td><input type="radio" name="optradio" id={index} onClick={() => this.setState({companyIndex: index})}/></td>
-                        <td>{row[0]}</td>
-                        <td>{row[1]}</td>
-                        <td>{row[2]}</td>
-                        <td>{row[3]}</td>
-                        <td>{row[4]}</td>
+                        <td>{row["Company"]}</td>
+                        <td>{row["City Count"]}</td>
+                        <td>{row["Theater Count"]}</td>
+                        <td>{row["Employee Count"]}</td>
                       </tr>
                     );
                   })}

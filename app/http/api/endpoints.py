@@ -137,6 +137,12 @@ def getCreditCardNumbers():
   response = drop_down_service.getCreditCardNumbers(username)
   return json_response(response)
   
+@app.route('/managers', methods=['GET'])
+@admin_only
+def get_managers():
+
+  response = drop_down_service.ManagerDropDown()
+  return json_response(response)
 
 #----------UserService--------------------
 @app.route('/exploreTheater', methods=['POST'])
@@ -248,6 +254,23 @@ def decline_user():
   return json_response({"ok":True})
 
 
+@app.route('/theater', methods=['POST'])
+@login_required
+@admin_only
+def create_theater():
+  data = request.get_json()
+  admin_service.CreateTheater(data)
+  return json_response({"ok":True})
+
+
+@app.route('/companyDetail/<string:name>', methods=['GET'])
+@login_required
+@admin_only
+def company_detail(name):
+  response = admin_service.CompanyDetail(name)
+  return json_response(response)
+
+
 @app.route("/example/<int:param_1>", methods=['GET'])
 @login_required
 def example_endpoint(param_1):
@@ -271,8 +294,14 @@ def get_user_type():
   return response
   
 
-def json_response(payload, status_code=200):
-   return json.dumps(payload), status_code, {'Content-type': 'application/json'}
+
+@app.route('/createMovie', methods=['POST'])
+@login_required
+@admin_only
+def create_movie():
+  data = request.get_json()
+  resp = admin_service.CreateMovie(data)
+  return json_response({"data": resp})
 
 
 
@@ -285,3 +314,13 @@ def viewHistory():
 
   data = customer_service.ViewHistory(user)
   return json_response({'data': data})
+
+
+
+
+
+
+
+
+def json_response(payload, status_code=200):
+   return json.dumps(payload), status_code, {'Content-type': 'application/json'}

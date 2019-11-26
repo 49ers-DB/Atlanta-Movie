@@ -22,7 +22,8 @@ class AdminService(object):
         connection = get_conn()
 
         with connection.cursor() as cursor:
-            query4 = "update User set Status = 'Declined' where username = (%s)"
+            query4 = """update User set Status = 'Declined' where status='Pending'
+            and username = (%s)"""
             cursor.execute(query4, (i_username))
             data1 = cursor.fetchall()
             connection.commit()
@@ -141,45 +142,46 @@ class AdminService(object):
 
 
     def ManageCompany(self, filters):
-
-        i_comName = filters.get("i_comName")
-        i_minCity = filters.get("i_minCity")
-        i_maxCity = filters.get("i_maxCity")
-        i_minTheater = filters.get("i_minTheater")
-        i_maxTheater = filters.get("i_maxTheater")
-        i_minEmployee = filters.get("i_minEmployee")
-        i_maxEmployee = filters.get("i_maxEmployee")
+        if(filters.get("i_comName") != None):
+            i_comName = filters.get("i_comName")["value"]
+        else:
+            i_comName = None
+        if(filters.get("i_minCity") != ''):
+            i_minCity = filters.get("i_minCity")
+        else:
+            i_minCity = "0"
+        if(filters.get("i_maxCity") != ''):
+            i_maxCity = filters.get("i_maxCity")
+        else:
+            i_maxCity = "9999999"
+        if(filters.get("i_minTheater") != ''):
+            i_minTheater = filters.get("i_minTheater")
+        else:
+            i_minTheater = "0"
+        if(filters.get("i_maxTheater") != ''):
+            i_maxTheater = filters.get("i_maxTheater")
+        else:
+            i_maxTheater = "9999999"
+        if(filters.get("i_minEmployee") != ''):
+            i_minEmployee = filters.get("i_minEmployee")
+        else:
+            i_minEmployee = "0"
+        if(filters.get("i_maxEmployee") != ''):
+            i_maxEmployee = filters.get("i_maxEmployee")
+        else:
+            i_maxEmployee = "9999999"
 
         data_tuple = (
                     i_comName,
                     i_comName,
                     i_minCity,
-                    i_minCity,
-                    i_maxCity,
                     i_maxCity,
                     i_minTheater,
-                    i_minTheater,
                     i_maxTheater,
-                    i_maxTheater,
-                    i_minEmployee,
                     i_minEmployee,
                     i_maxEmployee,
-                    i_maxEmployee,
-                    i_comName,
-                    i_comName,
-                    i_minCity,
-                    i_minCity,
-                    i_maxCity,
-                    i_maxCity,
-                    i_minTheater,
-                    i_minTheater,
-                    i_maxTheater,
-                    i_maxTheater,
-                    i_minEmployee,
-                    i_minEmployee,
-                    i_maxEmployee,
-                    i_maxEmployee
         )
+
 
 
         connection = get_conn()
@@ -187,23 +189,14 @@ class AdminService(object):
             query = "select manager.comName as \"Company\", count(distinct theater.thCity) as \"City Count\", \
             count(distinct theater.thName) \"Theater Count\", count(distinct Manager.username) as \"Employee Count\" \
             from theater join Manager on theater.comName=Manager.comName group by theater.comName  \
-            where ((%s) is Null or Manager.comName = (%s)),\
-            and (where (%s) is Null or count(distinct theater.thCity)>=(%s)),\
-            and (where (%s) is Null or count(distinct theater.thCity)<=(%s)),\
-            and (where (%s) is Null or count(distinct theater.thName)>=(%s)),\
-            and (where (%s) is Null or count(distinct theater.thName)<=(%s)),\
-            and (where (%s) is Null or count(distinct manager.username)>=(%s)),\
-            and (where (%s) is Null or count(distinct manager.username)<=(%s)),\
-            union select company.comName as \"Company\", 0 as \"City Count\", 0 as \"Theater Count\",\
-            0 as \"Employee Count\" from company where company.comName not in (select Manager.comName from\
-            Manager) and\
-            where (%s) is Null or Manager.comName = (%s),\
-            and (where (%s) is Null or count(distinct theater.thCity)>=0),\
-            and (where (%s) is Null or count(distinct theater.thCity)<=0),\
-            and (where (%s) is Null or count(distinct theater.thName)>=0),\
-            and (where (%s) is Null or count(distinct theater.thName)<=0),\
-            and (where (%s) is Null or count(distinct manager.username)>=0),\
-            and (where (%s) is Null or count(distinct manager.username)<=0)"
+            having\
+            ((%s) is NULL or manager.comName = (%s))\
+			and (count(distinct theater.thCity) >=(%s))\
+            and (count(distinct theater.thCity) <=(%s))\
+            and (count(distinct theater.thName) >=(%s))\
+            and (count(distinct theater.thName) <=(%s))\
+            and (count(distinct Manager.username) >=(%s))\
+            and (count(distinct Manager.username)<=(%s))"
 
             cursor.execute(query, data_tuple)
             info = cursor.fetchall()
@@ -215,9 +208,8 @@ class AdminService(object):
 
 
 
-    def CreateTheater(self, username, filters):
+    def CreateTheater(self, filters):
 
-        i_adminUsername = username
         i_thName = filters.get("i_thName")
         i_comName = filters.get("i_comName")
         i_thStreet = filters.get("i_thStreet")
@@ -234,25 +226,29 @@ class AdminService(object):
             query2 = "insert into Theater (thName, comName, capacity, thStreet, thCity, thState, thZipcode, manUsername) \
             values ((%s), (%s), (%s), (%s), (%s), (%s), (%s), (%s))"
 
-
-
             cursor.execute(query2, (i_thName, i_comName, i_capacity, i_thStreet, i_thCity, i_thState, i_thZipcode, i_manUsername))
-            data2 = cursor.fetchall()
+            
             connection.commit()
 
         connection.close()
+        
 
-    def CompanyDetail(self, username, filters):
-        i_comName = filters.get("i_comName")
+    def CompanyDetail(self, comName):
+        i_comName = comName
 
-        with self.connection.cursor() as cursor:
+        connection = get_conn()
+        with connection.cursor() as cursor:
             #returns all employees and the company name
-            query1 = "select user.firstname, user.lastname, manager.comName from user join manager on user.username=manager.username \
-            where user.username in (select manager.username from manager) and manager.comName in (select company.comName from company where company.comName = (%s))"
+            query1 = """select user.firstname, user.lastname, manager.comName from user
+            join manager on user.username=manager.username 
+            where user.username in 
+            (select manager.username from manager) 
+            and manager.comName in 
+            (select company.comName from company where company.comName = (%s))"""
 
             cursor.execute(query1, (i_comName))
             employees = cursor.fetchall()
-            self.connection.commit()
+            connection.commit()
             #returns theater details for the company
             query2 = "select theater.thName, user.firstname, user.lastname, theater.thCity, theater.thState, theater.capacity \
             from theater join user on user.username=theater.manUsername where theater.comName=(%s)"
@@ -260,30 +256,38 @@ class AdminService(object):
 
             cursor.execute(query2, (i_comName))
             theaters = cursor.fetchall()
-            self.connection.commit()
+            connection.commit()
 
-        return employees
-        return theaters
-
+        return {"ok":True, "employees":employees, "theaters":theaters}
 
 
 
-    def CreateMovie(self, username):
+    def CreateMovie(self, filters):
 
-        i_adminUsername = username
-        # i_movName = filters.get("i_movName")
-        # i_movDuration = filters.get("i_movDuration")
-        # i_movReleaseDate = filters.get("i_movReleaseDate")
+        i_movName = filters.get("movieName")
+        i_movDuration = filters.get("duration")
+
+        i_movReleaseDate = (dateutil.parser.parse(filters.get("releaseDate"))).date()
+
+
 
         connection = get_conn()
         with connection.cursor() as cursor:
 
-
-            query3 = "insert into Movie (movName, movReleaseDate, duration) \
-            values ((%s), (%s), (%s))"
-
-            cursor.execute(query3, (i_movName, i_movReleaseDate, i_duration))
-            data3 = cursor.fetchall()
+            query7 = "SELECT movName FROM Movie WHERE (movName=(%s)) AND (movReleaseDate=(%s))"
+            cursor.execute(query7, (i_movName, i_movReleaseDate))
+            data = cursor.fetchall()
             connection.commit()
+            print(data)
+            if len(data) < 1:
+                query3 = "insert into Movie (movName, movReleaseDate, duration) \
+                values ((%s), (%s), (%s))"
+
+                cursor.execute(query3, (i_movName, i_movReleaseDate, i_movDuration))
+                connection.commit()
+            else:
+                connection.close()
+                return("Movie name and release date combination already taken")
 
         connection.close()
+        return("Movie Registered")
