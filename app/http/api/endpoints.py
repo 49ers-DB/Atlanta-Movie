@@ -221,6 +221,32 @@ def manage_company():
   return json_response(response)
 
 
+@app.route('/filterUser', methods=['POST'])
+@login_required
+@admin_only
+def filter_user():
+  data = request.get_json()
+  response = admin_service.FilterUser(data)
+  return json_response(response)
+
+
+@app.route('/approveUser', methods=['POST'])
+@login_required
+@admin_only
+def approve_user():
+  data = request.get_json()
+  admin_service.ApproveUser(data)
+  return json_response({"ok":True})
+
+
+@app.route('/declineUser', methods=['POST'])
+@login_required
+@admin_only
+def decline_user():
+  data = request.get_json()
+  admin_service.DeclineUser(data)
+  return json_response({"ok":True})
+
 
 @app.route("/example/<int:param_1>", methods=['GET'])
 @login_required

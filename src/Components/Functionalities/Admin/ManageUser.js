@@ -30,6 +30,12 @@ export default class ManageUser extends Component {
       userIndex: null,
 
     }
+
+    this.handleFilter = this.handleFilter.bind(this)
+    this.handleApprove = this.handleApprove.bind(this)
+    this.handleDecline = this.handleDecline.bind(this)
+
+    this.handleFilter(new Event(""))
   }
 
   handleFilter(event) {
@@ -38,18 +44,54 @@ export default class ManageUser extends Component {
     
     if (accessToken) {
       var apiClient = new APIClient(accessToken)
-      this.state.apiClient = apiClient
+      var requestBody = JSON.parse(JSON.stringify(this.state))
       console.log(apiClient)
+      if (requestBody.selectedStatus) {
+        requestBody.selectedStatus = requestBody.selectedStatus['value']
+      }
+      
+      apiClient.perform("post", "/filterUser", requestBody).then( resp => {
+        this.setState({rowData: resp['data']})
+      })
+      .catch( error => {
+        window.alert(`Error talking to server: ${error.message}`)
+      });
+
+
 
     }
   }
 
   handleApprove(event) {
+    var accessToken = localStorage.getItem("accessToken")
+    
+    if (accessToken) {
+      var apiClient = new APIClient(accessToken)
+      
+      apiClient.perform("post", "/approveUser", requestBody).then( resp => {
 
+      })
+      .catch( error => {
+        window.alert(`Error talking to server: ${error.message}`)
+      });
+
+    }
   }
 
   handleDecline(event) {
+    var accessToken = localStorage.getItem("accessToken")
     
+    if (accessToken) {
+      var apiClient = new APIClient(accessToken)
+      
+      apiClient.perform("post", "/declineUser", requestBody).then( resp => {
+
+      })
+      .catch( error => {
+        window.alert(`Error talking to server: ${error.message}`)
+      });
+
+    }
   }
 
 
@@ -98,8 +140,8 @@ export default class ManageUser extends Component {
             <div className="row">
                 <button className="btn btn-primary col-2" onClick={this.handleFilter}>Filter</button>
                 <div className="col-3"></div>
-                <button className="btn btn-primary col-2">Approve</button>
-                <button className="btn btn-primary col-2">Decline</button>
+                <button className="btn btn-primary col-2" onClick={this.handleApprove}>Approve</button>
+                <button className="btn btn-primary col-2" onClick={this.handleDecline}>Decline</button>
             </div>
           <div className="functionalities-table">
           <i className="fas fa-sort-alpha-up"></i>
