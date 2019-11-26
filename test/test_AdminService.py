@@ -42,10 +42,16 @@ class TestAdminService(object):
 
     def test_filter_user(self):
         connection = get_conn()
-        filterz = {'i_status':"Declined",'i_sortBy':"User Type",'i_sortDirection':"desc"}
+        filterz = {'i_status':"Declined",'i_sortBy':"username",'i_sortDirection':"desc"}
         admin_service = AdminService()
-        actual = admin_service.FilterUser(filterz)
-        print(actual)
+        Actual = admin_service.FilterUser(filterz)
+        Expected = [
+        {'username':'clarinetbeast','creditCardNum':0,'status':'Declined','userType':'Customer'},
+        {'username':'gdanger','creditCardNum':0,'status':'Declined','userType':'User'},
+        {'username':'smith_j','creditCardNum':0,'status':'Declined','userType':'User'},
+        {'username':'texasStarKarate','creditCardNum':0,'status':'Declined','userType':'User'}]
+        print(Actual)
+        assert Actual==Expected
 
 
     def test_CreateMovie(self):

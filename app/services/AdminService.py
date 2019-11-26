@@ -37,64 +37,84 @@ class AdminService(object):
         connection = get_conn()
 
         with connection.cursor() as cursor:
-            query = """select * from 
-            (select user.username as \"Username\", count(CustomerCreditCard.creditCardNum) as 'Credit Card Count', user.Status 
-            from user 
-            inner join CustomerCreditCard on user.username = CustomerCreditCard.username group by User.username \
-            union 
-            select user.username as \"Username\", 0 as \"Credit Card Count\", user.Status 
-            from user where user.username not in (select username from  CustomerCreditCard)) as Table1 \
-            natural join 
-            (select user.username as \"Username\", \"Manager-Customer\" as \"User Type\" 
-            from user 
-            where user.username in 
-            (select manager.username 
-            from manager 
-            inner join customer 
-            where manager.username=customer.username) 
-            union 
-            select user.username as \"Username\", \"Customer\" as \"User Type\" 
-            from user 
-            where user.username in 
-            (select customer.username from customer) 
-            and user.username not in 
-            (select manager.username 
-            from manager 
-            inner join customer 
-            where manager.username = customer.username) 
-            union 
-            select user.username as \"Username\", \"Manager\" as \"User Type\" 
-            from user 
-            where user.username in 
-            (select manager.username from manager) 
-            and user.username not in 
-            (select manager.username 
-            from manager 
-            inner join customer 
-            where manager.username = customer.username) 
-            union 
-            select user.username as \"Username\", \"User\" as \"User Type\" 
-            from user 
-            where user.username in 
-            (select user.username from user) 
-            and user.username not in 
-            (select manager.username 
-            from manager 
-            inner join customer 
-            where manager.username = customer.username) 
-            and user.username not in (select customer.username from customer) 
-            and user.username not in (select manager.username from manager)) as Table2 \
-            where ((%s) is null or user.username = (%s)) AND 
-            (user.status = (%s) or (%s) = "ALL") 
-            order by (%s) (%s)"""
-
-            cursor.execute(query, (i_username, i_username, i_status, i_status, i_sortBy, i_sortDirection))
+            query =  """select * from
+             (select user.username, count(CustomerCreditCard.creditCardNum) as \"creditCardNum\", user.status
+             from user
+             inner join CustomerCreditCard on user.username = CustomerCreditCard.username group by User.username
+             union
+             select user.username, 0 as \"creditCardCount\", user.status
+             from user where user.username not in (select username from  CustomerCreditCard)) as Table1
+             natural join
+             (select user.username, \"Manager-Customer\" as \"userType\"
+             from user
+             where user.username in
+             (select manager.username
+             from manager
+             inner join customer
+             where manager.username=customer.username)
+             union
+             select user.username, \"Customer\" as \"userType\"
+             from user
+             where user.username in
+             (select customer.username from customer)
+             and user.username not in
+             (select manager.username
+             from manager
+             inner join customer
+             where manager.username = customer.username)
+             union
+             select user.username, \"Manager\" as \"userType\"
+             from user
+             where user.username in
+             (select manager.username from manager)
+             and user.username not in
+             (select manager.username
+             from manager
+             inner join customer
+             where manager.username = customer.username)
+             union
+             select user.username, \"User\" as \"userType\"
+             from user
+             where user.username in
+             (select user.username from user)
+             and user.username not in
+             (select manager.username
+             from manager
+             inner join customer
+             where manager.username = customer.username)
+             and user.username not in (select customer.username from customer)
+             and user.username not in (select manager.username from manager)) as Table2
+             where (Table1.status = (%s) or (%s) is NULL) AND
+             (Table1.username = (%s) or (%s) is NULL)
+             ORDER BY
+                  CASE WHEN (%s) = \'desc\' or (%s) = NULL THEN 1
+                  ELSE
+                       CASE WHEN (%s) = NULL THEN Table1.username
+                            WHEN (%s) = \'username\' THEN Table1.username
+                            WHEN (%s) = \'creditCardCount\' THEN Table1.creditCardNum
+                            WHEN (%s) = \'userType\' THEN Table2.userType
+                            WHEN (%s) = \'status\' THEN Table1.status
+                       END
+                  END DESC,
+                  CASE WHEN (%s) = \'asc\' THEN 1
+                  ELSE
+                       CASE WHEN (%s) = NULL THEN Table1.username
+                            WHEN (%s) = \'username\' THEN Table1.username
+                            WHEN (%s) = \'creditCardCount\' THEN Table1.creditCardNum
+                            WHEN (%s) = \'userType\' THEN Table2.userType
+                            WHEN (%s) = \'status\' THEN Table1.status
+                       END
+                  END ASC """
+            cursor.execute(query, (i_status, i_status, i_username, i_username, i_sortDirection, i_sortDirection, i_sortBy, i_sortBy, i_sortBy, i_sortBy, i_sortBy, i_sortDirection, i_sortBy, i_sortBy, i_sortBy, i_sortBy, i_sortBy))
             data = cursor.fetchall()
             connection.commit()
 
         connection.close()
 
         return data
+
+
+
 
     def ManageCompany(self, filters):
         if(filters.get("i_comName") != None):
@@ -132,7 +152,7 @@ class AdminService(object):
                     i_minEmployee,
                     i_maxEmployee,
         )
-        
+
 
         connection = get_conn()
         with connection.cursor() as cursor:
@@ -160,7 +180,7 @@ class AdminService(object):
             cursor.execute(query, data_tuple)
             info = cursor.fetchall()
             connection.commit()
-            
+
 
         connection.close()
         return {'ok':True, 'data':info}
