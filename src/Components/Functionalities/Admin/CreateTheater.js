@@ -22,19 +22,71 @@ export default class CreateTheater extends Component {
       i_manUsername: null
     }
     this.createTheater = this.createTheater.bind(this)
-    
-   
+    this.validateState = this.validateState.bind(this)
   }
 
   createTheater() {
     var accessToken = localStorage.getItem("accessToken")
     
     if (accessToken) {
-      var apiClient = new APIClient(accessToken)
+      
+      var doQuery = this.validateState()
+      if (doQuery) {
+        var apiClient = new APIClient(accessToken)
+        var requestBody = JSON.parse(JSON.stringify(this.state))
+        
+        apiClient.perform("post", "/theater", requestBody)
+        .then( resp => {
+          window.alert("Created Theater")
+
+        })
+        .catch( error => {
+          window.alert(`Error talking to server ${error.message}`)
+        })
+
+      }
       
     }
   }
 
+  validateState() {
+    var doQuery = true
+      if (this.state.i_thName === "") {
+        window.alert("Please input a theater Name")
+        doQuery = false
+      } else if (this.state.i_comName == null) {
+        window.alert("Please select a company Name")
+        doQuery = false
+      } else if (this.state.i_thStreet === "") {
+        window.alert("Please input a Street Address")
+        doQuery = false
+      } else if (this.state.i_thCity === "") {
+        window.alert("Please input a City for address")
+        doQuery = false
+      } else if (this.state.i_thState == null) {
+        window.alert("Please select a State for address")
+        doQuery = false
+      } else if (this.state.i_thZipcode === "") {
+        window.alert("Please input a Zipcode for address")
+        doQuery = false
+      } else if (this.state.i_capacity === "") {
+        window.alert("Please input a valid capacity")
+        doQuery = false
+      } else if (this.state.i_manUsername == null) {
+        window.alert("Please select a valid Manager Name")
+        doQuery = false
+      } else if(this.state.i_thStreet.length > 128) {
+        window.alert("Address is too long");
+        doQuery = false;
+      } else if(this.state.i_thZipcode.length !== 5) {
+        window.alert("Zipcode must be 5 characters long");
+        doQuery = false;
+      } else if(this.state.i_thZipcode.match(/^[0-9]+$/) == null) {
+        window.alert("Zipcode must be only numbers");
+        doQuery = false;
+      }
+      return doQuery
+  }
 
 
   render () {
@@ -57,6 +109,7 @@ export default class CreateTheater extends Component {
                 <Select className="functionalities-select"
                   value={this.state.i_comName}
                   options={getCompanies()}
+                  onChange={com => this.setState({i_comName: com})}
                 />
               </div>
               
@@ -78,6 +131,7 @@ export default class CreateTheater extends Component {
               <Select className="col-2"
                 value={this.state.i_thState}
                 options={stateOptions()}
+                onChange={state => this.setState({i_thState: state})}
               />
               <label className="col-1">Zipcode</label>
               <input className="form-control col-2"
@@ -95,7 +149,7 @@ export default class CreateTheater extends Component {
               <Select className="functionalities-select"
                 value={this.state.i_manUsername}
                 options={managers()}
-                
+                onChange={man => this.setState({i_manUsername: man})}
               />
             </div>
           </div>

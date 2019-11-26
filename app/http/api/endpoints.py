@@ -226,6 +226,13 @@ def manage_company():
   response = admin_service.ManageCompany(data)
   return json_response(response)
 
+@app.route('/theater', methods=['POST'])
+@login_required
+@admin_only
+def create_theater():
+  data = request.get_json()
+  admin_service.CreateTheater(data)
+  return json_response({"ok":True})
 
 
 @app.route("/example/<int:param_1>", methods=['GET'])
@@ -251,10 +258,6 @@ def get_user_type():
   return response
   
 
-def json_response(payload, status_code=200):
-   return json.dumps(payload), status_code, {'Content-type': 'application/json'}
-
-
 
 #----------CustomerService--------------------
 @app.route('/viewHistory', methods=['POST'])
@@ -265,3 +268,13 @@ def viewHistory():
 
   data = customer_service.ViewHistory(user)
   return json_response({'data': data})
+
+
+
+
+
+
+
+
+def json_response(payload, status_code=200):
+   return json.dumps(payload), status_code, {'Content-type': 'application/json'}
