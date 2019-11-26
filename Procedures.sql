@@ -302,9 +302,15 @@ DROP PROCEDURE IF EXISTS manager_schedule_mov;
 DELIMITER $$
 CREATE PROCEDURE `manager_schedule_mov`(IN i_manUsername VARCHAR(50), IN i_movName VARCHAR(50), IN i_movReleaseDate DATE, IN i_movPlayDate DATE)
 BEGIN
-	SELECT movName, movReleaseDate FROM Movie;
-    SELECT thName, comName FROM Theater WHERE manUsername = i_manUsername;
-    INSERT INTO MoviePlay (movName, movReleaseDate, movPlayDate) VALUES (i_movName, i_movReleaseDate, i_movPlayDate);
+	DROP TABLE IF EXISTS tempMoviePlay;
+	CREATE Table tempMoviePlay
+		SELECT movName, movReleaseDate, thName, comName, i_movPlayDate as movPlayDate FROM Theater
+		join Movie
+        where Movie.movName=i_movName
+        and Movie.movReleaseDate=i_movReleaseDate
+        and Theater.manUsername = i_manUsername;
+    Select * FROM tempMoviePlay;
+    INSERT INTO MoviePlay Select * FROM tempMoviePlay;
 END$$
 DELIMITER ;
 
