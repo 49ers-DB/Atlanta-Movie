@@ -222,7 +222,7 @@ BEGIN
             and (count(distinct Manager.username) >= i_minEmployee or i_minEmployee = "")
             and (count(distinct Manager.username)<= i_maxEmployee or i_maxEmployee = "")
             ORDER BY
-                  CASE WHEN i_sortDirection = 'desc' or i_sortDirection = NULL THEN 1
+                  CASE WHEN i_sortDirection = 'DESC' or i_sortDirection = NULL THEN 1
                   ELSE
                        CASE WHEN i_sortBy = NULL THEN manager.comName
                             WHEN i_sortBy = 'comName' THEN manager.comName
@@ -231,7 +231,7 @@ BEGIN
                             WHEN i_sortBy = 'numEmployee' THEN count(distinct Manager.username)
                        END
                   END DESC,
-                  CASE WHEN i_sortDirection = 'asc' THEN 1
+                  CASE WHEN i_sortDirection = 'ASC' THEN 1
                   ELSE
                        CASE WHEN i_sortBy = NULL THEN manager.comName
                             WHEN i_sortBy = 'comName' THEN manager.comName
