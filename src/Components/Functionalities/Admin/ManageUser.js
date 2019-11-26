@@ -16,6 +16,10 @@ const statuses = [
   {value:"Declined", label:"Declined"}
 ]
 
+var oldRow = {
+  username:""
+}
+
 export default class ManageUser extends Component {
   constructor(props) {
     super(props)
@@ -36,8 +40,30 @@ export default class ManageUser extends Component {
     this.handleFilter = this.handleFilter.bind(this)
     this.handleApprove = this.handleApprove.bind(this)
     this.handleDecline = this.handleDecline.bind(this)
+    this.handleClick = this.handleClick.bind(this)
+    this.handleRowChange  = this.handleRowChange.bind(this)
 
     this.handleFilter(new Event(""))
+  }
+
+  handleClick() {
+    
+    this.handleFilter(new Event(""))
+
+  }
+
+  handleRowChange() {
+    let i = this.state.userIndex
+
+    if (this.state.userIndex >= 0) {
+      var newIndex = -1
+      this.state.rowData.map( (rowD, ind) => {
+        if (oldRow["username"] === rowD["username"]) {
+          newIndex = ind
+        }
+      });
+      this.setState({userIndex: newIndex});
+    }
   }
 
   handleFilter(event) {
@@ -47,14 +73,19 @@ export default class ManageUser extends Component {
     if (accessToken) {
       var apiClient = new APIClient(accessToken)
       var requestBody = JSON.parse(JSON.stringify(this.state))
-      console.log(apiClient)
-      if (requestBody.selectedStatus) {
-        requestBody.selectedStatus = requestBody.selectedStatus['value']
-      }
       
+      if (requestBody.i_status) {
+        requestBody.i_status = requestBody.i_status['value']
+      }
+
+      let i = this.state.userIndex
+      if (this.state.userIndex && this.state.userIndex >= 0) {
+        oldRow = JSON.parse(JSON.stringify(this.state.rowData[i]));
+      }
+  
+
       apiClient.perform("post", "/filterUser", requestBody).then( resp => {
-        console.log(resp)
-        this.setState({rowData: resp['data']})
+        this.setState({rowData: resp['data']}, this.handleRowChange)
       })
       .catch( error => {
         window.alert(`Error talking to server: ${error.message}`)
@@ -68,32 +99,48 @@ export default class ManageUser extends Component {
   handleApprove(event) {
     var accessToken = localStorage.getItem("accessToken")
     
-    if (accessToken && this.state.userIndex) {
+    console.log(this.state)
+    if (accessToken && this.state.userIndex >= 0 && this.state.rowData) {
       var apiClient = new APIClient(accessToken)
-      
-      apiClient.perform("post", "/approveUser", this.state).then( resp => {
 
+      var username  = this.state.rowData[this.state.userIndex]['username']
+      var requestBody = {
+        i_username: username
+      }
+      console.log(requestBody)
+      apiClient.perform("post", "/approveUser", requestBody ).then( resp => {
+        this.handleFilter(new Event(""))
       })
       .catch( error => {
         window.alert(`Error talking to server: ${error.message}`)
       });
 
+    } else {
+      window.alert("Please select a User")
     }
   }
 
   handleDecline(event) {
     var accessToken = localStorage.getItem("accessToken")
     
-    if (accessToken && this.state.userIndex) {
+    if (accessToken && this.state.userIndex >= 0 && this.state.rowData) {
       var apiClient = new APIClient(accessToken)
+
+      var username  = this.state.rowData[this.state.userIndex]['username']
+      var requestBody = {
+        i_username: username
+      }
       
-      apiClient.perform("post", "/declineUser", this.state).then( resp => {
+      apiClient.perform("post", "/declineUser", requestBody).then( resp => {
+        this.handleFilter(new Event(""))
 
       })
       .catch( error => {
         window.alert(`Error talking to server: ${error.message}`)
       });
 
+    } else {
+      window.alert("Please select a User")
     }
   }
 
@@ -108,24 +155,24 @@ export default class ManageUser extends Component {
     }
     var creditCardIcon = faSortAlphaUp
     var revCredCard = this.state.reverseCreCardCountCol
-    var creditCardDirection = 'desc'
+    var creditCardDirection = 'asc'
     if (this.state.reverseCreCardCountCol) {
       creditCardIcon = faSortAlphaDown
-      creditCardDirection = 'asc'
+      creditCardDirection = 'desc'
     }
     var userTypeIcon = faSortAlphaUp
     var revUserType = this.state.reverseUserTypeCol
-    var userTypeDirection = 'desc'
+    var userTypeDirection = 'asc'
     if (this.state.reverseUserTypeCol) {
       userTypeIcon = faSortAlphaDown
-      userTypeDirection = 'asc'
+      userTypeDirection = 'desc'
     }
     var statusIcon = faSortAlphaUp
     var revStatus = this.state.reverseStatusCol
-    var statusDirection = 'desc'
+    var statusDirection = 'asc'
     if (this.state.reverseStatusCol) {
       statusIcon = faSortAlphaDown
-      statusDirection = 'asc'
+      statusDirection = 'desc'
     }
     return (
       <div className="main">
@@ -144,7 +191,7 @@ export default class ManageUser extends Component {
                 <Select className="functionalities-select col-4"
                   value={this.state.i_status}
                   options={statuses}
-                  onChange={(status) => this.setState({selectedStatus: status})}
+                  onChange={(status) => this.setState({i_status: status})}
                 />
               </div>
             </div>
@@ -164,38 +211,46 @@ export default class ManageUser extends Component {
                 </th>
                 <th scope="col">Username  <FontAwesomeIcon
                   icon={usernameIcon} 
-                  onClick={() => this.setState({
+                  onClick={() => {this.setState({
                     reverseUsernameCol: !revUsername,
                     i_sortBy: "username",
                     i_sortDirection: usernameDirection
-                  })}
+                    },
+                    this.handleClick)
+                  }}
                   />
                 </th>
                 <th scope="col">Credit Card Count  <FontAwesomeIcon
                   icon={creditCardIcon}
-                  onClick={() => this.setState({
+                  onClick={() => {this.setState({
                     reverseCreCardCountCol: !revCredCard,
                     i_sortBy: "creditCardCount",
                     i_sortDirection: creditCardDirection
-                  })}
+                    },
+                    this.handleClick)
+                  }}
                   />
                 </th>
                 <th scope="col">User Type  <FontAwesomeIcon
                   icon={userTypeIcon}
-                  onClick={() => this.setState({
+                  onClick={() => {this.setState({
                     reverseUserTypeCol: !revUserType,
                     i_sortBy: "userType",
                     i_sortDirection: userTypeDirection
-                  })}
+                    },
+                    this.handleClick)
+                  }}
                   />
                 </th>
                 <th scope="col">Status  <FontAwesomeIcon
                   icon={statusIcon}
-                  onClick={() => this.setState({
+                  onClick={() => {this.setState({
                     reverseStatusCol: !revStatus,
                     i_sortBy: "status",
                     i_sortDirection: statusDirection
-                  })}
+                    },
+                    this.handleClick)
+                  }}
                   />
                 </th>
               </tr>
@@ -204,9 +259,17 @@ export default class ManageUser extends Component {
               
                 {this.state.rowData.map( (row) => {
                   var keyV = this.state.rowData.indexOf(row)
+                  var i = -1
+                  if (this.state.userIndex || this.state.userIndex === 0) {
+                    i = this.state.userIndex
+                  }
+                  
                   return (
                     <tr key={keyV}>
-                      <td><input type="radio" name="radioclass" onClick={() => this.setState({userIndex: keyV})}/></td>
+                      <td><input type="radio" name="radioclass"
+                       checked={keyV===i}
+                       onChange={event => {}}
+                       onClick={() => this.setState({userIndex: keyV})}/></td>
                       <td>{row.username}</td>
                       <td>{row.creditCardNum}</td>
                       <td>{row.userType}</td>

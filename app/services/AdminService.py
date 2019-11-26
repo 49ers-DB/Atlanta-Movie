@@ -8,6 +8,7 @@ class AdminService(object):
         i_username = filters.get('i_username')
         connection = get_conn()
 
+
         with connection.cursor() as cursor:
             query1 = "update User set status = 'Approved' where username = (%s)"
             cursor.execute(query1, (i_username))
@@ -85,7 +86,7 @@ class AdminService(object):
              and user.username not in (select customer.username from customer)
              and user.username not in (select manager.username from manager)) as Table2
              where (Table1.status = (%s) or (%s) is NULL) AND
-             (Table1.username = (%s) or (%s) is NULL)
+             (Table1.username = (%s) or (%s) is NULL or (%s) = "")
              ORDER BY
                   CASE WHEN (%s) = \'desc\' or (%s) = NULL THEN 1
                   ELSE
@@ -105,7 +106,7 @@ class AdminService(object):
                             WHEN (%s) = \'status\' THEN Table1.status
                        END
                   END ASC """
-            cursor.execute(query, (i_status, i_status, i_username, i_username, i_sortDirection, i_sortDirection, i_sortBy, i_sortBy, i_sortBy, i_sortBy, i_sortBy, i_sortDirection, i_sortBy, i_sortBy, i_sortBy, i_sortBy, i_sortBy))
+            cursor.execute(query, (i_status, i_status, i_username, i_username, i_username, i_sortDirection, i_sortDirection, i_sortBy, i_sortBy, i_sortBy, i_sortBy, i_sortBy, i_sortDirection, i_sortBy, i_sortBy, i_sortBy, i_sortBy, i_sortBy))
             data = cursor.fetchall()
             connection.commit()
 
