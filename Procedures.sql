@@ -98,7 +98,7 @@ DELIMITER ;
 
 DROP PROCEDURE IF EXISTS admin_filter_user;
 DELIMITER $$
-CREATE PROCEDURE `admin_filter_user`(IN i_username VARCHAR(50), IN i_status ENUM('ALL','Pending', 'Approved', 'Declined'), IN i_sortBy ENUM('username', 'creditCardCount', 'userType', 'status'), IN i_sortDirection ENUM('ASC', 'DESC'))
+CREATE PROCEDURE `admin_filter_user`(IN i_username VARCHAR(50), IN i_status ENUM('ALL','Pending', 'Approved', 'Declined'), IN i_sortBy VARCHAR(50), IN i_sortDirection VARCHAR(4))
 BEGIN
 	select i_username, i_status, i_sortBy, i_sortDirection;
     DROP TABLE IF EXISTS AdFilterUser;
@@ -199,7 +199,7 @@ DELIMITER ;
 
 DROP PROCEDURE IF EXISTS admin_filter_company;
 DELIMITER $$
-CREATE PROCEDURE `admin_filter_company`(IN i_comName VARCHAR(50), IN i_minCity INT, IN i_maxCity INT, IN i_minTheater INT, IN i_maxTheater INT, in i_minEmployee INT, IN i_maxEmployee INT, IN i_sortBy ENUM("comName", "numCityCover", "numTheater", "numEmployee"), IN i_sortDirection ENUM("ASC", "DESC"))
+CREATE PROCEDURE `admin_filter_company`(IN i_comName VARCHAR(50), IN i_minCity INT, IN i_maxCity INT, IN i_minTheater INT, IN i_maxTheater INT, in i_minEmployee INT, IN i_maxEmployee INT, IN i_sortBy VARCHAR(50), IN i_sortDirection VARCHAR(10))
 BEGIN
     DROP TABLE IF EXISTS AdFilterCom;
     CREATE TABLE AdFilterCom
