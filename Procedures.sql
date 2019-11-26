@@ -240,6 +240,8 @@ BEGIN
                             WHEN i_sortBy = 'status' THEN count(distinct Manager.username)
                        END
                   END ASC
+END$$
+DELIMITER ;
 
 
 
