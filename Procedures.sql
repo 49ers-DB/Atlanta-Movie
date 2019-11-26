@@ -3,6 +3,25 @@ DELIMITER $$
 CREATE PROCEDURE `user_login`(IN i_username VARCHAR(50), IN i_password VARCHAR(50))
 BEGIN
 	SELECT username, password FROM User where username = i_username and password = MD5(i_password);
+    DROP TABLE IF EXISTS UserLogin;
+    CREATE TABLE UserLogin
+        select user.username, user.status,
+            CASE "isCustomer"
+                WHEN (user.i_username in (select username from customer)) THEN 1
+                ELSE 0
+            END as "isCustomer",
+            CASE "isManager"
+                WHEN (user.i_username in (select username from manager)) THEN 1
+                ELSE 0
+            END as "isManager",
+            CASE "isAdmin"
+                WHEN (user.i_username in (select username from admin)) THEN 1
+                ELSE 0
+            END as "isAdmin"
+    FROM user
+    left outer join customer on user.username = customer.username
+    left outer join manager on user.username = manager.username
+    left outer join admin on user.username = admin.username;
 END$$
 DELIMITER ;
 
@@ -68,7 +87,7 @@ CREATE PROCEDURE `admin_approve_user`(IN i_username VARCHAR(50))
 BEGIN
 	UPDATE user SET status = 'Approved' where username = i_username;
 END$$
-DELIMITER ; 
+DELIMITER ;
 
 DROP PROCEDURE IF EXISTS admin_decline_user;
 DELIMITER $$
@@ -76,7 +95,7 @@ CREATE PROCEDURE `admin_decline_user`(IN i_username VARCHAR(50))
 BEGIN
 	UPDATE user SET status = 'Declined' where username = i_username;
 END$$
-DELIMITER ; 
+DELIMITER ;
 
 DROP PROCEDURE IF EXISTS manager_filter_th;
 DELIMITER $$
@@ -115,8 +134,8 @@ BEGIN
     SELECT thName, comName FROM Theater WHERE manUsername = i_manUsername;
     INSERT INTO MoviePlay (movName, movReleaseDate, movPlayDate) VALUES (i_movName, i_movReleaseDate, i_movPlayDate);
 END$$
-DELIMITER ; 
-	
+DELIMITER ;
+
 DROP PROCEDURE IF EXISTS customer_filter_mov;
 DELIMITER $$
 CREATE PROCEDURE `customer_filter_mov`(IN i_movName VARCHAR(50), IN i_comName VARCHAR(50), IN i_city VARCHAR(50), IN i_state VARCHAR(3), IN i_minMovPlayDate DATE, IN i_maxMovPlayDate DATE)
@@ -132,7 +151,7 @@ BEGIN
             (MoviePlay.movPlayDate >= i_minMovPlayDate OR i_minMovPlayDate is NULL) AND
             (MoviePlay.movPlayDate <= i_maxMovPlayDate OR i_maxMovPlayDate is NULL);
 END$$
-DELIMITER ; 
+DELIMITER ;
 
 DROP PROCEDURE IF EXISTS customer_view_mov;
 DELIMITER $$
@@ -142,7 +161,7 @@ BEGIN
     INSERT INTO CustomerViewMovie (creditCardNum, thName, comName, movName, movReleaseDate, movPlayDate)
 	VALUES (i_creditCardNum, i_thName, i_comName, i_movName, i_movReleaseDate, i_movPlayDate);
 END$$
-DELIMITER ; 
+DELIMITER ;
 
 DROP PROCEDURE IF EXISTS customer_view_history;
 DELIMITER $$
@@ -154,7 +173,7 @@ BEGIN
 	FROM CustomerViewMovie
 	WHERE CustomerViewMovie.creditCardNum IN (SELECT creditCardNum FROM CustomerCreditCard WHERE CustomerCreditCard.username = i_cusUsername);
 END$$
-DELIMITER ; 
+DELIMITER ;
 
 DROP PROCEDURE IF EXISTS user_filter_th;
 DELIMITER $$
@@ -162,9 +181,9 @@ CREATE PROCEDURE `user_filter_th`(IN i_thName VARCHAR(50), IN i_comName VARCHAR(
 BEGIN
     DROP TABLE IF EXISTS UserFilterTh;
     CREATE TABLE UserFilterTh
-	SELECT thName, thStreet, thCity, thState, thZipcode, comName 
+	SELECT thName, thStreet, thCity, thState, thZipcode, comName
     FROM Theater
-    WHERE 
+    WHERE
 		(thName = i_thName OR i_thName = "ALL") AND
         (comName = i_comName OR i_comName = "ALL") AND
         (thCity = i_city OR i_city = "") AND
