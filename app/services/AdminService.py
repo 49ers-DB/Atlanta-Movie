@@ -185,6 +185,18 @@ class AdminService(object):
         connection.close()
         return {'ok':True, 'data':info}
 
+# select distinct manager.comName as "Company", count(distinct theater.thCity) as "City Count",
+#             count(distinct theater.thName) "Theater Count", count(distinct Manager.username) as "Employee Count"
+#             from theater join Manager on theater.comName=Manager.comName where
+#             ((NULL) is NULL or manager.comName = (NULL))
+#             and ( "City Count" >=(0))
+#             and ("City Count" <=(5))
+#             and ("Theater Count" <=(5))
+#             and ("Theater Count" >=(0))
+#             and ("Employee Count" <=(5))
+#             and ("Employee Count" >=(0))
+#             group by theater.comName
+
 
 
     def CreateTheater(self, username, filters):
