@@ -21,7 +21,7 @@ export default class Menu extends Component {
     if (accessToken) {
       var apiClient = new APIClient(accessToken)
       console.log(apiClient)
-      apiClient.example().then( data => {
+      apiClient.getUserType().then( data => {
         console.log("got api Request change me to get usertype and set state")
         console.log(data)
         this.setState({userType: data.userType})

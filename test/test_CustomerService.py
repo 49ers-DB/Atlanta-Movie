@@ -129,22 +129,22 @@ class TestCustomerService(object):
 
 
 
-  def test_ViewHistory(self):
+    def test_ViewHistory(self):
 
-      connection = get_conn()
-      with connection.cursor() as cursor:
+        connection = get_conn()
+        with connection.cursor() as cursor:
 
-        customer_service = CustomerService()
+            customer_service = CustomerService()
 
-        customer_service.ViewHistory('georgep')
+            customer_service.ViewHistory('georgep')
 
-        cursor.execute("select movName, thName, comName, creditCardNum, movPlayDate from CustomerViewMovie where CustomerViewMovie.creditCardNum in (select creditCardNum from CustomerCreditCard where CustomerCreditCard.username = 'calcwizard')")
-        data=cursor.fetchall()
-        connection.commit()
+            cursor.execute("select movName, thName, comName, creditCardNum, movPlayDate from CustomerViewMovie where CustomerViewMovie.creditCardNum in (select creditCardNum from CustomerCreditCard where CustomerCreditCard.username = 'calcwizard')")
+            data=cursor.fetchall()
+            connection.commit()
 
-      connection.close()
+        connection.close()
 
-      assert len(data)==0
+        assert len(data)==0
 
 
 

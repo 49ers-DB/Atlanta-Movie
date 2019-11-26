@@ -18,18 +18,16 @@ export default class ViewHistory extends Component {
       this.state.apiClient = apiClient
       console.log(apiClient)
 
-
-      
-
-    //   apiClient.perform('post', '/visitHistory', this.state).then(resp => {
-    //     var rowData = resp
-    //     this.state.rowData = rowData
-    //   });
+      apiClient.perform('post', '/viewHistory').then(resp => {
+        
+        this.setState({rowData: resp['data']},
+          function() {
+            console.log(this.state.rowData)
+          })
+      });
       
     }
   }
-
-
 
 
   render () {
@@ -54,13 +52,15 @@ export default class ViewHistory extends Component {
             <tbody>
               
                 {this.state.rowData.map( (row) => {
+                  var date = new Date(row['movPlayDate'])
+                  date = date.toDateString()
                   return (
                     <tr key={this.state.rowData.indexOf(row)}>
-                      <td>{row[0]}</td>
-                      <td>{row[1]}</td>
-                      <td>{row[2]}</td>
-                      <td>{row[3]}</td>
-                      <td>{row[4]}</td>
+                      <td>{row['movName']}</td>
+                      <td>{row['thName']}</td>
+                      <td>{row['comName']}</td>
+                      <td>{row['creditCardNum']}</td>
+                      <td>{date}</td>
                     </tr>
                   );
                 })}

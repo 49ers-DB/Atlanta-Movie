@@ -41,15 +41,23 @@ export default class ScheduleMovie extends Component {
     event.preventDefault()
     var accessToken = localStorage.getItem("accessToken")
     
-    if (accessToken) {
+    if (accessToken && this.state.playDate && this.state.releaseDate && this.state.selectedMovie) {
       var apiClient = new APIClient(accessToken)
+      var movName = this.state.selectedMovie
+      if (movName) {movName = movName['value']}
+      
       var requestBody = {
-        i_movName: this.state.selectedMovie,
+        i_movName: movName,
         i_movReleaseDate: this.state.releaseDate,
         i_movPlayDate: this.state.playDate
       }
-      apiClient.perform("post", "/moviePlay", requestBody);
+      apiClient.perform("post", "/moviePlay", requestBody).catch( error => {
+        window.alert("Could not add movie")
+      })
+
       
+    } else {
+      window.alert("Could not add movie");
     }
   }
 
