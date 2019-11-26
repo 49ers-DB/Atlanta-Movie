@@ -1,27 +1,20 @@
+use moviez;
 DROP PROCEDURE IF EXISTS user_login;
 DELIMITER $$
 CREATE PROCEDURE `user_login`(IN i_username VARCHAR(50), IN i_password VARCHAR(50))
 BEGIN
-	SELECT username, password FROM User where username = i_username and password = MD5(i_password);
-    DROP TABLE IF EXISTS UserLogin;
-    CREATE TABLE UserLogin
-        select user.username, user.status,
-            CASE "isCustomer"
-                WHEN (user.username in (select username from customer)) THEN 1
-                ELSE 0
-            END as "isCustomer",
-            CASE "isManager"
-                WHEN (user.username in (select username from manager)) THEN 1
-                ELSE 0
-            END as "isManager",
-            CASE "isAdmin"
-                WHEN (user.username in (select username from admin)) THEN 1
-                ELSE 0
-            END as "isAdmin"
-    FROM user
-    left outer join customer on user.username = customer.username
-    left outer join manager on user.username = manager.username
-    left outer join admin on user.username = admin.username;
+	DROP TABLE IF EXISTS UserLogin;
+    CREATE TABLE UserLogin 
+		SELECT User1.username, User1.status, count(Customer.username) as "isCustomer", count(Manager.username) as "isManager", count(Admin.username) as "isAdmin" FROM 
+		(SELECT User.username, User.status FROM User
+		where User.username = i_username and password = MD5(i_password)) as User1
+		left outer join Customer on 
+        Customer.username = User1.username
+		left outer join Manager on
+        Manager.username=User1.username
+        left outer join Admin on
+        Admin.username=User1.username;
+	SELECT * from UserLogin;
 END$$
 DELIMITER ;
 
