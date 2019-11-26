@@ -65,10 +65,10 @@ export default class ManageUser extends Component {
   handleApprove(event) {
     var accessToken = localStorage.getItem("accessToken")
     
-    if (accessToken) {
+    if (accessToken && this.state.userIndex) {
       var apiClient = new APIClient(accessToken)
       
-      apiClient.perform("post", "/approveUser", requestBody).then( resp => {
+      apiClient.perform("post", "/approveUser", this.state).then( resp => {
 
       })
       .catch( error => {
@@ -81,10 +81,10 @@ export default class ManageUser extends Component {
   handleDecline(event) {
     var accessToken = localStorage.getItem("accessToken")
     
-    if (accessToken) {
+    if (accessToken && this.state.userIndex) {
       var apiClient = new APIClient(accessToken)
       
-      apiClient.perform("post", "/declineUser", requestBody).then( resp => {
+      apiClient.perform("post", "/declineUser", this.state).then( resp => {
 
       })
       .catch( error => {
