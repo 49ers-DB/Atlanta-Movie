@@ -161,9 +161,9 @@ class AdminService(object):
     def CreateMovie(self, username):
 
         i_adminUsername = username
-        # i_movName = filters.get("i_movName")
-        # i_movDuration = filters.get("i_movDuration")
-        # i_movReleaseDate = filters.get("i_movReleaseDate")
+        i_movName = filters.get("i_movName")
+        i_movDuration = filters.get("i_movDuration")
+        i_movReleaseDate = filters.get("i_movReleaseDate")
 
         connection = get_conn()
         with connection.cursor() as cursor:

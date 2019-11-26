@@ -49,7 +49,7 @@ class TestAdminService(object):
             connection.commit()
 
             admin_service = AdminService()
-            admin_service.CreateMovie('cool_class4400')
+            admin_service.CreateMovie('cool_class4400', {})
 
             cursor.execute("insert into Movie (movName,movReleaseDate,duration) values (('4400 The Movie', '20190812', 130)")
             data = cursor.fetchall()
