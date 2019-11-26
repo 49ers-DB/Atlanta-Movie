@@ -227,7 +227,7 @@ def manage_company():
 def filter_user():
   data = request.get_json()
   response = admin_service.FilterUser(data)
-  return json_response(response)
+  return json_response({"data":response})
 
 
 @app.route('/approveUser', methods=['POST'])

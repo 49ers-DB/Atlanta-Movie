@@ -22,12 +22,14 @@ export default class ManageUser extends Component {
     this.state = {
       username: "",
       rowData: [[],[],[],[],[],[]],
-      selectedStatus: null,
-      reverseUsernameCol: false,
-      reverseCreCardCountCol: false,
-      reverseUserTypeCol: false,
-      reverseStatusCol: false,
+      i_status: null,
+      reverseUsernameCol: true,
+      reverseCreCardCountCol: true,
+      reverseUserTypeCol: true,
+      reverseStatusCol: true,
       userIndex: null,
+      i_sortBy: "username",
+      i_sortDirection: "desc"
 
     }
 
@@ -51,6 +53,7 @@ export default class ManageUser extends Component {
       }
       
       apiClient.perform("post", "/filterUser", requestBody).then( resp => {
+        console.log(resp)
         this.setState({rowData: resp['data']})
       })
       .catch( error => {
@@ -98,23 +101,31 @@ export default class ManageUser extends Component {
   render () {
     var usernameIcon = faSortAlphaUp
     var revUsername = this.state.reverseUsernameCol
+    var usernameDirection = 'desc'
     if (this.state.reverseUsernameCol) {
       usernameIcon = faSortAlphaDown
+      usernameDirection = 'asc'
     }
     var creditCardIcon = faSortAlphaUp
     var revCredCard = this.state.reverseCreCardCountCol
+    var creditCardDirection = 'desc'
     if (this.state.reverseCreCardCountCol) {
       creditCardIcon = faSortAlphaDown
+      creditCardDirection = 'asc'
     }
     var userTypeIcon = faSortAlphaUp
     var revUserType = this.state.reverseUserTypeCol
+    var userTypeDirection = 'desc'
     if (this.state.reverseUserTypeCol) {
       userTypeIcon = faSortAlphaDown
+      userTypeDirection = 'asc'
     }
     var statusIcon = faSortAlphaUp
     var revStatus = this.state.reverseStatusCol
+    var statusDirection = 'desc'
     if (this.state.reverseStatusCol) {
       statusIcon = faSortAlphaDown
+      statusDirection = 'asc'
     }
     return (
       <div className="main">
@@ -131,7 +142,7 @@ export default class ManageUser extends Component {
                  onChange={(event) => this.setState({username: event.target.value})}/>
                 <label className="col">Status</label>
                 <Select className="functionalities-select col-4"
-                  value={this.state.selectedStatus}
+                  value={this.state.i_status}
                   options={statuses}
                   onChange={(status) => this.setState({selectedStatus: status})}
                 />
@@ -153,23 +164,39 @@ export default class ManageUser extends Component {
                 </th>
                 <th scope="col">Username  <FontAwesomeIcon
                   icon={usernameIcon} 
-                  onClick={() => this.setState({reverseUsernameCol: !revUsername})}
+                  onClick={() => this.setState({
+                    reverseUsernameCol: !revUsername,
+                    i_sortBy: "username",
+                    i_sortDirection: usernameDirection
+                  })}
                   />
                 </th>
                 <th scope="col">Credit Card Count  <FontAwesomeIcon
                   icon={creditCardIcon}
-                  onClick={() => this.setState({reverseCreCardCountCol: !revCredCard})}
+                  onClick={() => this.setState({
+                    reverseCreCardCountCol: !revCredCard,
+                    i_sortBy: "creditCardCount",
+                    i_sortDirection: creditCardDirection
+                  })}
                   />
                 </th>
                 <th scope="col">User Type  <FontAwesomeIcon
                   icon={userTypeIcon}
-                  onClick={() => this.setState({reverseUserTypeCol: !revUserType})}
+                  onClick={() => this.setState({
+                    reverseUserTypeCol: !revUserType,
+                    i_sortBy: "userType",
+                    i_sortDirection: userTypeDirection
+                  })}
                   />
                 </th>
                 <th scope="col">Status  <FontAwesomeIcon
-                 icon={statusIcon}
-                 onClick={() => this.setState({reverseStatusCol: !revUserType})}
-                 />
+                  icon={statusIcon}
+                  onClick={() => this.setState({
+                    reverseStatusCol: !revStatus,
+                    i_sortBy: "status",
+                    i_sortDirection: statusDirection
+                  })}
+                  />
                 </th>
               </tr>
             </thead>
@@ -180,11 +207,10 @@ export default class ManageUser extends Component {
                   return (
                     <tr key={keyV}>
                       <td><input type="radio" name="radioclass" onClick={() => this.setState({userIndex: keyV})}/></td>
-                      <td>{row[0]}</td>
-                      <td>{row[1]}</td>
-                      <td>{row[2]}</td>
-                      <td>{row[3]}</td>
-                      <td>{row[4]}</td>
+                      <td>{row.username}</td>
+                      <td>{row.creditCardNum}</td>
+                      <td>{row.userType}</td>
+                      <td>{row.status}</td>
                     </tr>
                   );
                 })}
