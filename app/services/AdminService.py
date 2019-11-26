@@ -183,11 +183,8 @@ class AdminService(object):
 
 
 
+    def CreateTheater(self, filters):
 
-
-    def CreateTheater(self, username, filters):
-
-        i_adminUsername = username
         i_thName = filters.get("i_thName")
         i_comName = filters.get("i_comName")
         i_thStreet = filters.get("i_thStreet")
@@ -204,13 +201,12 @@ class AdminService(object):
             query2 = "insert into Theater (thName, comName, capacity, thStreet, thCity, thState, thZipcode, manUsername) \
             values ((%s), (%s), (%s), (%s), (%s), (%s), (%s), (%s))"
 
-
-
             cursor.execute(query2, (i_thName, i_comName, i_capacity, i_thStreet, i_thCity, i_thState, i_thZipcode, i_manUsername))
-            data2 = cursor.fetchall()
+            
             connection.commit()
 
         connection.close()
+        
 
     def CompanyDetail(self, comName):
         i_comName = comName

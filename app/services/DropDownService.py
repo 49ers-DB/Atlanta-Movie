@@ -23,11 +23,17 @@ class DropDownService(object):
         connection = get_conn()
 
         with connection.cursor() as cursor:
-    #Create Theater
 
-            query = "select firstname, lastname from User inner join Manager on Manager.username = User.username"
+            query = """select firstname, lastname, Manager.username from User
+                inner join Manager on Manager.username = User.username
+                where Manager.username not in
+                (select manUsername from Theater)"""
+
+            cursor.execute(query)
+            managers = cursor.fetchall()
         
-            connection.close()
+        connection.close()
+        return {'ok':True, 'managers':managers}
 
 
     def MovieDropDown(self):
