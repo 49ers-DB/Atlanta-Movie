@@ -97,8 +97,10 @@ class AdminService(object):
         return data
 
     def ManageCompany(self, filters):
-
-        i_comName = filters.get("i_comName")
+        if(filters.get("i_comName") != None):
+            i_comName = filters.get("i_comName")["value"]
+        else:
+            i_comName = None
         i_minCity = filters.get("i_minCity")
         i_maxCity = filters.get("i_maxCity")
         i_minTheater = filters.get("i_minTheater")
@@ -124,17 +126,11 @@ class AdminService(object):
                     i_comName,
                     i_comName,
                     i_minCity,
-                    i_minCity,
-                    i_maxCity,
                     i_maxCity,
                     i_minTheater,
-                    i_minTheater,
                     i_maxTheater,
-                    i_maxTheater,
-                    i_minEmployee,
                     i_minEmployee,
                     i_maxEmployee,
-                    i_maxEmployee
         )
         
 
