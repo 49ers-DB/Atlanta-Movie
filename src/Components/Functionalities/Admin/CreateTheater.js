@@ -29,11 +29,16 @@ export default class CreateTheater extends Component {
     var accessToken = localStorage.getItem("accessToken")
     
     if (accessToken) {
+      var requestBody = JSON.parse(JSON.stringify(this.state))
       
-      var doQuery = this.validateState()
+      var doQuery = this.validateState(requestBody)
       if (doQuery) {
         var apiClient = new APIClient(accessToken)
-        var requestBody = JSON.parse(JSON.stringify(this.state))
+
+        requestBody.i_comName = requestBody.i_comName['value']
+        requestBody.i_thState = requestBody.i_thState['value']
+        requestBody.i_manUsername = requestBody.i_manUsername['value']['username']
+        
         
         apiClient.perform("post", "/theater", requestBody)
         .then( resp => {
@@ -49,40 +54,43 @@ export default class CreateTheater extends Component {
     }
   }
 
-  validateState() {
+  validateState(requestBody) {
     var doQuery = true
-      if (this.state.i_thName === "") {
+      if (requestBody.i_thName === "") {
         window.alert("Please input a theater Name")
         doQuery = false
-      } else if (this.state.i_comName == null) {
+      } else if (requestBody.i_comName == null) {
         window.alert("Please select a company Name")
         doQuery = false
-      } else if (this.state.i_thStreet === "") {
+      } else if (requestBody.i_thStreet === "") {
         window.alert("Please input a Street Address")
         doQuery = false
-      } else if (this.state.i_thCity === "") {
+      } else if (requestBody.i_thCity === "") {
         window.alert("Please input a City for address")
         doQuery = false
-      } else if (this.state.i_thState == null) {
+      } else if (requestBody.i_thState == null) {
         window.alert("Please select a State for address")
         doQuery = false
-      } else if (this.state.i_thZipcode === "") {
+      } else if (requestBody.i_thZipcode === "") {
         window.alert("Please input a Zipcode for address")
         doQuery = false
-      } else if (this.state.i_capacity === "") {
+      } else if (requestBody.i_capacity === "") {
         window.alert("Please input a valid capacity")
         doQuery = false
-      } else if (this.state.i_manUsername == null) {
+      } else if (requestBody.i_manUsername == null) {
         window.alert("Please select a valid Manager Name")
         doQuery = false
-      } else if(this.state.i_thStreet.length > 128) {
+      } else if(requestBody.i_thStreet.length > 128) {
         window.alert("Address is too long");
         doQuery = false;
-      } else if(this.state.i_thZipcode.length !== 5) {
+      } else if(requestBody.i_thZipcode.length !== 5) {
         window.alert("Zipcode must be 5 characters long");
         doQuery = false;
-      } else if(this.state.i_thZipcode.match(/^[0-9]+$/) == null) {
+      } else if(requestBody.i_thZipcode.match(/^[0-9]+$/) == null) {
         window.alert("Zipcode must be only numbers");
+        doQuery = false;
+      } else if(requestBody.i_capacity.match(/^[0-9]+$/) == null || requestBody.i_capacity <= 0) {
+        window.alert("Please input a valid capacity");
         doQuery = false;
       }
       return doQuery
@@ -124,8 +132,8 @@ export default class CreateTheater extends Component {
             <div className="row functionalities-form-row form-inline">
               <label className="col-1">City</label>
               <input className="form-control"
-                value={this.state.i_thState}
-                onChange={(event) => this.setState({i_thState: event.target.value})}
+                value={this.state.i_thCity}
+                onChange={(event) => this.setState({i_thCity: event.target.value})}
               />
               <label className="col-1">State</label>
               <Select className="col-2"

@@ -10,7 +10,7 @@ const managers = () => {
         resp['managers'].map( manager => {
           var name = manager['firstname'] + " " + manager['lastname']
 
-          managers.push({value: name, label: name})
+          managers.push({value: manager, label: name})
         })
         
       });

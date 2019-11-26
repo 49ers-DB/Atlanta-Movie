@@ -173,7 +173,6 @@ class AdminService(object):
 
     def CreateTheater(self, filters):
 
-        i_adminUsername = username
         i_thName = filters.get("i_thName")
         i_comName = filters.get("i_comName")
         i_thStreet = filters.get("i_thStreet")

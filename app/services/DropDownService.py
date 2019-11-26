@@ -24,7 +24,10 @@ class DropDownService(object):
 
         with connection.cursor() as cursor:
 
-            query = "select firstname, lastname from User inner join Manager on Manager.username = User.username"
+            query = """select firstname, lastname, Manager.username from User
+                inner join Manager on Manager.username = User.username
+                where Manager.username not in
+                (select manUsername from Theater)"""
 
             cursor.execute(query)
             managers = cursor.fetchall()
