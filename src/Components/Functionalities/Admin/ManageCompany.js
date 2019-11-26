@@ -71,7 +71,7 @@ export default class ManageCompany extends Component {
 
   renderRedirect = () => {
     if (this.state.redirect) {
-      var comName = this.state.rowData[this.state.companyIndex][0]
+      var comName = this.state.rowData[this.state.companyIndex]["Company"]
       return <Redirect to={'/Auth/Company-Detail/' + comName}/>
     }
   }

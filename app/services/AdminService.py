@@ -157,7 +157,6 @@ class AdminService(object):
                     i_maxEmployee,
         )
 
-        print(data_tuple)
 
 
         connection = get_conn()
@@ -184,11 +183,8 @@ class AdminService(object):
 
 
 
+    def CreateTheater(self, filters):
 
-
-    def CreateTheater(self, username, filters):
-
-        i_adminUsername = username
         i_thName = filters.get("i_thName")
         i_comName = filters.get("i_comName")
         i_thStreet = filters.get("i_thStreet")
@@ -205,25 +201,29 @@ class AdminService(object):
             query2 = "insert into Theater (thName, comName, capacity, thStreet, thCity, thState, thZipcode, manUsername) \
             values ((%s), (%s), (%s), (%s), (%s), (%s), (%s), (%s))"
 
-
-
             cursor.execute(query2, (i_thName, i_comName, i_capacity, i_thStreet, i_thCity, i_thState, i_thZipcode, i_manUsername))
-            data2 = cursor.fetchall()
+            
             connection.commit()
 
         connection.close()
+        
 
-    def CompanyDetail(self, username, filters):
-        i_comName = filters.get("i_comName")
+    def CompanyDetail(self, comName):
+        i_comName = comName
 
-        with self.connection.cursor() as cursor:
+        connection = get_conn()
+        with connection.cursor() as cursor:
             #returns all employees and the company name
-            query1 = "select user.firstname, user.lastname, manager.comName from user join manager on user.username=manager.username \
-            where user.username in (select manager.username from manager) and manager.comName in (select company.comName from company where company.comName = (%s))"
+            query1 = """select user.firstname, user.lastname, manager.comName from user
+            join manager on user.username=manager.username 
+            where user.username in 
+            (select manager.username from manager) 
+            and manager.comName in 
+            (select company.comName from company where company.comName = (%s))"""
 
             cursor.execute(query1, (i_comName))
             employees = cursor.fetchall()
-            self.connection.commit()
+            connection.commit()
             #returns theater details for the company
             query2 = "select theater.thName, user.firstname, user.lastname, theater.thCity, theater.thState, theater.capacity \
             from theater join user on user.username=theater.manUsername where theater.comName=(%s)"
@@ -231,11 +231,9 @@ class AdminService(object):
 
             cursor.execute(query2, (i_comName))
             theaters = cursor.fetchall()
-            self.connection.commit()
+            connection.commit()
 
-        return employees
-        return theaters
-
+        return {"ok":True, "employees":employees, "theaters":theaters}
 
 
 
