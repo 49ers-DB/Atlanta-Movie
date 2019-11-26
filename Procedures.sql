@@ -194,13 +194,12 @@ BEGIN
                             WHEN i_sortBy = 'status' THEN Table1.status
                        END
                   END ASC;
-			select * from AdFilterUser;
 END$$
 DELIMITER ;
 
 DROP PROCEDURE IF EXISTS admin_filter_company;
 DELIMITER $$
-CREATE PROCEDURE 'admin_filter_company'(IN i_comName VARCHAR(50), IN i_minCity INT, IN i_maxCity INT, IN i_minTheater INT, IN i_maxTheater INT, in i_minEmployee INT, IN i_maxEmployee INT, IN i_sortBy ENUM("comName", "numCityCover", "numTheater", "numEmployee"), IN i_sortDirection ENUM("ASC", "DESC"))
+CREATE PROCEDURE `admin_filter_company`(IN i_comName VARCHAR(50), IN i_minCity INT, IN i_maxCity INT, IN i_minTheater INT, IN i_maxTheater INT, in i_minEmployee INT, IN i_maxEmployee INT, IN i_sortBy ENUM("comName", "numCityCover", "numTheater", "numEmployee"), IN i_sortDirection ENUM("ASC", "DESC"))
 BEGIN
     DROP TABLE IF EXISTS AdFilterCom;
     CREATE TABLE AdFilterCom
