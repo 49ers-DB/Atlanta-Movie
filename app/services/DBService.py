@@ -14,3 +14,4 @@ def get_conn():
 
 def db_reset():
   os.system("mysql < schema_and_initialdata.sql -u flask --password=1234")
+  os.system("mysql < procedures.sql -u flask --password=1234")
