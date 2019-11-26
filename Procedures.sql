@@ -252,6 +252,17 @@ BEGIN
 END$$
 DELIMITER ;
 
+DROP PROCEDURE IF EXISTS admin_view_comDetail_th;
+DELIMITER $$
+CREATE PROCEDURE `admin_view_comDetail_th`(IN i_comName VARCHAR(50))
+BEGIN
+    DROP TABLE IF EXISTS AdComDetailTh;
+    CREATE TABLE AdComDetailTh
+    select theater.thName, user.firstname, user.lastname, theater.thCity, theater.thState, theater.capacity
+            from theater join user on user.username=theater.manUsername where theater.comName=(%s);
+END$$
+DELIMITER ;
+
 
 
 
