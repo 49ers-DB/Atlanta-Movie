@@ -357,7 +357,7 @@ CREATE PROCEDURE `customer_view_mov`(IN i_creditCardNum CHAR(16), IN i_movName V
 BEGIN
     DROP TABLE IF EXISTS tempCustomerViewMovie;
     CREATE TABLE tempCustomerViewMovie
-       SELECT CustomerCreditCard.creditcardNum, MoviePlay.thName, MoviePlay.comName, MoviePlay.movName, MoviePlay.movReleaseDate, MoviePlay.movPlayDate
+       SELECT CustomerCreditCard.creditcardNum, MoviePlay.movReleaseDate, MoviePlay.movName, MoviePlay.movPlayDate, MoviePlay.comName, MoviePlay.thName
         FROM MoviePlay
         JOIN CustomerCreditCard
         WHERE CustomerCreditCard.creditcardNum = i_creditCardNum
