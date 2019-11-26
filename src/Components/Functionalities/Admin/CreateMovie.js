@@ -49,7 +49,6 @@ export default class CreateMovie extends Component {
       }
 
     }
-    console.log(this.state)
   }
 //idiot
 
