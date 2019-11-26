@@ -4,11 +4,11 @@ DELIMITER $$
 CREATE PROCEDURE `user_login`(IN i_username VARCHAR(50), IN i_password VARCHAR(50))
 BEGIN
 	DROP TABLE IF EXISTS UserLogin;
-    CREATE TABLE UserLogin 
-		SELECT User1.username, User1.status, count(Customer.username) as "isCustomer", count(Manager.username) as "isManager", count(Admin.username) as "isAdmin" FROM 
+    CREATE TABLE UserLogin
+		SELECT User1.username, User1.status, count(Customer.username) as "isCustomer", count(Manager.username) as "isManager", count(Admin.username) as "isAdmin" FROM
 		(SELECT User.username, User.status FROM User
 		where User.username = i_username and password = MD5(i_password)) as User1
-		left outer join Customer on 
+		left outer join Customer on
         Customer.username = User1.username
 		left outer join Manager on
         Manager.username=User1.username
@@ -236,6 +236,17 @@ BEGIN
 END$$
 DELIMITER ;
 
+
+DROP PROCEDURE IF EXISTS admin_create_theater;
+DELIMITER $$
+CREATE PROCEDURE `admin_create_theater`(IN i_thName VARCHAR(50), IN i_comName VARCHAR(50), IN i_thStreet VARCHAR(50), IN i_thCity VARCHAR(50), IN i_thState CHAR(2), IN i_thZipcode CHAR(5), IN i_capacity INT, IN i_managerUsername VARCHAR(50))
+BEGIN
+    INSERT INTO Theater (thName, comName, capacity, thStreet, thCity, thState, thZipcode, manUsername)
+    VALUES (i_thName, i_comName, i_thStreet, i_thCity, i_thState, i_thZipcode, i_capacity, i_managerUsername);
+END$$
+DELIMITER ;
+
+
 DROP PROCEDURE IF EXISTS admin_view_comDetail_emp;
 DELIMITER $$
 CREATE PROCEDURE `admin_view_comDetail_emp`(IN i_comName VARCHAR(50))
@@ -244,8 +255,8 @@ BEGIN
     CREATE TABLE AdComDetailEmp
     select user.firstname as "empFirstname", user.lastname as "empLastname"
             from user
-            join manager on user.username=manager.username 
-            and manager.comName in 
+            join manager on user.username=manager.username
+            and manager.comName in
             (select company.comName from company where company.comName = i_comName);
 END$$
 DELIMITER ;
@@ -262,7 +273,14 @@ END$$
 DELIMITER ;
 
 
-
+DROP PROCEDURE IF EXISTS admin_create_mov;
+DELIMITER $$
+CREATE PROCEDURE `admin_create_mov`(IN i_movName VARCHAR(50), IN i_movDuration INT, IN i_movReleaseDate DATE)
+BEGIN
+    INSERT INTO Movie (movName, movReleaseDate, duration)
+    VALUES ( i_movName, i_movReleaseDate, i_movDuration);
+END$$
+DELIMITER ;
 
 
 DROP PROCEDURE IF EXISTS manager_filter_th;
@@ -286,7 +304,7 @@ BEGIN
             Union
             select Movie.movName as "movName", Movie.movReleaseDate as "movReleaseDate",
             cast(NULL as date) as "movPlayDate", Movie.duration as "movDuration" from Movie
-            where Movie.movName not in 
+            where Movie.movName not in
             (select MoviePlay.movName from MoviePlay where MoviePlay.thName in
 				(select thName from Theater where Theater.manUsername = @i_manUsername))
             and (i_minMovReleaseDate is NULL or Movie.movReleaseDate >= i_minMovReleaseDate)
