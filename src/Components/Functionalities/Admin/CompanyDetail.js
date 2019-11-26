@@ -101,7 +101,7 @@ export default class CompanyDetail extends Component {
           
           <div className="row">
             <div className="col-12">
-              <a className="btn btn-primary" href="/menu">Back</a>
+              <a className="btn btn-primary" href="/auth/manage-company">Back</a>
             </div>
           </div>
           
