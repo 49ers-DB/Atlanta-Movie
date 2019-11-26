@@ -1,14 +1,24 @@
 import React, { Component } from 'react'
+import Select from 'react-select'
 import APIClient from "../../../apiClient"
 
 import "../Functionality.css"
+
+const statuses = [
+  {value:"All", label:"All"},
+  {value:"Approved", label:"Approved"},
+  {value:"Pending", label:"Pending"},
+  {value:"Declined", label:"Declined"}
+]
 
 export default class ManageUser extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      apiClient: null,
+      username: "",
       rowData: [[],[],[],[],[],[]],
+      selectedStatus: null,
+
     }
     
     var accessToken = localStorage.getItem("accessToken")
@@ -18,14 +28,6 @@ export default class ManageUser extends Component {
       this.state.apiClient = apiClient
       console.log(apiClient)
 
-
-      
-
-    //   apiClient.perform('post', '/visitHistory', this.state).then(resp => {
-    //     var rowData = resp
-    //     this.state.rowData = rowData
-    //   });
-      
     }
   }
 
@@ -39,16 +41,36 @@ export default class ManageUser extends Component {
           <div className="card-header">
             <h2>Manage User</h2>
           </div>
-          <div className="card visitHistoryTableCard">
+          <div className="card-body">
+            <div className="row form-group">
+              <div className="form-inline col">
+                <label className="col">Username</label>
+                <input className="form-control col-4"
+                 value={this.state.username}
+                 onChange={(event) => this.setState({username: event.target.value})}/>
+                <label className="col">Status</label>
+                <Select className="functionalities-select col-4"
+                  value={this.state.selectedStatus}
+                  options={statuses}
+                  onChange={(status) => this.setState({selectedStatus: status})}
+                />
+              </div>
+            </div>
+            <div className="row">
+                <button className="btn btn-primary col-2">Filter</button>
+                <div className="col-3"></div>
+                <button className="btn btn-primary col-2">Approve</button>
+                <button className="btn btn-primary col-2">Decline</button>
+            </div>
           <div className="functionalities-table">
           <table className="table">
             <thead>
               <tr>
-                <th scope="col">Movie</th>
-                <th scope="col">Theater</th>
-                <th scope="col">Company</th>
-                <th scope="col">Card#</th>
-                <th scope="col">View Date</th>
+                <th scope="col">Selected</th>
+                <th scope="col">Username</th>
+                <th scope="col">Credit Card Count</th>
+                <th scope="col">User Type</th>
+                <th scope="col">Status</th>
               </tr>
             </thead>
             <tbody>
@@ -56,6 +78,7 @@ export default class ManageUser extends Component {
                 {this.state.rowData.map( (row) => {
                   return (
                     <tr key={this.state.rowData.indexOf(row)}>
+                      <td><input type="radio" name="radioclass"/></td>
                       <td>{row[0]}</td>
                       <td>{row[1]}</td>
                       <td>{row[2]}</td>
