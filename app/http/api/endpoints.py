@@ -227,6 +227,33 @@ def manage_company():
   return json_response(response)
 
 
+@app.route('/filterUser', methods=['POST'])
+@login_required
+@admin_only
+def filter_user():
+  data = request.get_json()
+  response = admin_service.FilterUser(data)
+  return json_response({"data":response})
+
+
+@app.route('/approveUser', methods=['POST'])
+@login_required
+@admin_only
+def approve_user():
+  data = request.get_json()
+  admin_service.ApproveUser(data)
+  return json_response({"ok":True})
+
+
+@app.route('/declineUser', methods=['POST'])
+@login_required
+@admin_only
+def decline_user():
+  data = request.get_json()
+  admin_service.DeclineUser(data)
+  return json_response({"ok":True})
+
+
 @app.route('/theater', methods=['POST'])
 @login_required
 @admin_only
@@ -242,7 +269,6 @@ def create_theater():
 def company_detail(name):
   response = admin_service.CompanyDetail(name)
   return json_response(response)
-
 
 
 @app.route("/example/<int:param_1>", methods=['GET'])
