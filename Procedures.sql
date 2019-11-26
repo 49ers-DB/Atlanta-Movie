@@ -98,7 +98,7 @@ DELIMITER ;
 
 DROP PROCEDURE IF EXISTS admin_filter_user;
 DELIMITER $$
-CREATE PROCEDURE `admin_filter_user`(IN i_username VARCHAR(50), IN i_status ENUM('ALL','Pending', 'Approved', 'Declined'), IN i_sortBy ENUM('username', 'creditCardNum', 'userType', 'status'), IN i_sortDirection ENUM('ASC', 'DESC'))
+CREATE PROCEDURE `admin_filter_user`(IN i_username VARCHAR(50), IN i_status ENUM('ALL','Pending', 'Approved', 'Declined'), IN i_sortBy ENUM('username', 'creditCardCount', 'userType', 'status'), IN i_sortDirection ENUM('ASC', 'DESC'))
 BEGIN
 	select i_username, i_status, i_sortBy, i_sortDirection;
     DROP TABLE IF EXISTS AdFilterUser;
