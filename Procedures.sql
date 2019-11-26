@@ -25,7 +25,6 @@ BEGIN
 END$$
 DELIMITER ;
 
---test
 
 DROP PROCEDURE IF EXISTS user_register;
 DELIMITER $$
