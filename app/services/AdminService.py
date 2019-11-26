@@ -84,29 +84,28 @@ class AdminService(object):
              where manager.username = customer.username)
              and user.username not in (select customer.username from customer)
              and user.username not in (select manager.username from manager)) as Table2
-             where (Table1.status = NULL or NULL is NULL) AND
-             (Table1.username = NULL or NULL is NULL)
+             where (Table1.status = (%s) or (%s) is NULL) AND
+             (Table1.username = (%s) or (%s) is NULL)
              ORDER BY
-                  CASE WHEN @OrderDirection = \'desc\' or @OrderDirection = NULL THEN 1
+                  CASE WHEN (%s) = \'desc\' or (%s) = NULL THEN 1
                   ELSE
-                       CASE WHEN @OrderByColumn = NULL THEN Table1.username
-                            WHEN @OrderByColumn = \'username\' THEN Table1.username
-                            WHEN @OrderByColumn = \'creditCardCount\' THEN Table1.creditCardNum
-                            WHEN @OrderByColumn = \'userType\' THEN Table2.userType
-                            WHEN @OrderByColumn = \'status\' THEN Table1.status
+                       CASE WHEN (%s) = NULL THEN Table1.username
+                            WHEN (%s) = \'username\' THEN Table1.username
+                            WHEN (%s) = \'creditCardCount\' THEN Table1.creditCardNum
+                            WHEN (%s) = \'userType\' THEN Table2.userType
+                            WHEN (%s) = \'status\' THEN Table1.status
                        END
                   END DESC,
-                  CASE WHEN @OrderDirection = \'asc\' THEN 1
+                  CASE WHEN (%s) = \'asc\' THEN 1
                   ELSE
-                       CASE WHEN @OrderByColumn = NULL THEN Table1.username
-                            WHEN @OrderByColumn = \'username\' THEN Table1.username
-                            WHEN @OrderByColumn = \'creditCardCount\' THEN Table1.creditCardNum
-                            WHEN @OrderByColumn = \'userType\' THEN Table2.userType
-                            WHEN @OrderByColumn = \'status\' THEN Table1.status
+                       CASE WHEN (%s) = NULL THEN Table1.username
+                            WHEN (%s) = \'username\' THEN Table1.username
+                            WHEN (%s) = \'creditCardCount\' THEN Table1.creditCardNum
+                            WHEN (%s) = \'userType\' THEN Table2.userType
+                            WHEN (%s) = \'status\' THEN Table1.status
                        END
                   END ASC """
-
-            cursor.execute(query, (i_username, i_username, i_status, i_status, i_sortBy, i_sortDirection))
+            cursor.execute(query, (i_status, i_status, i_username, i_username, i_sortDirection, i_sortDirection, i_sortBy, i_sortBy, i_sortBy, i_sortBy, i_sortBy, i_sortDirection, i_sortBy, i_sortBy, i_sortBy, i_sortBy, i_sortBy))
             data = cursor.fetchall()
             connection.commit()
 
