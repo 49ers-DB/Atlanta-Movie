@@ -355,11 +355,24 @@ DROP PROCEDURE IF EXISTS customer_view_mov;
 DELIMITER $$
 CREATE PROCEDURE `customer_view_mov`(IN i_creditCardNum CHAR(16), IN i_movName VARCHAR(50), IN i_movReleaseDate DATE, IN i_thName VARCHAR(50), IN i_comName VARCHAR(50), IN i_movPlayDate DATE)
 BEGIN
-	SELECT movReleaseDate FROM MoviePlay WHERE MoviePlay.movName = i_movName;
-    INSERT INTO CustomerViewMovie (creditCardNum, thName, comName, movName, movReleaseDate, movPlayDate)
-	VALUES (i_creditCardNum, i_thName, i_comName, i_movName, i_movReleaseDate, i_movPlayDate);
+    DROP TABLE IF EXISTS tempCustomerViewMovie;
+    CREATE TABLE tempCustomerViewMovie
+	   SELECT CustomerCreditCard.creditcardNum, MoviePlay.thName, MoviePlay.comName, MoviePlay.movName, MoviePlay.movPlayDate, MoviePlay.movReleaseDate
+        FROM MoviePlay
+        JOIN CustomerCreditCard
+        WHERE CustomerCreditCard.creditcardNum = i_creditCardNum
+        AND MoviePlay.movName = i_movName
+        AND MoviePlay.movReleaseDate = i_movReleaseDate
+        AND MoviePlay.thName = i_thName
+        AND MoviePlay.comName = i_comName
+        AND MoviePlay.movPlayDate = i_movPlayDate
+        AND MoviePlay.movReleaseDate = i_movReleaseDate;
+    SELECT * FROM tempCustomerViewMovie;
+    INSERT INTO CustomerViewMovie SELECT * FROM tempCustomerViewMovie;
+
 END$$
 DELIMITER ;
+
 
 DROP PROCEDURE IF EXISTS customer_view_history;
 DELIMITER $$
