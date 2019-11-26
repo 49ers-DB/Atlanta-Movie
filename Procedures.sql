@@ -235,9 +235,9 @@ BEGIN
                   ELSE
                        CASE WHEN i_sortBy = NULL THEN manager.comName
                             WHEN i_sortBy = 'comName' THEN manager.comName
-                            WHEN i_sortBy = 'creditCardCount' THEN count(distinct theater.thCity)
-                            WHEN i_sortBy = 'userType' THEN count(distinct theater.thName)
-                            WHEN i_sortBy = 'status' THEN count(distinct Manager.username)
+                            WHEN i_sortBy = 'numCityCover' THEN count(distinct theater.thCity)
+                            WHEN i_sortBy = 'numTheater' THEN count(distinct theater.thName)
+                            WHEN i_sortBy = 'numEmployee' THEN count(distinct Manager.username)
                        END
                   END ASC;
 END$$
