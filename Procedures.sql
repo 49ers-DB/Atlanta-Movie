@@ -236,7 +236,21 @@ BEGIN
 END$$
 DELIMITER ;
 
-
+DROP PROCEDURE IF EXISTS admin_view_comDetail_emp;
+DELIMITER $$
+CREATE PROCEDURE `admin_view_comDetail_emp`(IN i_comName VARCHAR(50))
+BEGIN
+    DROP TABLE IF EXISTS AdComDetailEmp;
+    CREATE TABLE AdComDetailEmp
+    select manager.firstname as "empFirstname", manager.lastname as "empLastname",
+            from user
+            join manager on user.username=manager.username 
+            where user.username in 
+            (select manager.username from manager) 
+            and manager.comName in 
+            (select company.comName from company where company.comName = i_comName;
+END$$
+DELIMITER ;
 
 
 
