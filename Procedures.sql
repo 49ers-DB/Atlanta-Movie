@@ -281,16 +281,19 @@ BEGIN
             and (i_minMovPlayDate is NULL or MoviePlay.movPlayDate >= i_minMovPlayDate)
             and (i_maxMovDuration is NULL or Movie.duration <= i_maxMovDuration)
             and (i_minMovDuration is NULL or Movie.duration >= i_minMovDuration)
-            and (i_movName is NULL or Movie.movName like i_movName)
-            and (i_includeNotPlayed is NULL or MoviePlay.movPlayDate != NULL)
+            and (i_movName ="" or Movie.movName like i_movName)
+            and (i_includeNotPlayed is NULL or i_includeNotPlayed=False or MoviePlay.movPlayDate != NULL)
             Union
             select Movie.movName as "movName", Movie.movReleaseDate as "movReleaseDate",
             cast(NULL as date) as "movPlayDate", Movie.duration as "movDuration" from Movie
-            where (i_minMovReleaseDate is NULL or Movie.movReleaseDate >= i_minMovReleaseDate)
+            where Movie.movName not in 
+            (select MoviePlay.movName from MoviePlay where MoviePlay.thName in
+				(select thName from Theater where Theater.manUsername = @i_manUsername))
+            and (i_minMovReleaseDate is NULL or Movie.movReleaseDate >= i_minMovReleaseDate)
             and (i_maxMovReleaseDate is NULL or Movie.movReleaseDate <= i_maxMovReleaseDate)
             and (i_minMovDuration is NULL or Movie.duration >= i_minMovDuration)
             and (i_maxMovDuration is NULL or Movie.duration <= i_maxMovDuration)
-            and (i_movName is NULL or Movie.movName like i_movName);
+            and (i_movName ="" or Movie.movName like i_movName);
 END$$
 DELIMITER ;
 
