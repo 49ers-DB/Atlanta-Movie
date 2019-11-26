@@ -10,6 +10,8 @@ import ScheduleMovie from './Manager/ScheduleMovie';
 import CreateMovie from './Admin/CreateMovie';
 import ManageCompany from './Admin/ManageCompany';
 import ManageUser from './Admin/ManageUser';
+import CompanyDetail from './Admin/CompanyDetail'
+import CreateTheater from './Admin/CreateTheater'
 
 
 export default class Auth extends Component {
@@ -35,6 +37,8 @@ export default class Auth extends Component {
           <Route exact path="/Auth/Create-Movie" component={CreateMovie}/>
           <Route exact path="/Auth/Manage-Company" component={ManageCompany}/>
           <Route exact path="/Auth/Manage-User" component={ManageUser}/>
+          <Route exact path="/Auth/Company-Detail/:name" component={CompanyDetail}/>
+          <Route exact path="/Auth/Create-Theater" component={CreateTheater}></Route>
         </Switch>
 
       );

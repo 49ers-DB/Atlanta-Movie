@@ -1,4 +1,4 @@
-from middleware import login_required
+from middleware import login_required, admin_only
 from flask import Flask, json, g, request
 from flask_cors import CORS
 import pymysql.cursors
@@ -9,6 +9,8 @@ from app.services.RegisterService import RegisterService
 from app.services.DropDownService import DropDownService
 from app.services.UserService import UserService
 from app.services.CustomerService import CustomerService
+from app.services.AdminService import AdminService
+
 
 
 app = Flask(__name__)
@@ -22,6 +24,7 @@ manager_service = ManagerService()
 drop_down_service = DropDownService()
 user_service = UserService()
 customer_service = CustomerService()
+admin_service = AdminService()
 
 
 #------------LOGIN------------
@@ -134,6 +137,12 @@ def getCreditCardNumbers():
   response = drop_down_service.getCreditCardNumbers(username)
   return json_response(response)
   
+@app.route('/managers', methods=['GET'])
+@admin_only
+def get_managers():
+
+  response = drop_down_service.ManagerDropDown()
+  return json_response(response)
 
 #----------UserService--------------------
 @app.route('/exploreTheater', methods=['POST'])
@@ -208,6 +217,58 @@ def ScheduleMovie():
 
 
 
+#------------Admin Service-------------
+@app.route('/manageCompany', methods=['POST'])
+@login_required
+@admin_only
+def manage_company():
+  data = request.get_json()
+  response = admin_service.ManageCompany(data)
+  return json_response(response)
+
+
+@app.route('/filterUser', methods=['POST'])
+@login_required
+@admin_only
+def filter_user():
+  data = request.get_json()
+  response = admin_service.FilterUser(data)
+  return json_response({"data":response})
+
+
+@app.route('/approveUser', methods=['POST'])
+@login_required
+@admin_only
+def approve_user():
+  data = request.get_json()
+  admin_service.ApproveUser(data)
+  return json_response({"ok":True})
+
+
+@app.route('/declineUser', methods=['POST'])
+@login_required
+@admin_only
+def decline_user():
+  data = request.get_json()
+  admin_service.DeclineUser(data)
+  return json_response({"ok":True})
+
+
+@app.route('/theater', methods=['POST'])
+@login_required
+@admin_only
+def create_theater():
+  data = request.get_json()
+  admin_service.CreateTheater(data)
+  return json_response({"ok":True})
+
+
+@app.route('/companyDetail/<string:name>', methods=['GET'])
+@login_required
+@admin_only
+def company_detail(name):
+  response = admin_service.CompanyDetail(name)
+  return json_response(response)
 
 
 @app.route("/example/<int:param_1>", methods=['GET'])
@@ -233,8 +294,14 @@ def get_user_type():
   return response
   
 
-def json_response(payload, status_code=200):
-   return json.dumps(payload), status_code, {'Content-type': 'application/json'}
+
+@app.route('/createMovie', methods=['POST'])
+@login_required
+@admin_only
+def create_movie():
+  data = request.get_json()
+  resp = admin_service.CreateMovie(data)
+  return json_response({"data": resp})
 
 
 
@@ -247,3 +314,13 @@ def viewHistory():
 
   data = customer_service.ViewHistory(user)
   return json_response({'data': data})
+
+
+
+
+
+
+
+
+def json_response(payload, status_code=200):
+   return json.dumps(payload), status_code, {'Content-type': 'application/json'}
