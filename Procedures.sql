@@ -241,7 +241,7 @@ DROP PROCEDURE IF EXISTS admin_create_theater;
 DELIMITER $$
 CREATE PROCEDURE `admin_create_theater`(IN i_thName VARCHAR(50), IN i_comName VARCHAR(50), IN i_thStreet VARCHAR(50), IN i_thCity VARCHAR(50), IN i_thState CHAR(2), IN i_thZipcode CHAR(5), IN i_capacity INT, IN i_managerUsername VARCHAR(50))
 BEGIN
-    INSERT INTO Theater (thName, comName, capacity, thStreet, thCity, thState, thZipcode, manUsername)
+    INSERT INTO Theater (thName, comName, thStreet, thCity, thState, thZipcode, capacity, manUsername)
     VALUES (i_thName, i_comName, i_thStreet, i_thCity, i_thState, i_thZipcode, i_capacity, i_managerUsername);
 END$$
 DELIMITER ;
