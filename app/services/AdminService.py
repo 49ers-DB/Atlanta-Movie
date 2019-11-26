@@ -39,72 +39,95 @@ class AdminService(object):
 
         with connection.cursor() as cursor:
             query =  """select * from
-             (select user.username, count(CustomerCreditCard.creditCardNum) as \"creditCardNum\", user.status
-             from user
-             inner join CustomerCreditCard on user.username = CustomerCreditCard.username group by User.username
-             union
-             select user.username, 0 as \"creditCardCount\", user.status
-             from user where user.username not in (select username from  CustomerCreditCard)) as Table1
-             natural join
-             (select user.username, \"Manager-Customer\" as \"userType\"
-             from user
-             where user.username in
-             (select manager.username
-             from manager
-             inner join customer
-             where manager.username=customer.username)
-             union
-             select user.username, \"Customer\" as \"userType\"
-             from user
-             where user.username in
-             (select customer.username from customer)
-             and user.username not in
-             (select manager.username
-             from manager
-             inner join customer
-             where manager.username = customer.username)
-             union
-             select user.username, \"Manager\" as \"userType\"
-             from user
-             where user.username in
-             (select manager.username from manager)
-             and user.username not in
-             (select manager.username
-             from manager
-             inner join customer
-             where manager.username = customer.username)
-             union
-             select user.username, \"User\" as \"userType\"
-             from user
-             where user.username in
-             (select user.username from user)
-             and user.username not in
-             (select manager.username
-             from manager
-             inner join customer
-             where manager.username = customer.username)
-             and user.username not in (select customer.username from customer)
-             and user.username not in (select manager.username from manager)) as Table2
-             where (Table1.status = (%s) or (%s) is NULL) AND
-             (Table1.username = (%s) or (%s) is NULL or (%s) = "")
-             ORDER BY
-                  CASE WHEN (%s) = \'desc\' or (%s) = NULL THEN 1
-                  ELSE
-                       CASE WHEN (%s) = NULL THEN Table1.username
-                            WHEN (%s) = \'username\' THEN Table1.username
-                            WHEN (%s) = \'creditCardCount\' THEN Table1.creditCardNum
-                            WHEN (%s) = \'userType\' THEN Table2.userType
-                            WHEN (%s) = \'status\' THEN Table1.status
-                       END
-                  END DESC,
-                  CASE WHEN (%s) = \'asc\' THEN 1
-                  ELSE
-                       CASE WHEN (%s) = NULL THEN Table1.username
-                            WHEN (%s) = \'username\' THEN Table1.username
-                            WHEN (%s) = \'creditCardCount\' THEN Table1.creditCardNum
-                            WHEN (%s) = \'userType\' THEN Table2.userType
-                            WHEN (%s) = \'status\' THEN Table1.status
-                       END
+             (select user.username, count(CustomerCreditCard.creditCardNum) as "creditCardNum", user.status \
+             from user \
+             inner join CustomerCreditCard on user.username = CustomerCreditCard.username group by User.username \
+             union \
+             select user.username, 0 as "creditCardCount", user.status \
+             from user where user.username not in (select username from  CustomerCreditCard)) as Table1 \
+             natural join \
+             (select user.username, "Admin-Customer" as "userType" \
+             from user \
+             where user.username in \
+             (select admin.username \
+             from admin \
+             inner join customer \
+             where admin.username=customer.username) \
+             union \
+             select user.username, "Admin" as "userType" \
+             from user \
+             where user.username in \
+             (select admin.username from admin) \
+             and user.username not in \
+             (select admin.username \
+             from admin \
+             inner join customer \
+             where admin.username = customer.username) \
+             union \
+             select user.username, "Manager-Customer" as "userType" \
+             from user \
+             where user.username in \
+             (select manager.username \
+             from manager \
+             inner join customer \
+             where manager.username=customer.username) \
+             union \
+             select user.username, "Customer" as "userType" \
+             from user \
+             where user.username in \
+             (select customer.username from customer) \
+             and user.username not in \
+             (select manager.username \
+             from manager \
+             inner join customer \
+             where manager.username = customer.username) \
+             and user.username not in (select admin.username \
+             from admin \
+             inner join customer \
+             where admin.username = customer.username) \
+             union \
+             select user.username, "Manager" as "userType" \
+             from user \
+             where user.username in \
+             (select manager.username from manager) \
+             and user.username not in \
+             (select manager.username \
+             from manager \
+             inner join customer \
+             where manager.username = customer.username) \
+             union \
+             select user.username, "User" as "userType" \
+             from user \
+             where user.username in \
+             (select user.username from user) \
+             and user.username not in \
+             (select manager.username \
+             from manager \
+             inner join customer \
+             where manager.username = customer.username) \
+             and user.username not in (select customer.username from customer) \
+             and user.username not in (select admin.username from admin) \
+             and user.username not in (select manager.username from manager)) as Table2 \
+             where (Table1.status = (%s) or (%s) is NULL) AND \
+             (Table1.username = (%s) or (%s) is NULL or (%s) = "") \
+             ORDER BY \
+                  CASE WHEN (%s) = \'desc\' or (%s) = NULL THEN 1 \
+                  ELSE \
+                       CASE WHEN (%s) = NULL THEN Table1.username \
+                            WHEN (%s) = \'username\' THEN Table1.username \
+                            WHEN (%s) = \'creditCardCount\' THEN Table1.creditCardNum \
+                            WHEN (%s) = \'userType\' THEN Table2.userType \
+                            WHEN (%s) = \'status\' THEN Table1.status \
+                       END \
+                  END DESC, \
+                  CASE WHEN (%s) = \'asc\' THEN 1 \
+                  ELSE \
+                       CASE WHEN (%s) = NULL THEN Table1.username \
+                            WHEN (%s) = \'username\' THEN Table1.username \
+                            WHEN (%s) = \'creditCardCount\' THEN Table1.creditCardNum \
+                            WHEN (%s) = \'userType\' THEN Table2.userType \
+                            WHEN (%s) = \'status\' THEN Table1.status \
+                       END \
                   END ASC """
             cursor.execute(query, (i_status, i_status, i_username, i_username, i_username, i_sortDirection, i_sortDirection, i_sortBy, i_sortBy, i_sortBy, i_sortBy, i_sortBy, i_sortDirection, i_sortBy, i_sortBy, i_sortBy, i_sortBy, i_sortBy))
             data = cursor.fetchall()
