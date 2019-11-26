@@ -25,7 +25,6 @@ BEGIN
 END$$
 DELIMITER ;
 
--- don't know how to add isCustomer or anything like that
 
 DROP PROCEDURE IF EXISTS user_register;
 DELIMITER $$
@@ -34,6 +33,7 @@ BEGIN
 	INSERT INTO user (username, password, firstname, lastname) VALUES (i_username, MD5(i_password), i_firstname, i_lastname);
 END$$
 DELIMITER ;
+
 
 DROP PROCEDURE IF EXISTS customer_only_register;
 DELIMITER $$
@@ -44,6 +44,7 @@ BEGIN
 END$$
 DELIMITER ;
 
+
 DROP PROCEDURE IF EXISTS customer_add_creditcard;
 DELIMITER $$
 CREATE PROCEDURE `customer_add_creditcard`(IN i_username VARCHAR(50), IN i_creditCardNum CHAR(16))
@@ -51,6 +52,7 @@ BEGIN
 	INSERT INTO CustomerCreditCard (username, creditCardNum) VALUES (i_username, i_creditCardNum);
 END$$
 DELIMITER ;
+
 
 DROP PROCEDURE IF EXISTS manager_only_register;
 DELIMITER $$
@@ -61,6 +63,7 @@ BEGIN
     INSERT INTO manager (username, manStreet, manCity, manState, manZipcode, comName) VALUES (i_username, i_empStreet, i_empCity, i_empState, i_empZipcode, i_comName);
 END$$
 DELIMITER ;
+
 
 DROP PROCEDURE IF EXISTS manager_customer_register;
 DELIMITER $$
@@ -73,6 +76,7 @@ BEGIN
 END$$
 DELIMITER ;
 
+
 DROP PROCEDURE IF EXISTS manager_customer_add_creditcard;
 DELIMITER $$
 CREATE PROCEDURE `manager_customer_add_creditcard`(IN i_username VARCHAR(50), IN i_creditCardNum CHAR(16))
@@ -80,6 +84,7 @@ BEGIN
 	INSERT INTO CustomerCreditCard (username, creditCardNum) VALUES (i_username, i_creditCardNum);
 END$$
 DELIMITER ;
+
 
 DROP PROCEDURE IF EXISTS admin_approve_user;
 DELIMITER $$
@@ -89,6 +94,7 @@ BEGIN
 END$$
 DELIMITER ;
 
+
 DROP PROCEDURE IF EXISTS admin_decline_user;
 DELIMITER $$
 CREATE PROCEDURE `admin_decline_user`(IN i_username VARCHAR(50))
@@ -96,6 +102,152 @@ BEGIN
 	UPDATE user SET status = 'Declined' where username = i_username;
 END$$
 DELIMITER ;
+
+DROP PROCEDURE IF EXISTS admin_filter_user;
+DELIMITER $$
+CREATE PROCEDURE `admin_filter_user`(IN i_username VARCHAR(50), IN i_status ENUM('Pending', 'Approved', 'Declined'), IN i_sortBy ENUM('username', 'creditCardNum', 'userType', 'status') IN i_sortDirection ENUM('ASC', 'DESC'))
+BEGIN
+    DROP TABLE IF EXISTS AdFilterUser;
+    CREATE TABLE AdFilterUser
+        select * from
+             (select user.username, count(CustomerCreditCard.creditCardNum) as "creditCardNum", user.status
+             from user
+             inner join CustomerCreditCard on user.username = CustomerCreditCard.username group by User.username
+             union
+             select user.username, 0 as "creditCardCount", user.status
+             from user where user.username not in (select username from  CustomerCreditCard)) as Table1
+             natural join
+             (select user.username, "Admin-Customer" as "userType"
+             from user
+             where user.username in
+             (select admin.username
+             from admin
+             inner join customer
+             where admin.username=customer.username)
+             union
+             select user.username, "Admin" as "userType"
+             from user
+             where user.username in
+             (select admin.username from admin)
+             and user.username not in
+             (select admin.username
+             from admin
+             inner join customer
+             where admin.username = customer.username)
+             union
+             select user.username, "Manager-Customer" as "userType"
+             from user
+             where user.username in
+             (select manager.username
+             from manager
+             inner join customer
+             where manager.username=customer.username)
+             union
+             select user.username, "Customer" as "userType"
+             from user
+             where user.username in
+             (select customer.username from customer)
+             and user.username not in
+             (select manager.username
+             from manager
+             inner join customer
+             where manager.username = customer.username)
+             and user.username not in (select admin.username
+             from admin
+             inner join customer
+             where admin.username = customer.username)
+             union
+             select user.username, "Manager" as "userType"
+             from user
+             where user.username in
+             (select manager.username from manager)
+             and user.username not in
+             (select manager.username
+             from manager
+             inner join customer
+             where manager.username = customer.username)
+             union
+             select user.username, "User" as "userType"
+             from user
+             where user.username in
+             (select user.username from user)
+             and user.username not in
+             (select manager.username
+             from manager
+             inner join customer
+             where manager.username = customer.username)
+             and user.username not in (select customer.username from customer)
+             and user.username not in (select admin.username from admin)
+             and user.username not in (select manager.username from manager)) as Table2
+             where (Table1.status = i_status or i_status = "ALL") AND
+             (Table1.username = i_username or i_username is NULL or i_username = "")
+             ORDER BY
+                  CASE WHEN i_sortDirection = 'desc' or i_sortDirection = NULL THEN 1
+                  ELSE
+                       CASE WHEN i_sortBy = NULL THEN Table1.username
+                            WHEN i_sortBy = 'username' THEN Table1.username
+                            WHEN i_sortBy = 'creditCardCount' THEN Table1.creditCardNum
+                            WHEN i_sortBy = 'userType' THEN Table2.userType
+                            WHEN i_sortBy = 'status' THEN Table1.status
+                       END
+                  END DESC,
+                  CASE WHEN i_sortDirection = 'asc' THEN 1
+                  ELSE
+                       CASE WHEN i_sortBy = NULL THEN Table1.username
+                            WHEN i_sortBy = 'username' THEN Table1.username
+                            WHEN i_sortBy = 'creditCardCount' THEN Table1.creditCardNum
+                            WHEN i_sortBy = 'userType' THEN Table2.userType
+                            WHEN i_sortBy = 'status' THEN Table1.status
+                       END
+                  END ASC;
+
+END$$
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS admin_filter_company;
+DELIMITER $$
+CREATE PROCEDURE 'admin_filter_company'(IN i_comName VARCHAR(50), IN i_minCity INT, IN i_maxCity INT, IN i_minTheater INT, IN i_maxTheater INT, in i_minEmployee INT, IN i_maxEmployee INT, IN i_sortBy ENUM("comName", "numCityCover", "numTheater", "numEmployee"), IN i_sortDirection ENUM("ASC", "DESC"))
+BEGIN
+    DROP TABLE IF EXISTS AdFilterCom;
+    CREATE TABLE AdFilterCom
+    select manager.comName as "comName", count(distinct theater.thCity) as "numCityCover",
+            count(distinct theater.thName) as "numTheater", count(distinct Manager.username) as "numEmployee"
+            from theater join Manager on theater.comName = Manager.comName group by theater.comName
+            having
+            (i_comName = "ALL" or manager.comName = i_comName)
+            and (count(distinct theater.thCity) >= i_minCity or i_minCity = "")
+            and (count(distinct theater.thCity) <= i_maxCity or i_maxCity = "")
+            and (count(distinct theater.thName) >= i_minTheater or i_minTheater = "")
+            and (count(distinct theater.thName) <= i_maxTheater or i_maxTheater = "")
+            and (count(distinct Manager.username) >= i_minEmployee or i_minEmployee = "")
+            and (count(distinct Manager.username)<= i_maxEmployee or i_maxEmployee = "")
+            ORDER BY
+                  CASE WHEN i_sortDirection = 'DESC' or i_sortDirection = NULL THEN 1
+                  ELSE
+                       CASE WHEN i_sortBy = NULL THEN manager.comName
+                            WHEN i_sortBy = 'comName' THEN manager.comName
+                            WHEN i_sortBy = 'numCityCover' THEN count(distinct theater.thCity)
+                            WHEN i_sortBy = 'numTheater' THEN count(distinct theater.thName)
+                            WHEN i_sortBy = 'numEmployee' THEN count(distinct Manager.username)
+                       END
+                  END DESC,
+                  CASE WHEN i_sortDirection = 'ASC' THEN 1
+                  ELSE
+                       CASE WHEN i_sortBy = NULL THEN manager.comName
+                            WHEN i_sortBy = 'comName' THEN manager.comName
+                            WHEN i_sortBy = 'numCityCover' THEN count(distinct theater.thCity)
+                            WHEN i_sortBy = 'numTheater' THEN count(distinct theater.thName)
+                            WHEN i_sortBy = 'numEmployee' THEN count(distinct Manager.username)
+                       END
+                  END ASC;
+END$$
+DELIMITER ;
+
+
+
+
+
+
 
 DROP PROCEDURE IF EXISTS manager_filter_th;
 DELIMITER $$
@@ -126,6 +278,7 @@ BEGIN
 END$$
 DELIMITER ;
 
+
 DROP PROCEDURE IF EXISTS manager_schedule_mov;
 DELIMITER $$
 CREATE PROCEDURE `manager_schedule_mov`(IN i_manUsername VARCHAR(50), IN i_movName VARCHAR(50), IN i_movReleaseDate DATE, IN i_movPlayDate DATE)
@@ -135,6 +288,7 @@ BEGIN
     INSERT INTO MoviePlay (movName, movReleaseDate, movPlayDate) VALUES (i_movName, i_movReleaseDate, i_movPlayDate);
 END$$
 DELIMITER ;
+
 
 DROP PROCEDURE IF EXISTS customer_filter_mov;
 DELIMITER $$
@@ -152,6 +306,7 @@ BEGIN
             (MoviePlay.movPlayDate <= i_maxMovPlayDate OR i_maxMovPlayDate is NULL);
 END$$
 DELIMITER ;
+
 
 DROP PROCEDURE IF EXISTS customer_view_mov;
 DELIMITER $$
@@ -175,6 +330,7 @@ BEGIN
 END$$
 DELIMITER ;
 
+
 DROP PROCEDURE IF EXISTS user_filter_th;
 DELIMITER $$
 CREATE PROCEDURE `user_filter_th`(IN i_thName VARCHAR(50), IN i_comName VARCHAR(50), IN i_city VARCHAR(50), IN i_state VARCHAR(3))
@@ -191,6 +347,7 @@ BEGIN
 END$$
 DELIMITER ;
 
+
 DROP PROCEDURE IF EXISTS user_visit_th;
 DELIMITER $$
 CREATE PROCEDURE `user_visit_th`(IN i_thName VARCHAR(50), IN i_comName VARCHAR(50), IN i_visitDate DATE, IN i_username VARCHAR(50))
@@ -199,6 +356,7 @@ BEGIN
     VALUES (i_thName, i_comName, i_visitDate, i_username);
 END$$
 DELIMITER ;
+
 
 DROP PROCEDURE IF EXISTS user_filter_visitHistory;
 DELIMITER $$
