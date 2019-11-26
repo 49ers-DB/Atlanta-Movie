@@ -269,6 +269,16 @@ def get_user_type():
   
 
 
+@app.route('/createMovie', methods=['POST'])
+@login_required
+@admin_only
+def create_movie():
+  data = request.get_json()
+  resp = admin_service.CreateMovie(data)
+  return json_response({"data": resp})
+
+
+
 #----------CustomerService--------------------
 @app.route('/viewHistory', methods=['POST'])
 @login_required
