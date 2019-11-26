@@ -1,5 +1,5 @@
 DROP PROCEDURE IF EXISTS user_login;
-DELIMITER //
+DELIMITER $$
 CREATE PROCEDURE `user_login`(IN i_username VARCHAR(50), IN i_password VARCHAR(50))
 BEGIN
 	SELECT username, password FROM User where username = i_username and password = MD5(i_password);
