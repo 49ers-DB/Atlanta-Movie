@@ -742,7 +742,7 @@ CALL manager_schedule_mov('imbatman', 'Georgia Tech The Movie', '1985-08-13', '2
 CALL customer_view_mov('1111111111111100', 'Spaceballs', '1987-06-24', 'ML Movies', 'AI Theater Company', '2010-04-02');
 
 -- [step #60: screen 20b]
-CALL customer_view_mov('1111111111111111', 'The First Pokemon Movie', '1988-07-19', 'ML Movies', 'AI Theater Company', '2010-04-02');
+CALL customer_view_mov('1111111111111111', 'The First Pokemon Movie', '1998-07-19', 'ML Movies', 'AI Theater Company', '2010-04-02');
 
 -- [step #61: screen 20b]
 CALL customer_view_mov('1111111111111100', 'Georgia Tech The Movie', '1985-08-13', 'ML Movies', 'AI Theater Company', '2010-04-02');

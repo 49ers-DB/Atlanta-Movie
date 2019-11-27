@@ -10,8 +10,22 @@ from app.services.DBService import get_conn, db_reset, run_s22_script
 from app.services.AdminService import AdminService
 
 
-class AutoGrader(object):
+class TestAutoGrader(object):
 
+  def test_s22_script(self):
+    db_reset()
+    run_s22_script()
+
+    
+    sql = "Select * from magic44_scoring"
+    connection = get_conn()
+    with connection.cursor() as cursor:
+      cursor.execute(sql)
+      rows = cursor.fetchall()
+      print(rows)
+    connection.close()
+
+    assert rows == ()
 
   def db_reset(self):
 

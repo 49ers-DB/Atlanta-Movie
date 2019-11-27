@@ -70,21 +70,40 @@ class TestAdminService(object):
 
     def test_filter_user_no_filters(self):
         db_reset()
-
-        filterz = {"i_status": None, "username": "", 'i_sortBy':"username",'i_sortDirection':"desc"}
-        
+        expected = [{"creditCardCount": 1, "status": "Approved", "userType": "Customer", "username": "theScienceGuy"}, {"creditCardCount": 1, "status": "Approved", "userType": "Customer", "username": "thePiGuy3.14"}, {"creditCardCount": 0, "status": "Declined", "userType": "User", "username": "texasStarKarate"}, {"creditCardCount": 0, "status": "Pending", "userType": "User", "username": "smith_j"}, {"creditCardCount": 1, "status": "Approved", "userType": "Customer", "username": "RitzLover28"}, {"creditCardCount": 0, "status": "Approved", "userType": "Manager", "username": "radioactivePoRa"}, {"creditCardCount": 1, "status": "Approved", "userType": "Customer", "username": "programerAAL"}, {"creditCardCount": 1, "status": "Approved", "userType": "Customer", "username": "notFullMetal"}, {"creditCardCount": 0, "status": "Approved", "userType": "Manager", "username": "manager4"}, {"creditCardCount": 0, "status": "Approved", "userType": "Manager", "username": "manager3"}, {"creditCardCount": 0, "status": "Approved", "userType": "Manager", "username": "manager2"}, {"creditCardCount": 0, "status": "Approved", "userType": "Manager", "username": "manager1"}, {"creditCardCount": 3, "status": "Approved", "userType": "Customer", "username": "isthisthekrustykrab"}, {"creditCardCount": 1, "status": "Approved", "userType": "Customer", "username": "imready"}, {"creditCardCount": 0, "status": "Approved", "userType": "Manager", "username": "imbatman"}, {"creditCardCount": 3, "status": "Approved", "userType": "Customer", "username": "ilikemoney$$"}, {"creditCardCount": 0, "status": "Approved", "userType": "Manager", "username": "ghcghc"}, {"creditCardCount": 5, "status": "Approved", "userType": "CustomerManager", "username": "georgep"}, {"creditCardCount": 0, "status": "Declined", "userType": "User", "username": "gdanger"}, {"creditCardCount": 1, "status": "Approved", "userType": "Customer", "username": "fullMetal"}, {"creditCardCount": 0, "status": "Approved", "userType": "Manager", "username": "fatherAI"}, {"creditCardCount": 2, "status": "Approved", "userType": "CustomerManager", "username": "entropyRox"}, {"creditCardCount": 1, "status": "Approved", "userType": "Customer", "username": "eeqmcsquare"}, {"creditCardCount": 1, "status": "Approved", "userType": "Customer", "username": "does2Much"}, {"creditCardCount": 1, "status": "Approved", "userType": "Customer", "username": "DNAhelix"}, {"creditCardCount": 1, "status": "Approved", "userType": "CustomerAdmin", "username": "cool_class4400"}, {"creditCardCount": 0, "status": "Declined", "userType": "Customer", "username": "clarinetbeast"}, {"creditCardCount": 1, "status": "Approved", "userType": "Customer", "username": "calcwizard"}, {"creditCardCount": 2, "status": "Approved", "userType": "Customer", "username": "calcultron2"}, {"creditCardCount": 1, "status": "Approved", "userType": "CustomerManager", "username": "calcultron"}]
         admin_service = AdminService()
+
+        filterz = {"i_status": "ALL", "username": "", 'i_sortBy':"",'i_sortDirection':""}
         Actual = admin_service.FilterUser(filterz)
-        Expected = [
-            {'username':'clarinetbeast','creditCardNum':0,'status':'Declined','userType':'Customer'},
-            {'username':'gdanger','creditCardNum':0,'status':'Declined','userType':'User'},
-            {'username':'smith_j','creditCardNum':0,'status':'Declined','userType':'User'},
-            {'username':'texasStarKarate','creditCardNum':0,'status':'Declined','userType':'User'},
+        assert expected == Actual 
 
-        ]
-        print(Actual)
-        assert len(Actual) == 30
+        filterz = {"i_status": "", "username": "", 'i_sortBy':"username",'i_sortDirection':"desc"}
+        Actual = admin_service.FilterUser(filterz)
+        assert expected == Actual
 
+        filterz = {"i_status": "ALL", "username": "", 'i_sortBy':"username",'i_sortDirection':"desc"}
+        Actual = admin_service.FilterUser(filterz)
+        assert expected == Actual
+
+    def test_filter_theater_no_filters(self):
+        db_reset()
+        expected = [{"comName": "EZ Theater Company", "numCityCover": 2, "numEmployee": 2, "numTheater": 2}, {"comName": "Awesome Theater Company", "numCityCover": 1, "numEmployee": 1, "numTheater": 1}, {"comName": "AI Theater Company", "numCityCover": 1, "numEmployee": 2, "numTheater": 1}, {"comName": "4400 Theater Company", "numCityCover": 3, "numEmployee": 6, "numTheater": 3}]
+        admin_service = AdminService()
+
+        filterz = {
+            "i_comName":'ALL',
+            "i_minCity": None,
+            "i_maxCity": None,
+            "i_minTheater": None,
+            "i_maxTheater": None,
+            "i_minEmployee": None,
+            "i_maxEmployee": None,
+            "i_sortBy": '',
+            "i_sortDirection": ''
+        }
+        
+        actual = admin_service.ManageCompany(filterz)
+        assert actual == expected
 
     def test_CreateMovie(self):
 
