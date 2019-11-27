@@ -68,11 +68,12 @@ ON DELETE RESTRICT  ON UPDATE CASCADE
 
 
 CREATE TABLE CustomerCreditCard (
-creditCardNum   CHAR(16)        NOT NULL,
+creditCardNum   CHAR(16)        NOT NULL ,
 username        VARCHAR(75)    NOT NULL,
 PRIMARY KEY(creditCardNum),
 FOREIGN KEY(username) REFERENCES customer(username)
-ON DELETE   CASCADE ON UPDATE   CASCADE
+ON DELETE   CASCADE ON UPDATE   CASCADE,
+CHECK(LENGTH(creditCardNum)=16)
 );
 
 CREATE TABLE Movie (
@@ -96,7 +97,7 @@ ON DELETE   CASCADE     ON UPDATE CASCADE
 );
 
 CREATE TABLE UserVisitTheater (
-visitID         VARCHAR(75)    NOT NULL,
+visitID         INT   NOT NULL AUTO_INCREMENT,
 username        VARCHAR(75)    NOT NULL,
 thName    VARCHAR(75)    NOT NULL,
 comName        VARCHAR(75)    NOT NULL,

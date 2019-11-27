@@ -100,7 +100,6 @@ DROP PROCEDURE IF EXISTS admin_filter_user;
 DELIMITER $$
 CREATE PROCEDURE `admin_filter_user`(IN i_username VARCHAR(50), IN i_status ENUM('ALL','Pending', 'Approved', 'Declined'), IN i_sortBy VARCHAR(50), IN i_sortDirection VARCHAR(4))
 BEGIN
-    select i_username, i_status, i_sortBy, i_sortDirection;
     DROP TABLE IF EXISTS AdFilterUser;
     CREATE TABLE AdFilterUser
         select * from
@@ -111,7 +110,7 @@ BEGIN
              select user.username, 0 as "creditCardCount", user.status
              from user where user.username not in (select username from  CustomerCreditCard)) as Table1
              natural join
-             (select user.username, "Admin-Customer" as "userType"
+             (select user.username, "CustomerAdmin" as "userType"
              from user
              where user.username in
              (select admin.username
@@ -129,7 +128,7 @@ BEGIN
              inner join customer
              where admin.username = customer.username)
              union
-             select user.username, "Manager-Customer" as "userType"
+             select user.username, "CustomerManager" as "userType"
              from user
              where user.username in
              (select manager.username
@@ -176,9 +175,9 @@ BEGIN
              where (Table1.status = i_status or i_status = "ALL") AND
              (Table1.username = i_username or i_username is NULL or i_username = "")
              ORDER BY
-                  CASE WHEN i_sortDirection = 'desc' or i_sortDirection = NULL THEN 1
+                  CASE WHEN i_sortDirection = 'desc' or i_sortDirection = "" THEN 1
                   ELSE
-                       CASE WHEN i_sortBy = NULL THEN Table1.username
+                       CASE WHEN i_sortBy = "" THEN Table1.username
                             WHEN i_sortBy = 'username' THEN Table1.username
                             WHEN i_sortBy = 'creditCardCount' THEN Table1.creditCardCount
                             WHEN i_sortBy = 'userType' THEN Table2.userType
@@ -187,13 +186,14 @@ BEGIN
                   END DESC,
                   CASE WHEN i_sortDirection = 'asc' THEN 1
                   ELSE
-                       CASE WHEN i_sortBy = NULL THEN Table1.username
+                       CASE WHEN i_sortBy = "" THEN Table1.username
                             WHEN i_sortBy = 'username' THEN Table1.username
                             WHEN i_sortBy = 'creditCardCount' THEN Table1.creditCardCount
                             WHEN i_sortBy = 'userType' THEN Table2.userType
                             WHEN i_sortBy = 'status' THEN Table1.status
                        END
                   END ASC;
+    SELECT * FROM AdFilterUser;
 END$$
 DELIMITER ;
 
@@ -207,17 +207,17 @@ BEGIN
             count(distinct theater.thName) as "numTheater", count(distinct Manager.username) as "numEmployee"
             from theater join Manager on theater.comName = Manager.comName group by theater.comName
             having
-            (i_comName = "ALL" or manager.comName = i_comName)
-            and (count(distinct theater.thCity) >= i_minCity or i_minCity = "")
-            and (count(distinct theater.thCity) <= i_maxCity or i_maxCity = "")
-            and (count(distinct theater.thName) >= i_minTheater or i_minTheater = "")
-            and (count(distinct theater.thName) <= i_maxTheater or i_maxTheater = "")
-            and (count(distinct Manager.username) >= i_minEmployee or i_minEmployee = "")
-            and (count(distinct Manager.username)<= i_maxEmployee or i_maxEmployee = "")
+            (i_comName = "ALL" or i_comName = "" or manager.comName = i_comName)
+            and (count(distinct theater.thCity) >= i_minCity or i_minCity is NULL)
+            and (count(distinct theater.thCity) <= i_maxCity or i_maxCity is NULL)
+            and (count(distinct theater.thName) >= i_minTheater or i_minTheater is NULL)
+            and (count(distinct theater.thName) <= i_maxTheater or i_maxTheater is NULL)
+            and (count(distinct Manager.username) >= i_minEmployee or i_minEmployee is NULL)
+            and (count(distinct Manager.username) <= i_maxEmployee or i_maxEmployee is NULL)
             ORDER BY
-                  CASE WHEN i_sortDirection = 'DESC' or i_sortDirection = NULL THEN 1
+                  CASE WHEN i_sortDirection = 'DESC' or i_sortDirection = '' THEN 1
                   ELSE
-                       CASE WHEN i_sortBy = NULL THEN manager.comName
+                       CASE WHEN i_sortBy = '' THEN manager.comName
                             WHEN i_sortBy = 'comName' THEN manager.comName
                             WHEN i_sortBy = 'numCityCover' THEN count(distinct theater.thCity)
                             WHEN i_sortBy = 'numTheater' THEN count(distinct theater.thName)
@@ -226,13 +226,14 @@ BEGIN
                   END DESC,
                   CASE WHEN i_sortDirection = 'ASC' THEN 1
                   ELSE
-                       CASE WHEN i_sortBy = NULL THEN manager.comName
+                       CASE WHEN i_sortBy = '' THEN manager.comName
                             WHEN i_sortBy = 'comName' THEN manager.comName
                             WHEN i_sortBy = 'numCityCover' THEN count(distinct theater.thCity)
                             WHEN i_sortBy = 'numTheater' THEN count(distinct theater.thName)
                             WHEN i_sortBy = 'numEmployee' THEN count(distinct Manager.username)
                        END
                   END ASC;
+    SELECT * FROM AdFilterCom;
 END$$
 DELIMITER ;
 
@@ -341,10 +342,10 @@ BEGIN
     CREATE TABLE CosFilterMovie
     SELECT MoviePlay.movName, MoviePlay.comName,Theater.thName, Theater.thStreet, Theater.thCity, Theater.thState, Theater.thZipcode, MoviePlay.movPlayDate, MoviePlay.movReleaseDate
             FROM MoviePlay INNER JOIN Theater ON Theater.thName = MoviePlay.thName AND Theater.comName = MoviePlay.comName
-            WHERE (MoviePlay.movName = i_movName OR i_movName = "ALL") AND
-            (MoviePlay.comName = i_comName OR i_comName = "ALL") AND
+            WHERE (MoviePlay.movName = i_movName OR i_movName = "ALL" or i_movName = "") AND
+            (MoviePlay.comName = i_comName OR i_comName = "ALL" or i_comName = "") AND
             (Theater.thCity = i_city OR i_city = "") AND
-            (Theater.thState = i_state OR i_state = "ALL") AND
+            (Theater.thState = i_state OR i_state = "ALL" OR i_state = "") AND
             (MoviePlay.movPlayDate >= i_minMovPlayDate OR i_minMovPlayDate is NULL) AND
             (MoviePlay.movPlayDate <= i_maxMovPlayDate OR i_maxMovPlayDate is NULL);
 END$$
@@ -357,7 +358,7 @@ CREATE PROCEDURE `customer_view_mov`(IN i_creditCardNum CHAR(16), IN i_movName V
 BEGIN
     DROP TABLE IF EXISTS tempCustomerViewMovie;
     CREATE TABLE tempCustomerViewMovie
-       SELECT CustomerCreditCard.creditcardNum, MoviePlay.movReleaseDate, MoviePlay.movName, MoviePlay.movPlayDate, MoviePlay.comName, MoviePlay.thName
+       SELECT CustomerCreditCard.creditcardNum, MoviePlay.movReleaseDate, MoviePlay.movName, MoviePlay.movPlayDate,  MoviePlay.thName, MoviePlay.comName
         FROM MoviePlay
         JOIN CustomerCreditCard
         WHERE CustomerCreditCard.creditcardNum = i_creditCardNum
@@ -395,10 +396,10 @@ BEGIN
     SELECT thName, thStreet, thCity, thState, thZipcode, comName
     FROM Theater
     WHERE
-        (thName = i_thName OR i_thName = "ALL") AND
-        (comName = i_comName OR i_comName = "ALL") AND
+        (thName = i_thName OR i_thName = "ALL" OR i_thName = "") AND
+        (comName = i_comName OR i_comName = "ALL" OR i_comName = "") AND
         (thCity = i_city OR i_city = "") AND
-        (thState = i_state OR i_state = "ALL");
+        (thState = i_state OR i_state = "" OR i_state = "ALL");
 END$$
 DELIMITER ;
 
