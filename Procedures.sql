@@ -42,7 +42,13 @@ DROP PROCEDURE IF EXISTS customer_add_creditcard;
 DELIMITER $$
 CREATE PROCEDURE `customer_add_creditcard`(IN i_username VARCHAR(50), IN i_creditCardNum CHAR(16))
 BEGIN
-    INSERT INTO CustomerCreditCard (username, creditCardNum) VALUES (i_username, i_creditCardNum);
+    DECLARE ccCount INT;
+ 
+    SELECT ccCount = count(i_creditCardNum) FROM CustomerCreditCard WHERE username=i_username;
+    IF (ccCount < 6) THEN
+        INSERT INTO CustomerCreditCard (username, creditCardNum) VALUES (i_username, i_creditCardNum);
+    END IF;
+    
 END$$
 DELIMITER ;
 
@@ -83,6 +89,7 @@ DROP PROCEDURE IF EXISTS admin_approve_user;
 DELIMITER $$
 CREATE PROCEDURE `admin_approve_user`(IN i_username VARCHAR(50))
 BEGIN
+    
     UPDATE user SET status = 'Approved' where username = i_username;
 END$$
 DELIMITER ;
@@ -92,7 +99,8 @@ DROP PROCEDURE IF EXISTS admin_decline_user;
 DELIMITER $$
 CREATE PROCEDURE `admin_decline_user`(IN i_username VARCHAR(50))
 BEGIN
-    UPDATE user SET status = 'Declined' where username = i_username;
+    UPDATE user SET status = 'Declined' where username = i_username
+    and status = 'Pending';
 END$$
 DELIMITER ;
 

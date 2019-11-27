@@ -68,7 +68,7 @@ ON DELETE RESTRICT  ON UPDATE CASCADE
 
 
 CREATE TABLE CustomerCreditCard (
-creditCardNum   CHAR(16)        NOT NULL ,
+creditCardNum   CHAR(16)        NOT NULL,
 username        VARCHAR(75)    NOT NULL,
 PRIMARY KEY(creditCardNum),
 FOREIGN KEY(username) REFERENCES customer(username)
