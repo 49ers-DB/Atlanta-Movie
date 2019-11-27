@@ -13,5 +13,10 @@ def get_conn():
   return connection
 
 def db_reset():
-  os.system("mysql < schema_and_initialdata.sql -u flask --password=1234")
+  os.system("mysql < schema_and_initialdata.sql -u flask --password=1234 > output.txt")
   os.system("mysql < procedures.sql -u flask --password=1234")
+
+def run_s22_script():
+
+  os.system("mysql < 'CS4400 Fall2019 s22 Self_Testing_Script_v2.sql' -u flask --password=1234 > output.txt")
+
