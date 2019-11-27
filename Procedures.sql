@@ -353,6 +353,13 @@ BEGIN
         and Theater.manUsername = i_manUsername;
     Select * FROM tempMoviePlay;
     INSERT INTO MoviePlay Select * FROM tempMoviePlay;
+
+    -- IF ("movPlayDate" > "movReleaseDate") THEN
+    --     INSERT INTO MoviePlay Select * FROM tempMoviePlay;
+    -- END IF;
+    -- Want to incorporate this conditional, but dates can only go through logical constraints if they are in quotes. So
+    -- I put the inputs in quotes, but I don't think that SQL will recognize to put the inputs in quotes. Does anyone
+    -- have any ideas?
 END$$
 DELIMITER ;
 
