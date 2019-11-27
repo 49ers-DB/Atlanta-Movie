@@ -45,6 +45,7 @@ class TestAutoGrader(object):
             connection.commit()
 
             json.dump({table_name_str:data}, file, sort_keys=True, default=str)
+            file.write("\n")
 
       connection.close()
 
