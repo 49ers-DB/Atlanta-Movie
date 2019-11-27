@@ -4,6 +4,7 @@
 -- This procedure is used to support the scoring process.  It creates an SQL query
 -- that identifies rows that are either MISSING from the expected answer, or EXTRA
 -- (and should not be included) relative to the expected answer.
+USE moviez;
 DROP PROCEDURE IF EXISTS magic44_check_step;
 DELIMITER //
 CREATE PROCEDURE magic44_check_step(step_number CHAR(10), step_table CHAR(254), hash_format VARCHAR(2000))
