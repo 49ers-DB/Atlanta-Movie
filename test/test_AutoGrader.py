@@ -10,16 +10,16 @@ from app.services.DBService import get_conn, db_reset, run_s22_script
 from app.services.AdminService import AdminService
 
 
-class TestAutoGrader(object):
+class AutoGrader(object):
 
 
-  def test_db_reset(self):
+  def db_reset(self):
 
     # db_reset()
     print(True)
 
 
-  def test_get_AutoGrading_Python_objects(self):
+  def get_AutoGrading_Python_objects(self):
     # db_reset()
     # run_s22_script()
     # run_s22_script()
