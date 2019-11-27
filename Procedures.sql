@@ -252,7 +252,7 @@ CREATE PROCEDURE `admin_create_theater`(IN i_thName VARCHAR(50), IN i_comName VA
 BEGIN
     DECLARE manComName VARCHAR(50);
 
-    SELECT Manager.comName as manComName FROM Manager WHERE username=i_managerUsername;
+    SELECT Manager.comName INTO manComName FROM Manager WHERE username=i_managerUsername;
 	Select i_managerUsername;
 	SELECT manComName;
 	select manComName like i_comName;
