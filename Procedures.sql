@@ -43,12 +43,12 @@ DELIMITER $$
 CREATE PROCEDURE `customer_add_creditcard`(IN i_username VARCHAR(50), IN i_creditCardNum CHAR(16))
 BEGIN
     DECLARE ccCount INT;
- 
+
     SELECT ccCount = count(i_creditCardNum) FROM CustomerCreditCard WHERE username=i_username;
     IF (ccCount < 6) THEN
         INSERT INTO CustomerCreditCard (username, creditCardNum) VALUES (i_username, i_creditCardNum);
     END IF;
-    
+
 END$$
 DELIMITER ;
 
@@ -80,7 +80,12 @@ DROP PROCEDURE IF EXISTS manager_customer_add_creditcard;
 DELIMITER $$
 CREATE PROCEDURE `manager_customer_add_creditcard`(IN i_username VARCHAR(50), IN i_creditCardNum CHAR(16))
 BEGIN
-    INSERT INTO CustomerCreditCard (username, creditCardNum) VALUES (i_username, i_creditCardNum);
+    DECLARE ccCount INT;
+
+    SELECT ccCount = count(i_creditCardNum) FROM CustomerCreditCard WHERE username=i_username;
+    IF (ccCount < 6) THEN
+        INSERT INTO CustomerCreditCard (username, creditCardNum) VALUES (i_username, i_creditCardNum);
+    END IF;
 END$$
 DELIMITER ;
 
@@ -89,7 +94,7 @@ DROP PROCEDURE IF EXISTS admin_approve_user;
 DELIMITER $$
 CREATE PROCEDURE `admin_approve_user`(IN i_username VARCHAR(50))
 BEGIN
-    
+
     UPDATE user SET status = 'Approved' where username = i_username;
 END$$
 DELIMITER ;
@@ -261,7 +266,7 @@ BEGIN
         INSERT INTO Theater (thName, comName, thStreet, thCity, thState, thZipcode, capacity, manUsername)
         VALUES (i_thName, i_comName, i_thStreet, i_thCity, i_thState, i_thZipcode, i_capacity, i_managerUsername);
     END IF;
-   
+
 END$$
 DELIMITER ;
 
@@ -348,6 +353,13 @@ BEGIN
         and Theater.manUsername = i_manUsername;
     Select * FROM tempMoviePlay;
     INSERT INTO MoviePlay Select * FROM tempMoviePlay;
+
+    -- IF ("movPlayDate" > "movReleaseDate") THEN
+    --     INSERT INTO MoviePlay Select * FROM tempMoviePlay;
+    -- END IF;
+    -- Want to incorporate this conditional, but dates can only go through logical constraints if they are in quotes. So
+    -- I put the inputs in quotes, but I don't think that SQL will recognize to put the inputs in quotes. Does anyone
+    -- have any ideas?
 END$$
 DELIMITER ;
 
@@ -360,7 +372,8 @@ BEGIN
     CREATE TABLE CosFilterMovie
     SELECT MoviePlay.movName, MoviePlay.comName,Theater.thName, Theater.thStreet, Theater.thCity, Theater.thState, Theater.thZipcode, MoviePlay.movPlayDate, MoviePlay.movReleaseDate
             FROM MoviePlay INNER JOIN Theater ON Theater.thName = MoviePlay.thName AND Theater.comName = MoviePlay.comName
-            WHERE (MoviePlay.movName = i_movName OR i_movName = "ALL" or i_movName = "") AND
+            where MoviePlay.movReleaseDate<=MoviePlay.movPlayDate AND
+			(MoviePlay.movName = i_movName OR i_movName = "ALL" or i_movName = "") AND
             (MoviePlay.comName = i_comName OR i_comName = "ALL" or i_comName = "") AND
             (Theater.thCity = i_city OR i_city = "") AND
             (Theater.thState = i_state OR i_state = "ALL" OR i_state = "") AND
@@ -387,7 +400,6 @@ BEGIN
         AND MoviePlay.movPlayDate = i_movPlayDate;
     SELECT * FROM tempCustomerViewMovie;
     INSERT INTO CustomerViewMovie SELECT * FROM tempCustomerViewMovie;
-
 END$$
 DELIMITER ;
 
