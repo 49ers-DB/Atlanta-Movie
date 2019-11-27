@@ -43,12 +43,12 @@ DELIMITER $$
 CREATE PROCEDURE `customer_add_creditcard`(IN i_username VARCHAR(50), IN i_creditCardNum CHAR(16))
 BEGIN
     DECLARE ccCount INT;
- 
+
     SELECT ccCount = count(i_creditCardNum) FROM CustomerCreditCard WHERE username=i_username;
     IF (ccCount < 6) THEN
         INSERT INTO CustomerCreditCard (username, creditCardNum) VALUES (i_username, i_creditCardNum);
     END IF;
-    
+
 END$$
 DELIMITER ;
 
@@ -80,7 +80,12 @@ DROP PROCEDURE IF EXISTS manager_customer_add_creditcard;
 DELIMITER $$
 CREATE PROCEDURE `manager_customer_add_creditcard`(IN i_username VARCHAR(50), IN i_creditCardNum CHAR(16))
 BEGIN
-    INSERT INTO CustomerCreditCard (username, creditCardNum) VALUES (i_username, i_creditCardNum);
+    DECLARE ccCount INT;
+
+    SELECT ccCount = count(i_creditCardNum) FROM CustomerCreditCard WHERE username=i_username;
+    IF (ccCount < 6) THEN
+        INSERT INTO CustomerCreditCard (username, creditCardNum) VALUES (i_username, i_creditCardNum);
+    END IF;
 END$$
 DELIMITER ;
 
@@ -89,7 +94,7 @@ DROP PROCEDURE IF EXISTS admin_approve_user;
 DELIMITER $$
 CREATE PROCEDURE `admin_approve_user`(IN i_username VARCHAR(50))
 BEGIN
-    
+
     UPDATE user SET status = 'Approved' where username = i_username;
 END$$
 DELIMITER ;
@@ -261,7 +266,7 @@ BEGIN
         INSERT INTO Theater (thName, comName, thStreet, thCity, thState, thZipcode, capacity, manUsername)
         VALUES (i_thName, i_comName, i_thStreet, i_thCity, i_thState, i_thZipcode, i_capacity, i_managerUsername);
     END IF;
-   
+
 END$$
 DELIMITER ;
 
