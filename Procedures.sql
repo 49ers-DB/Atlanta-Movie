@@ -360,7 +360,8 @@ BEGIN
     CREATE TABLE CosFilterMovie
     SELECT MoviePlay.movName, MoviePlay.comName,Theater.thName, Theater.thStreet, Theater.thCity, Theater.thState, Theater.thZipcode, MoviePlay.movPlayDate, MoviePlay.movReleaseDate
             FROM MoviePlay INNER JOIN Theater ON Theater.thName = MoviePlay.thName AND Theater.comName = MoviePlay.comName
-            WHERE (MoviePlay.movName = i_movName OR i_movName = "ALL" or i_movName = "") AND
+            where MoviePlay.movReleaseDate<=MoviePlay.movPlayDate AND
+			(MoviePlay.movName = i_movName OR i_movName = "ALL" or i_movName = "") AND
             (MoviePlay.comName = i_comName OR i_comName = "ALL" or i_comName = "") AND
             (Theater.thCity = i_city OR i_city = "") AND
             (Theater.thState = i_state OR i_state = "ALL" OR i_state = "") AND
@@ -387,7 +388,6 @@ BEGIN
         AND MoviePlay.movPlayDate = i_movPlayDate;
     SELECT * FROM tempCustomerViewMovie;
     INSERT INTO CustomerViewMovie SELECT * FROM tempCustomerViewMovie;
-
 END$$
 DELIMITER ;
 
