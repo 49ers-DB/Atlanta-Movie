@@ -337,6 +337,7 @@ BEGIN
             and (i_minMovDuration is NULL or Movie.duration >= i_minMovDuration)
             and (i_maxMovDuration is NULL or Movie.duration <= i_maxMovDuration)
             and (i_movName ="" or Movie.movName like i_movName);
+    SELECT * FROM ManFilterTh;
 END$$
 DELIMITER ;
 

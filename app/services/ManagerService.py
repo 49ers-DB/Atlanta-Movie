@@ -4,6 +4,26 @@ import dateutil.parser
 class ManagerService(object):
 
     def TheaterOverview(self, username, filters):
+        i_manUsername = username
+        i_minMovReleaseDate=filters.get("i_minReleaseDate")
+        i_maxMovReleaseDate=filters.get("i_maxReleaseDate")
+        i_minMovPlayDate=filters.get("i_minPlayDate")
+        i_maxMovPlayDate=filters.get("i_maxPlayDate")
+        i_minMovDuration=filters.get("i_minDuration")
+        i_maxMovDuration=filters.get("i_maxDuration")
+        i_movName=filters.get("i_Movie")
+        i_includeNotPlayed=filters.get("i_notplayed")
+
+        connection = get_conn()
+        with connection.cursor() as cursor:
+            cursor.callproc("manager_filter_th", (i_manUsername, i_movName, i_minMovDuration, i_maxMovDuration,i_minMovReleaseDate, i_maxMovReleaseDate, i_minMovPlayDate, i_maxMovPlayDate, i_includeNotPlayed, ))
+            data = cursor.fetchall()
+            connection.commit()
+        connection.close()
+
+        return data
+
+    def TheaterOverview1(self, username, filters):
 
         i_username = username
         i_minReleaseDate=filters.get("i_minReleaseDate")
@@ -86,6 +106,21 @@ class ManagerService(object):
 
 
     def ScheduleMovie(self, username, filters):
+
+        i_manUsername = username
+        i_movName = filters.get("i_movName")
+        i_movReleaseDate = filters.get("i_movReleaseDate")
+        i_movPlayDate = filters.get("i_movPlayDate")
+        connection = get_conn()
+
+        with connection.cursor() as cursor:
+            cursor.callproc("manager_schedule_mov", (i_manUsername, i_movName, i_movReleaseDate, i_movPlayDate,))
+
+            connection.commit()
+        
+        connection.close()
+
+    def ScheduleMovie1(self, username, filters):
 
         i_manUsername = username
         i_movName = filters.get("i_movName")
