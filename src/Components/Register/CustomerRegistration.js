@@ -93,6 +93,7 @@ export default class CustomerRegistration extends Component {
                                 window.alert("Credit Card Invalid")
                             }
                         } else if(resp[1] === 200) {
+                            window.alert("Customer Registered")
                             window.location.replace("/");
                         }
                 });

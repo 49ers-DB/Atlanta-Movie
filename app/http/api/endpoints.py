@@ -56,7 +56,8 @@ def userRegister():
   user = data['user']
   response = json_response({'message': 'Bad request parameters'}, 400)
   try:
-    success = register_service.registerUser(user)
+    register_service.registerUser(user)
+    success = login_service.login(user)
     print(success)
   
     if success:
@@ -179,7 +180,9 @@ def view_movie():
   data = request.get_json()
   username = g.user['username']
   
-  customer_service.ViewMovie(username, data)
+  resp = customer_service.ViewMovie(data)
+  if len(resp) < 1:
+    raise Exception
   return json_response({'ok': True})
 
 
@@ -311,8 +314,9 @@ def create_movie():
 def viewHistory():
   user = g.user['username']
   print(user)
+  filters = {'i_cusUsername': user}
 
-  data = customer_service.ViewHistory(user)
+  data = customer_service.ViewHistory(filters)
   return json_response({'data': data})
 
 

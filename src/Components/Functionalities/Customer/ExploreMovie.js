@@ -6,9 +6,10 @@ import stateOptions from "../../../actions/stateOptions"
 import getCompanies from "../../../actions/companies"
 import movies from "../../../actions/movies"
 import toDateString from "../../../actions/date"
+import sendDate from "../../../actions/sendDate"
+
 
 import "../Functionality.css"
-import { isThisISOWeek } from 'date-fns'
 
 
 
@@ -109,11 +110,14 @@ export default class ExploreMovie extends Component {
     if (accessToken) {
       var apiClient = new APIClient(accessToken)
       var com = this.state.selectedCompany
-      if (com) {com = com['value']}
+      if (com) {com = com['value']} else {com= ""}
       var mov = this.state.selectedMovie
-      if (mov) {mov = mov['value']}
+      if (mov) {mov = mov['value']} else {mov=""}
       var stateName = this.state.selectedState
-      if (stateName) {stateName = stateName['value']}
+      if (stateName) {stateName = stateName['value']} else {stateName=""}
+      var cityName = this.state.city;
+      if (!cityName) {cityName = ""}
+
 
 
       var requestBody = {
@@ -121,8 +125,8 @@ export default class ExploreMovie extends Component {
         i_comName: com,
         i_city: this.state.city,
         i_state: stateName,
-        i_minMovPlayDate: this.state.playDate1,
-        i_maxMovPlayDate: this.state.playDate2
+        i_minMovPlayDate: sendDate(this.state.playDate1),
+        i_maxMovPlayDate: sendDate(this.state.playDate2)
       }
       apiClient.perform("post", "/exploreMovie", requestBody).then( resp => {
         this.setState({rowData: formatRows(resp['moviePlays'])})
@@ -142,12 +146,14 @@ export default class ExploreMovie extends Component {
     if (accessToken && this.state.selectedCreditCard && (ind >= 0)) {
       var apiClient = new APIClient(accessToken)
       
+      var playDate = this.state.rowData[this.state.moviePlayIndex][4]
+      if (playDate) {playDate = new Date(playDate)}
   
       var requestBody = {
         i_movName: this.state.rowData[this.state.moviePlayIndex][0],
         i_thName: this.state.rowData[this.state.moviePlayIndex][1],
         i_comName: this.state.rowData[this.state.moviePlayIndex][3],
-        i_movPlayDate: this.state.rowData[this.state.moviePlayIndex][4],
+        i_movPlayDate: sendDate(playDate),
         i_creditCardNum: this.state.selectedCreditCard['value']
       }
       apiClient.perform("post", "/viewMovie", requestBody).then( resp => {

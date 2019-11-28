@@ -43,7 +43,7 @@ class DropDownService(object):
 
         with connection.cursor() as cursor:
 
-            query = "select movName from Movie"
+            query = "select movName, movReleaseDate from Movie"
             cursor.execute(query)
             data = cursor.fetchall()
 

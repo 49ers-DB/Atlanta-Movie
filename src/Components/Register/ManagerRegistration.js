@@ -135,6 +135,7 @@ export default class ManagerRegistration extends Component {
                         window.alert("Address Already Taken")
                     }
                 } else if(resp[1] === 200) {
+                    window.alert("Manager Registered")
                     window.location.replace("/");
                 }
             });

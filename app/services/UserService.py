@@ -4,8 +4,52 @@ from app.services.DBService import get_conn
 
 class UserService(object):
 
-
     def ExploreTheater(self, filters):
+        i_thname=filters.get("selectedTheater")
+        i_coname=filters.get("selectedCompany")
+        i_city=filters.get("city")
+        i_state=filters.get("selectedState")
+
+        connection = get_conn()
+        with connection.cursor() as cursor:
+            cursor.callproc('user_filter_th', (i_thname, i_coname, i_city, i_state,))
+            data = cursor.fetchall()
+            print(data)
+            connection.commit()
+        connection.close()
+        return data
+
+    def LogVisit(self, username, filters):
+        i_thName=filters.get("i_thname")
+        i_comName=filters.get("i_coname")
+        i_visitDate=filters.get("i_visitdate")
+        i_username = username
+
+        connection = get_conn()
+        with connection.cursor() as cursor:
+            cursor.callproc("user_visit_th", (i_thName, i_comName, i_visitDate, i_username, ))
+            connection.commit()
+        connection.close()
+
+
+    def VisitHistory(self, username, filters):
+       
+        i_minVisitDate =filters.get("visitDate1")
+        i_maxVisitDate =filters.get("visitDate2")
+        i_username = username
+
+        connection = get_conn()
+        with connection.cursor() as cursor:
+            cursor.callproc('user_filter_visitHistory', ( i_username ,  i_minVisitDate ,  i_maxVisitDate, ))
+            data = cursor.fetchall()
+
+        connection.commit()
+        connection.close()
+        return data
+
+
+
+    def ExploreTheater1(self, filters):
         i_thname=filters.get("selectedTheater")
         i_coname=filters.get("selectedCompany")
         i_city=filters.get("city")
@@ -43,7 +87,7 @@ class UserService(object):
         print(data)
         return data
 
-    def LogVisit(self, username, filters):
+    def LogVisit1(self, username, filters):
         i_thname=filters.get("i_thname")
         i_coname=filters.get("i_coname")
         i_visitdate=filters.get("i_visitdate")
@@ -68,7 +112,7 @@ class UserService(object):
         connection.close()
         return True
 
-    def VisitHistory(self, username, filters):
+    def VisitHistory1(self, username, filters):
         if(filters.get("selectedCompany") == None):
             i_comName=None
         else:

@@ -76,17 +76,26 @@ class CustomerService(object):
         i_creditCardNum = filters.get("i_creditCardNum")
         i_movName = filters.get("i_movName")
         i_movPlayDate = filters.get("i_movPlayDate")
-        i_movReleaseDate = filters.get("i_movReleaseDate")
         i_thName = filters.get("i_thName")
         i_comName = filters.get("i_comName")
 
+        i_movReleaseDate = filters.get("i_movReleaseDate")
+
         connection = get_conn()
         with connection.cursor() as cursor:
+            if i_movReleaseDate is None:
+                sql = """SELECT movReleaseDate from MoviePlay where thName=(%s) and movName=(%s) and movPlayDate=(%s) and comName=(%s)"""
+                cursor.execute(sql, (i_thName, i_movName, i_movPlayDate, i_comName))
+                data = cursor.fetchall()
+                i_movReleaseDate = data[0]['movReleaseDate']
+            
             cursor.callproc('customer_view_mov', (i_creditCardNum, i_movName, i_movReleaseDate,i_thName, i_comName, i_movPlayDate, ))
+            data = cursor.fetchall()
         
         connection.commit()
 
         connection.close()
+        return data
 
 
 

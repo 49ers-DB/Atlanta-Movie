@@ -80,7 +80,8 @@ class TestCustomerService(object):
 
         length = 0
 
-        customer_service.ViewMovie( filters)
+        resp = customer_service.ViewMovie( filters)
+        assert resp != []
 
         connection = get_conn()
         with connection.cursor() as cursor:

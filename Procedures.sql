@@ -399,8 +399,8 @@ BEGIN
         AND MoviePlay.thName = i_thName
         AND MoviePlay.comName = i_comName
         AND MoviePlay.movPlayDate = i_movPlayDate;
-    SELECT * FROM tempCustomerViewMovie;
     INSERT INTO CustomerViewMovie SELECT * FROM tempCustomerViewMovie;
+    SELECT * FROM tempCustomerViewMovie;
 END$$
 DELIMITER ;
 
@@ -431,6 +431,7 @@ BEGIN
         (comName = i_comName OR i_comName = "ALL" OR i_comName = "") AND
         (thCity = i_city OR i_city = "") AND
         (thState = i_state OR i_state = "" OR i_state = "ALL");
+    SELECT * FROM UserFilterTh;
 END$$
 DELIMITER ;
 
@@ -459,5 +460,6 @@ BEGIN
         (username = i_username) AND
         (i_minVisitDate IS NULL OR visitDate >= i_minVisitDate) AND
         (i_maxVisitDate IS NULL OR visitDate <= i_maxVisitDate);
+    SELECT * FROM UserVisitHistory;
 END$$
 DELIMITER ;
