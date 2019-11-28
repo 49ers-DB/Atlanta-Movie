@@ -18,56 +18,33 @@ class TestCustomerService(object):
 
 
     def test_ExploreMovie(self):
-        #MoviePlay.movName,
-        # MoviePlay.'comName':,
-        #  Theater.thStreet,
-        # Theater.thCity,
-        #  Theater.thState,
-        #   Theater.thZipcode,
-        #thName
-        #  MoviePlay.movPlayDate\
 
         expected = [
-        {'movName':"4400 The Movie",'movPlayDate':datetime.date(2019,10,12),'thName':"ABC Theater",'comName':"Awesome Theater Company",'thStreet':'880 Color Dr','thCity':'Austin','thState':'TX','thZipcode':'73301'},
-        {'movName':"The First Pokemon Movie",'movPlayDate':datetime.date(2018,7,19),'thName':"ABC Theater",'comName':"Awesome Theater Company",'thStreet':'880 Color Dr','thCity':'Austin','thState':'TX','thZipcode':'73301'},
-        {'movName':'Georgia Tech The Movie','movPlayDate':datetime.date(1985,8,13),'thName':'ABC Theater','comName':'Awesome Theater Company','thStreet':'880 Color Dr','thCity':'Austin','thState':'TX','thZipcode':'73301'},
-        {'movName':'How to Train Your Dragon','movPlayDate':datetime.date(2010,4,2),'thName':'Cinema Star','comName':'4400 Theater Company','thStreet':'100 Cool Place','thCity':'San Francisco','thState':'CA','thZipcode':'94016'},
-        {'movName':"4400 The Movie",'movPlayDate':datetime.date(2019,9,12),'thName':'Cinema Star','comName':'4400 Theater Company','thStreet':'100 Cool Place','thCity':'San Francisco','thState':'CA','thZipcode':'94016'},
-        {'movName':"The King's Speech",'movPlayDate':datetime.date(2019,12,20),'thName':'Cinema Star','comName':'4400 Theater Company','thStreet':'100 Cool Place','thCity':'San Francisco','thState':'CA','thZipcode':'94016'},
-        {'movName':'Spaceballs','movPlayDate':datetime.date(2000,2,2),'thName':'Cinema Star','comName':'4400 Theater Company','thStreet':'100 Cool Place','thCity':'San Francisco','thState':'CA','thZipcode':'94016'},
-        {'movName':'Georgia Tech The Movie','movPlayDate':datetime.date(2019,9,30),'thName':'Cinema Star','comName':'4400 Theater Company','thStreet':'100 Cool Place','thCity':'San Francisco','thState':'CA','thZipcode':'94016'},
-        {'movName':"George P Burdell's Life Story",'movPlayDate':datetime.date(2010,5,20),'thName':'Cinema Star','comName':'4400 Theater Company','thStreet':'100 Cool Place','thCity':'San Francisco','thState':'CA','thZipcode':'94016'},
-        {'movName':'How to Train Your Dragon','movPlayDate':datetime.date(2010,3,22),'thName':'Main Movies','comName':'EZ Theater Company',"thStreet":"123 Main St",'thCity':"New York",'thState':'NY','thZipcode':'10001'},
-        {'movName':'How to Train Your Dragon','movPlayDate':datetime.date(2010,3,23),'thName':'Main Movies','comName':'EZ Theater Company',"thStreet":"123 Main St",'thCity':"New York",'thState':'NY','thZipcode':'10001'},
-        {'movName':'Spaceballs','movPlayDate':datetime.date(1999,6,24),'thName':'Main Movies','comName':'EZ Theater Company',"thStreet":"123 Main St",'thCity':"New York",'thState':'NY','thZipcode':'10001'},
-        {'movName':"George P Burdell's Life Story",'movPlayDate':datetime.date(2019,10,22),'thName':'Main Movies','comName':'EZ Theater Company',"thStreet":"123 Main St",'thCity':"New York",'thState':'NY','thZipcode':'10001'},
-        {'movName':"George P Burdell's Life Story",'movPlayDate':datetime.date(2019,7,14),'thName':'Main Movies','comName':'EZ Theater Company',"thStreet":"123 Main St",'thCity':"New York",'thState':'NY','thZipcode':'10001'},
-        {'movName':"The King's Speech",'movPlayDate':datetime.date(2019,12,20),'thName':'Main Movies','comName':'EZ Theater Company',"thStreet":"123 Main St",'thCity':"New York",'thState':'NY','thZipcode':'10001'},
-        {'movName':'Spaceballs','movPlayDate':datetime.date(2010,4,2),'thName':'ML Movies','comName':'AI Theater Company','thStreet':'314 Pi St','thCity':'Pallet Town','thState':'KS','thZipcode':'31415'},
-        {'movName':'Spaceballs','movPlayDate':datetime.date(2023,1,23),'thName':'ML Movies','comName':'AI Theater Company','thStreet':'314 Pi St','thCity':'Pallet Town','thState':'KS','thZipcode':'31415'},
-        {'movName':'Calculus Returns: A ML Story','movPlayDate':datetime.date(2019,10,10),'thName':'ML Movies','comName':'AI Theater Company','thStreet':'314 Pi St','thCity':'Pallet Town','thState':'KS','thZipcode':'31415'},
-        {'movName':'Calculus Returns: A ML Story','movPlayDate':datetime.date(2019,12,30),'thName':'ML Movies','comName':'AI Theater Company','thStreet':'314 Pi St','thCity':'Pallet Town','thState':'KS','thZipcode':'31415'},
-        {'movName':'Spider-Man: Into the Spider-Verse','movPlayDate':datetime.date(2019,9,30),'thName':'ML Movies','comName':'AI Theater Company','thStreet':'314 Pi St','thCity':'Pallet Town','thState':'KS','thZipcode':'31415'},
-        {'movName':'How to Train Your Dragon','movPlayDate':datetime.date(2010,3,25),'thName':'Star Movies','comName':'EZ Theater Company','thStreet':'745 GT St','thCity':'Atlanta','thState':'GA','thZipcode':'30332'},
-        {'movName':"4400 The Movie",'movPlayDate':datetime.date(2019,8,12),'thName':'Star Movies','comName':'EZ Theater Company','thStreet':'745 GT St','thCity':'Atlanta','thState':'GA','thZipcode':'30332'}
+        {'movName':"4400 The Movie",'movReleaseDate':datetime.date(2019,8,12),'movPlayDate':datetime.date(2019,10,12),'thName':"ABC Theater",'comName':"Awesome Theater Company",'thStreet':'880 Color Dr','thCity':'Austin','thState':'TX','thZipcode':'73301'},
+        {'movName':"The First Pokemon Movie",'movReleaseDate':datetime.date(1998,7,19),'movPlayDate':datetime.date(2018,7,19),'thName':"ABC Theater",'comName':"Awesome Theater Company",'thStreet':'880 Color Dr','thCity':'Austin','thState':'TX','thZipcode':'73301'},
+        {'movName':'Georgia Tech The Movie','movReleaseDate':datetime.date(1985,8,13),'movPlayDate':datetime.date(1985,8,13),'thName':'ABC Theater','comName':'Awesome Theater Company','thStreet':'880 Color Dr','thCity':'Austin','thState':'TX','thZipcode':'73301'},
+        {'movName':'How to Train Your Dragon','movReleaseDate':datetime.date(2010,3,21),'movPlayDate':datetime.date(2010,4,2),'thName':'Cinema Star','comName':'4400 Theater Company','thStreet':'100 Cool Place','thCity':'San Francisco','thState':'CA','thZipcode':'94016'},
+        {'movName':"4400 The Movie",'movReleaseDate':datetime.date(2019,8,12),'movPlayDate':datetime.date(2019,9,12),'thName':'Cinema Star','comName':'4400 Theater Company','thStreet':'100 Cool Place','thCity':'San Francisco','thState':'CA','thZipcode':'94016'},
+        {'movName':"The King's Speech",'movReleaseDate':datetime.date(2010,11,26),'movPlayDate':datetime.date(2019,12,20),'thName':'Cinema Star','comName':'4400 Theater Company','thStreet':'100 Cool Place','thCity':'San Francisco','thState':'CA','thZipcode':'94016'},
+        {'movName':'Spaceballs','movReleaseDate':datetime.date(1987,6,24),'movPlayDate':datetime.date(2000,2,2),'thName':'Cinema Star','comName':'4400 Theater Company','thStreet':'100 Cool Place','thCity':'San Francisco','thState':'CA','thZipcode':'94016'},
+        {'movName':'Georgia Tech The Movie','movReleaseDate':datetime.date(1985,8,13),'movPlayDate':datetime.date(2019,9,30),'thName':'Cinema Star','comName':'4400 Theater Company','thStreet':'100 Cool Place','thCity':'San Francisco','thState':'CA','thZipcode':'94016'},
+        {'movName':"George P Burdell's Life Story",'movReleaseDate':datetime.date(1927,8,12),'movPlayDate':datetime.date(2010,5,20),'thName':'Cinema Star','comName':'4400 Theater Company','thStreet':'100 Cool Place','thCity':'San Francisco','thState':'CA','thZipcode':'94016'},
+        {'movName':'How to Train Your Dragon','movReleaseDate':datetime.date(2010,3,21),'movPlayDate':datetime.date(2010,3,22),'thName':'Main Movies','comName':'EZ Theater Company',"thStreet":"123 Main St",'thCity':"New York",'thState':'NY','thZipcode':'10001'},
+        {'movName':'How to Train Your Dragon','movReleaseDate':datetime.date(2010,3,21),'movPlayDate':datetime.date(2010,3,23),'thName':'Main Movies','comName':'EZ Theater Company',"thStreet":"123 Main St",'thCity':"New York",'thState':'NY','thZipcode':'10001'},
+        {'movName':'Spaceballs','movReleaseDate':datetime.date(1987,6,24),'movPlayDate':datetime.date(1999,6,24),'thName':'Main Movies','comName':'EZ Theater Company',"thStreet":"123 Main St",'thCity':"New York",'thState':'NY','thZipcode':'10001'},
+        {'movName':"George P Burdell's Life Story",'movReleaseDate':datetime.date(1927,8,12),'movPlayDate':datetime.date(2019,10,22),'thName':'Main Movies','comName':'EZ Theater Company',"thStreet":"123 Main St",'thCity':"New York",'thState':'NY','thZipcode':'10001'},
+        {'movName':"George P Burdell's Life Story",'movReleaseDate':datetime.date(1927,8,12),'movPlayDate':datetime.date(2019,7,14),'thName':'Main Movies','comName':'EZ Theater Company',"thStreet":"123 Main St",'thCity':"New York",'thState':'NY','thZipcode':'10001'},
+        {'movName':"The King's Speech",'movReleaseDate':datetime.date(2010,11,26),'movPlayDate':datetime.date(2019,12,20),'thName':'Main Movies','comName':'EZ Theater Company',"thStreet":"123 Main St",'thCity':"New York",'thState':'NY','thZipcode':'10001'},
+        {'movName':'Spaceballs','movReleaseDate':datetime.date(1987,6,24),'movPlayDate':datetime.date(2010,4,2),'thName':'ML Movies','comName':'AI Theater Company','thStreet':'314 Pi St','thCity':'Pallet Town','thState':'KS','thZipcode':'31415'},
+        {'movName':'Spaceballs','movReleaseDate':datetime.date(1987,6,24),'movPlayDate':datetime.date(2023,1,23),'thName':'ML Movies','comName':'AI Theater Company','thStreet':'314 Pi St','thCity':'Pallet Town','thState':'KS','thZipcode':'31415'},
+        {'movName':'Calculus Returns: A ML Story','movReleaseDate':datetime.date(2019,9,19),'movPlayDate':datetime.date(2019,10,10),'thName':'ML Movies','comName':'AI Theater Company','thStreet':'314 Pi St','thCity':'Pallet Town','thState':'KS','thZipcode':'31415'},
+        {'movName':'Calculus Returns: A ML Story','movReleaseDate':datetime.date(2019,9,19),'movPlayDate':datetime.date(2019,12,30),'thName':'ML Movies','comName':'AI Theater Company','thStreet':'314 Pi St','thCity':'Pallet Town','thState':'KS','thZipcode':'31415'},
+        {'movName':'Spider-Man: Into the Spider-Verse','movReleaseDate':datetime.date(2018,12,1),'movPlayDate':datetime.date(2019,9,30),'thName':'ML Movies','comName':'AI Theater Company','thStreet':'314 Pi St','thCity':'Pallet Town','thState':'KS','thZipcode':'31415'},
+        {'movName':'How to Train Your Dragon','movReleaseDate':datetime.date(2010,3,21),'movPlayDate':datetime.date(2010,3,25),'thName':'Star Movies','comName':'EZ Theater Company','thStreet':'745 GT St','thCity':'Atlanta','thState':'GA','thZipcode':'30332'},
+        {'movName':"4400 The Movie",'movReleaseDate':datetime.date(2019,8,12),'movPlayDate':datetime.date(2019,8,12),'thName':'Star Movies','comName':'EZ Theater Company','thStreet':'745 GT St','thCity':'Atlanta','thState':'GA','thZipcode':'30332'}
         ]
 
         customer_service = CustomerService()
-            # i_movName = filters.get("i_movName")
-            # i_comName = filters.get("i_comName")
-            # i_city = filters.get("i_city")
-            # i_state = filters.get("i_state")
-            # i_minMovPlayDate = filters.get("i_minMovPlayDate")
-            # i_maxMovPlayDate = filters.get("i_maxMovPlayDate")
-
-        # filters = {
-        #   'i_movName':
-        #   'i_comName':
-        #   'i_city':
-        #   'i_state':
-        #   'i_minMovPlayDate':
-        #   'i_maxMovPlayDate':
-        # }
         filters = {
         'i_city':"",
         'i_state':"",
@@ -77,6 +54,8 @@ class TestCustomerService(object):
         actual = customer_service.ExploreMovie(filters)
 
         assert len(expected) == len(actual)
+        print(expected)
+        print(actual)
         assert sorted(actual, key=functools.cmp_to_key(compare_movie)) == sorted(expected, key=functools.cmp_to_key(compare_movie))
 
 
@@ -89,7 +68,8 @@ class TestCustomerService(object):
             'i_thName':"ML Movies",
             'i_comName':"AI Theater Company",
             'i_movName':'Spider-Man: Into the Spider-Verse',
-            'i_movPlayDate': 'Mon Sep 30 2019',
+            'i_movReleaseDate': '2018-12-01',
+            'i_movPlayDate': '2019-09-30 ',
             'i_creditCardNum': "1111111111110000"
         }
 
@@ -103,16 +83,6 @@ class TestCustomerService(object):
         customer_service.ViewMovie( filters)
 
         connection = get_conn()
-        #   with connection.cursor() as cursor:
-        #     info = """select visitID, username, thName, comName, visitDate from UserVisitTheater where
-        #       visitID=(%s) and username=(%s)
-        #       and thName=(%s)
-        #       and comName=(%s)
-        #       and visitDate=(%s)"""
-        #     cursor.execute(info, (new_id, user_name, filters['i_thname'], filters['i_coname'], date))
-        #     data=cursor.fetchall()
-        #     connection.commit()
-            # connection = get_conn()
         with connection.cursor() as cursor:
             leng="""select creditCardNum from CustomerViewMovie where creditCardNum='1111111111110000'"""
             cursor.execute(leng)
@@ -129,16 +99,14 @@ class TestCustomerService(object):
 
 
 
-
-
     def test_ViewHistory(self):
-
+        db_reset()
         connection = get_conn()
         with connection.cursor() as cursor:
 
             customer_service = CustomerService()
 
-            customer_service.ViewHistory('georgep')
+            customer_service.ViewHistory({'i_cusUsername':'georgep'})
 
             cursor.execute("select movName, thName, comName, creditCardNum, movPlayDate from CustomerViewMovie where CustomerViewMovie.creditCardNum in (select creditCardNum from CustomerCreditCard where CustomerCreditCard.username = 'calcwizard')")
             data=cursor.fetchall()
@@ -164,12 +132,23 @@ class TestCustomerService(object):
         assert len(expected) == len(data)
 
 
-    # def test_customer_view_mov(self):
-    #     db_reset()
+    def test_customer_view_mov(self):
+        db_reset()
 
-    #     customer_service = CustomerService()
-    #     filters = {'i_creditCardNum':'111111111','i_movName': 'Spaceballs','i_movReleaseDate': '1987-06-24','i_thName': 'ML Movies','i_comName': 'AI Theater Company','i_movPlayDate': '2023-01-23'}
-    #     data = customer_service.ViewMovie(filters)
+        customer_service = CustomerService()
+        filters = {'i_creditCardNum':'111111111','i_movName': 'Spaceballs','i_movReleaseDate': '1987-06-24','i_thName': 'ML Movies','i_comName': 'AI Theater Company','i_movPlayDate': '2023-01-23'}
+        customer_service.ViewMovie(filters)
+
+        connection = get_conn()
+        with connection.cursor() as cursor:
+            sql = "SELECT * FROM CustomerViewMovie where creditCardNum=111111111"
+            cursor.execute(sql)
+            moviePlays = cursor.fetchall()
+            connection.commit()
+        connection.close()
+
+        assert moviePlays == ()
+
 
 
 def compare_movie(item1, item2):

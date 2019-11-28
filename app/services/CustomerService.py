@@ -15,7 +15,7 @@ class CustomerService(object):
         with connection.cursor() as cursor:
 
             cursor.callproc("customer_filter_mov", (i_movName, i_comName, i_city, i_state , i_minMovPlayDate, i_maxMovPlayDate, ))
-            #data = cursor.fetchall()
+            data = cursor.fetchall()
             connection.commit()
 
         connection.close()
@@ -83,8 +83,8 @@ class CustomerService(object):
         connection = get_conn()
         with connection.cursor() as cursor:
             cursor.callproc('customer_view_mov', (i_creditCardNum, i_movName, i_movReleaseDate,i_thName, i_comName, i_movPlayDate, ))
-            connection.commit()
-
+        
+        connection.commit()
 
         connection.close()
 
@@ -116,8 +116,20 @@ class CustomerService(object):
 
         connection.close()
 
+    def ViewHistory(self, filters):
+        i_cusUsername = filters.get('i_cusUsername')
+        connection = get_conn()
 
-    def ViewHistory(self, username):
+        with connection.cursor() as cursor:
+
+            cursor.callproc('customer_view_history', (i_cusUsername,))
+            history = cursor.fetchall()
+            connection.commit()
+
+        connection.close()
+        return history
+
+    def ViewHistory1(self, username):
 
         i_cusUsername = username
         connection = get_conn()
