@@ -376,6 +376,7 @@ BEGIN
             (Theater.thState = i_state OR i_state = "ALL" OR i_state = "") AND
             (MoviePlay.movPlayDate >= i_minMovPlayDate OR i_minMovPlayDate is NULL) AND
             (MoviePlay.movPlayDate <= i_maxMovPlayDate OR i_maxMovPlayDate is NULL);
+    SELECT * From CosFilterMovie;
 END$$
 DELIMITER ;
 

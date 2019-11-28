@@ -3,8 +3,26 @@ import dateutil.parser
 
 class CustomerService(object):
 
-
     def ExploreMovie(self, filters):
+        i_movName = filters.get("i_movName")
+        i_comName = filters.get("i_comName")
+        i_city = filters.get("i_city")
+        i_state = filters.get("i_state")
+        i_minMovPlayDate = filters.get("i_minMovPlayDate")
+        i_maxMovPlayDate = filters.get("i_maxMovPlayDate")
+
+        connection = get_conn()
+        with connection.cursor() as cursor:
+
+            cursor.callproc("customer_filter_mov", (i_movName, i_comName, i_city, i_state , i_minMovPlayDate, i_maxMovPlayDate, ))
+            #data = cursor.fetchall()
+            connection.commit()
+
+        connection.close()
+        return data
+
+
+    def ExploreMovie1(self, filters):
 
         i_movName = filters.get("i_movName")
         i_comName = filters.get("i_comName")
@@ -54,14 +72,27 @@ class CustomerService(object):
         connection.close()
         return data
 
-    def ViewMovie(self, username, filters):
-
-        i_username = username
+    def ViewMovie(self, filters):
         i_creditCardNum = filters.get("i_creditCardNum")
         i_movName = filters.get("i_movName")
         i_movPlayDate = filters.get("i_movPlayDate")
+        i_movReleaseDate = filters.get("i_movReleaseDate")
         i_thName = filters.get("i_thName")
         i_comName = filters.get("i_comName")
+
+        connection = get_conn()
+        with connection.cursor() as cursor:
+            cursor.callproc('customer_view_mov', (i_creditCardNum, i_movName, i_movReleaseDate,i_thName, i_comName, i_movPlayDate, ))
+            connection.commit()
+
+
+        connection.close()
+
+
+
+    def ViewMovie1(self, username, filters):
+
+       
 
         i_movPlayDate = dateutil.parser.parse(i_movPlayDate)
 
