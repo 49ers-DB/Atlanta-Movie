@@ -2,9 +2,10 @@ import pymysql
 import os
 
 
+
 def get_conn():
   connection = pymysql.connect(host='localhost',
-                            user='flask',
+                            user='root',
                             password='1234',
                             db='moviez',
                             charset='utf8mb4',
@@ -13,8 +14,8 @@ def get_conn():
   return connection
 
 def db_reset():
-  os.system("mysql < schema_and_initialdata.sql -u flask --password=1234 > output.txt")
-  os.system("mysql < procedures.sql -u flask --password=1234")
+  os.system("mysql < schema_and_initialdata.sql -u root --password=1234 > output.txt")
+  os.system("mysql < procedures.sql -u root --password=1234")
 
 def run_s22_script():
 

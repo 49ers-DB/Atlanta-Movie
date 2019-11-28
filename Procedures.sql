@@ -111,7 +111,7 @@ DELIMITER ;
 
 DROP PROCEDURE IF EXISTS admin_filter_user;
 DELIMITER $$
-CREATE PROCEDURE `admin_filter_user`(IN i_username VARCHAR(50), IN i_status ENUM('ALL','Pending', 'Approved', 'Declined'), IN i_sortBy VARCHAR(50), IN i_sortDirection VARCHAR(4))
+CREATE PROCEDURE `admin_filter_user`(IN i_username VARCHAR(50), IN i_status ENUM('ALL','Pending', 'Approved', 'Declined'), IN i_sortBy ENUM('username','creditCardCount','userType','status',''), IN i_sortDirection VARCHAR(4))
 BEGIN
     DROP TABLE IF EXISTS AdFilterUser;
     CREATE TABLE AdFilterUser
@@ -196,7 +196,7 @@ BEGIN
                             WHEN i_sortBy = 'userType' THEN Table2.userType
                             WHEN i_sortBy = 'status' THEN Table1.status
                        END
-                  END DESC,
+                  END ASC,
                   CASE WHEN i_sortDirection = 'asc' THEN 1
                   ELSE
                        CASE WHEN i_sortBy = "" THEN Table1.username
@@ -205,7 +205,7 @@ BEGIN
                             WHEN i_sortBy = 'userType' THEN Table2.userType
                             WHEN i_sortBy = 'status' THEN Table1.status
                        END
-                  END ASC;
+                  END DESC;
     SELECT * FROM AdFilterUser;
 END$$
 DELIMITER ;
@@ -236,7 +236,7 @@ BEGIN
                             WHEN i_sortBy = 'numTheater' THEN count(distinct theater.thName)
                             WHEN i_sortBy = 'numEmployee' THEN count(distinct Manager.username)
                        END
-                  END DESC,
+                  END ASC,
                   CASE WHEN i_sortDirection = 'ASC' THEN 1
                   ELSE
                        CASE WHEN i_sortBy = '' THEN manager.comName
@@ -245,7 +245,7 @@ BEGIN
                             WHEN i_sortBy = 'numTheater' THEN count(distinct theater.thName)
                             WHEN i_sortBy = 'numEmployee' THEN count(distinct Manager.username)
                        END
-                  END ASC;
+                  END DESC;
     SELECT * FROM AdFilterCom;
 END$$
 DELIMITER ;
@@ -262,7 +262,6 @@ BEGIN
 	SELECT manComName;
 	select manComName like i_comName;
     IF (manComName like i_comName) THEN
-		Select "hello";
         INSERT INTO Theater (thName, comName, thStreet, thCity, thState, thZipcode, capacity, manUsername)
         VALUES (i_thName, i_comName, i_thStreet, i_thCity, i_thState, i_thZipcode, i_capacity, i_managerUsername);
     END IF;
@@ -282,6 +281,7 @@ BEGIN
             join manager on user.username=manager.username
             and manager.comName in
             (select company.comName from company where company.comName = i_comName);
+    SELECT * From AdComDetailEmp;
 END$$
 DELIMITER ;
 
@@ -293,6 +293,7 @@ BEGIN
     CREATE TABLE AdComDetailTh
     select theater.thName, theater.manUsername as "thManagerUsername", theater.thCity, theater.thState, theater.capacity  as "thCapacity"
             from theater where theater.comName=i_comName;
+    SELECT * from AdComDetailTh;
 END$$
 DELIMITER ;
 

@@ -3,18 +3,17 @@ import dateutil.parser
 
 class AdminService(object):
 
-    def ApproveUser(self,filters):
-
+    def ApproveUser(self, filters):
         i_username = filters.get('i_username')
         connection = get_conn()
-
-
+        
         with connection.cursor() as cursor:
-            query1 = "update User set status = 'Approved' where username = (%s)"
-            cursor.execute(query1, (i_username))
-            data1 = cursor.fetchall()
+            cursor.callproc("admin_approve_user", (i_username, ))
+
             connection.commit()
+        
         connection.close()
+
 
     def DeclineUser(self,filters):
 
@@ -22,10 +21,7 @@ class AdminService(object):
         connection = get_conn()
 
         with connection.cursor() as cursor:
-            query4 = """update User set Status = 'Declined' where status='Pending'
-            and username = (%s)"""
-            cursor.execute(query4, (i_username))
-            data1 = cursor.fetchall()
+            cursor.callproc("admin_decline_user", (i_username, ))
             connection.commit()
 
         connection.close()
@@ -39,75 +35,7 @@ class AdminService(object):
         connection = get_conn()
 
         with connection.cursor() as cursor:
-            query =  """select * from
-             (select user.username, count(CustomerCreditCard.creditCardNum) as \"creditCardNum\", user.status
-             from user
-             inner join CustomerCreditCard on user.username = CustomerCreditCard.username group by User.username
-             union
-             select user.username, 0 as \"creditCardCount\", user.status
-             from user where user.username not in (select username from  CustomerCreditCard)) as Table1
-             natural join
-             (select user.username, \"Manager-Customer\" as \"userType\"
-             from user
-             where user.username in
-             (select manager.username
-             from manager
-             inner join customer
-             where manager.username=customer.username)
-             union
-             select user.username, \"Customer\" as \"userType\"
-             from user
-             where user.username in
-             (select customer.username from customer)
-             and user.username not in
-             (select manager.username
-             from manager
-             inner join customer
-             where manager.username = customer.username)
-             union
-             select user.username, \"Manager\" as \"userType\"
-             from user
-             where user.username in
-             (select manager.username from manager)
-             and user.username not in
-             (select manager.username
-             from manager
-             inner join customer
-             where manager.username = customer.username)
-             union
-             select user.username, \"User\" as \"userType\"
-             from user
-             where user.username in
-             (select user.username from user)
-             and user.username not in
-             (select manager.username
-             from manager
-             inner join customer
-             where manager.username = customer.username)
-             and user.username not in (select customer.username from customer)
-             and user.username not in (select manager.username from manager)) as Table2
-             where (Table1.status = (%s) or (%s) is NULL) AND
-             (Table1.username = (%s) or (%s) is NULL or (%s) = "")
-             ORDER BY
-                  CASE WHEN (%s) = \'desc\' or (%s) = NULL THEN 1
-                  ELSE
-                       CASE WHEN (%s) = NULL THEN Table1.username
-                            WHEN (%s) = \'username\' THEN Table1.username
-                            WHEN (%s) = \'creditCardCount\' THEN Table1.creditCardNum
-                            WHEN (%s) = \'userType\' THEN Table2.userType
-                            WHEN (%s) = \'status\' THEN Table1.status
-                       END
-                  END DESC,
-                  CASE WHEN (%s) = \'asc\' THEN 1
-                  ELSE
-                       CASE WHEN (%s) = NULL THEN Table1.username
-                            WHEN (%s) = \'username\' THEN Table1.username
-                            WHEN (%s) = \'creditCardCount\' THEN Table1.creditCardNum
-                            WHEN (%s) = \'userType\' THEN Table2.userType
-                            WHEN (%s) = \'status\' THEN Table1.status
-                       END
-                  END ASC """
-            cursor.execute(query, (i_status, i_status, i_username, i_username, i_username, i_sortDirection, i_sortDirection, i_sortBy, i_sortBy, i_sortBy, i_sortBy, i_sortBy, i_sortDirection, i_sortBy, i_sortBy, i_sortBy, i_sortBy, i_sortBy))
+            cursor.callproc("admin_filter_user", (i_username, i_status, i_sortBy, i_sortDirection,))
             data = cursor.fetchall()
             connection.commit()
 
@@ -119,69 +47,26 @@ class AdminService(object):
 
 
     def ManageCompany(self, filters):
-        if(filters.get("i_comName") != None):
-            i_comName = filters.get("i_comName")["value"]
-        else:
-            i_comName = None
-        if(filters.get("i_minCity") != ''):
-            i_minCity = filters.get("i_minCity")
-        else:
-            i_minCity = "0"
-        if(filters.get("i_maxCity") != ''):
-            i_maxCity = filters.get("i_maxCity")
-        else:
-            i_maxCity = "9999999"
-        if(filters.get("i_minTheater") != ''):
-            i_minTheater = filters.get("i_minTheater")
-        else:
-            i_minTheater = "0"
-        if(filters.get("i_maxTheater") != ''):
-            i_maxTheater = filters.get("i_maxTheater")
-        else:
-            i_maxTheater = "9999999"
-        if(filters.get("i_minEmployee") != ''):
-            i_minEmployee = filters.get("i_minEmployee")
-        else:
-            i_minEmployee = "0"
-        if(filters.get("i_maxEmployee") != ''):
-            i_maxEmployee = filters.get("i_maxEmployee")
-        else:
-            i_maxEmployee = "9999999"
-
-        data_tuple = (
-                    i_comName,
-                    i_comName,
-                    i_minCity,
-                    i_maxCity,
-                    i_minTheater,
-                    i_maxTheater,
-                    i_minEmployee,
-                    i_maxEmployee,
-        )
-
+        i_comName = filters.get("i_comName")
+        i_minCity = filters.get("i_minCity")
+        i_maxCity = filters.get("i_maxCity")
+        i_minTheater = filters.get("i_minTheater")
+        i_maxTheater = filters.get("i_maxTheater")
+        i_minEmployee = filters.get("i_minEmployee")
+        i_maxEmployee = filters.get("i_maxEmployee")
+        i_sortBy = filters.get("i_sortBy")
+        i_sortDirection = filters.get('i_sortDirection')
 
 
         connection = get_conn()
         with connection.cursor() as cursor:
-            query = "select manager.comName as \"Company\", count(distinct theater.thCity) as \"City Count\", \
-            count(distinct theater.thName) \"Theater Count\", count(distinct Manager.username) as \"Employee Count\" \
-            from theater join Manager on theater.comName=Manager.comName group by theater.comName  \
-            having\
-            ((%s) is NULL or manager.comName = (%s))\
-			and (count(distinct theater.thCity) >=(%s))\
-            and (count(distinct theater.thCity) <=(%s))\
-            and (count(distinct theater.thName) >=(%s))\
-            and (count(distinct theater.thName) <=(%s))\
-            and (count(distinct Manager.username) >=(%s))\
-            and (count(distinct Manager.username)<=(%s))"
-
-            cursor.execute(query, data_tuple)
+            cursor.callproc("admin_filter_company", (i_comName, i_minCity, i_maxCity, i_minTheater, i_maxTheater, i_minEmployee, i_maxEmployee, i_sortBy,i_sortDirection,))
             info = cursor.fetchall()
             connection.commit()
 
 
         connection.close()
-        return {'ok':True, 'data':info}
+        return info
 
 
 
@@ -194,77 +79,69 @@ class AdminService(object):
         i_thState = filters.get("i_thState")
         i_thZipcode = filters.get("i_thZipcode")
         i_capacity = filters.get("i_capacity")
-        i_manUsername = filters.get("i_manUsername")
+        i_manUsername = filters.get("i_managerUsername")
 
         connection = get_conn()
         with connection.cursor() as cursor:
+            print((i_thName, i_comName, i_thStreet, i_thCity, i_thState, i_thZipcode, i_capacity, i_manUsername, ))
 
-
-            query2 = "insert into Theater (thName, comName, capacity, thStreet, thCity, thState, thZipcode, manUsername) \
-            values ((%s), (%s), (%s), (%s), (%s), (%s), (%s), (%s))"
-
-            cursor.execute(query2, (i_thName, i_comName, i_capacity, i_thStreet, i_thCity, i_thState, i_thZipcode, i_manUsername))
+            cursor.callproc('admin_create_theater', (i_thName, i_comName, i_thStreet, i_thCity, i_thState, i_thZipcode, i_capacity, i_manUsername, ))
             
             connection.commit()
 
         connection.close()
         
 
-    def CompanyDetail(self, comName):
-        i_comName = comName
+    def CompanyDetail(self, filters):
 
-        connection = get_conn()
-        with connection.cursor() as cursor:
-            #returns all employees and the company name
-            query1 = """select user.firstname, user.lastname, manager.comName from user
-            join manager on user.username=manager.username 
-            where user.username in 
-            (select manager.username from manager) 
-            and manager.comName in 
-            (select company.comName from company where company.comName = (%s))"""
-
-            cursor.execute(query1, (i_comName))
-            employees = cursor.fetchall()
-            connection.commit()
-            #returns theater details for the company
-            query2 = "select theater.thName, user.firstname, user.lastname, theater.thCity, theater.thState, theater.capacity \
-            from theater join user on user.username=theater.manUsername where theater.comName=(%s)"
-
-
-            cursor.execute(query2, (i_comName))
-            theaters = cursor.fetchall()
-            connection.commit()
+        employees = self.admin_view_comDetail_emp(filters)
+        theaters = self.admin_view_comDetail_th(filters)
 
         return {"ok":True, "employees":employees, "theaters":theaters}
 
+
+    def admin_view_comDetail_emp(self, filters):
+        i_comName = filters.get("i_comName")
+
+        connection = get_conn()
+        with connection.cursor() as cursor:
+            
+            print(i_comName)
+            cursor.callproc('admin_view_comDetail_emp', (i_comName, ))
+            data = cursor.fetchall()
+            connection.commit()
+
+        connection.close()
+        return data
+
+    
+    def admin_view_comDetail_th(self, filters):
+        i_comName = filters.get("i_comName")
+
+        connection = get_conn()
+        with connection.cursor() as cursor:
+            
+            print(i_comName)
+            cursor.callproc('admin_view_comDetail_th', (i_comName, ))
+            data = cursor.fetchall()
+            connection.commit()
+
+        connection.close()
+        return data
 
 
     def CreateMovie(self, filters):
 
         i_movName = filters.get("movieName")
         i_movDuration = filters.get("duration")
-
-        i_movReleaseDate = (dateutil.parser.parse(filters.get("releaseDate"))).date()
+        i_movReleaseDate = filters.get("releaseDate")
 
 
 
         connection = get_conn()
         with connection.cursor() as cursor:
 
-            query7 = "SELECT movName FROM Movie WHERE (movName=(%s)) AND (movReleaseDate=(%s))"
-            cursor.execute(query7, (i_movName, i_movReleaseDate))
-            data = cursor.fetchall()
-            connection.commit()
-            print(data)
-            if len(data) < 1:
-                query3 = "insert into Movie (movName, movReleaseDate, duration) \
-                values ((%s), (%s), (%s))"
-
-                cursor.execute(query3, (i_movName, i_movReleaseDate, i_movDuration))
-                connection.commit()
-            else:
-                connection.close()
-                return("Movie name and release date combination already taken")
+            cursor.callproc('admin_create_mov', (i_movName, i_movDuration, i_movDuration, ))
 
         connection.close()
-        return("Movie Registered")
+        
