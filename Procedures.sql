@@ -44,9 +44,11 @@ CREATE PROCEDURE `customer_add_creditcard`(IN i_username VARCHAR(50), IN i_credi
 BEGIN
     DECLARE ccCount INT;
 
-    SELECT ccCount = count(i_creditCardNum) FROM CustomerCreditCard WHERE username=i_username;
+    SELECT  count(creditCardNum) INTO ccCount  FROM CustomerCreditCard WHERE username=i_username;
     IF (ccCount < 6) THEN
         INSERT INTO CustomerCreditCard (username, creditCardNum) VALUES (i_username, i_creditCardNum);
+    ELSE
+        SELECT 'Could not insert';
     END IF;
 
 END$$
