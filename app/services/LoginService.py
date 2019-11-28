@@ -3,8 +3,20 @@ from app.services.DBService import get_conn
 
 class LoginService(object):
 
+  def login(self, user):
+    username = user['username']
+    password = user['password']
+    connection = get_conn()
+    with connection.cursor() as cursor:
+      
+      cursor.callproc("user_login", (username, password,  ))
+      userDatas = cursor.fetchall()
+      connection.commit()
+    connection.close()
+    return userDatas
+    
 
-  def login(self, user) -> bool:
+  def login1(self, user) -> bool:
 
     connection = get_conn()
 
