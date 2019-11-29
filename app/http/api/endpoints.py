@@ -10,11 +10,13 @@ from app.services.DropDownService import DropDownService
 from app.services.UserService import UserService
 from app.services.CustomerService import CustomerService
 from app.services.AdminService import AdminService
+from app.services.DBService import db_reset
 
 
 
 app = Flask(__name__)
 CORS(app)
+db_reset()
 
 
 # create services

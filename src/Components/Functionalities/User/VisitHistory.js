@@ -3,6 +3,7 @@ import DatePicker from "react-datepicker";
 import Select from "react-select";
 import APIClient from "../../../apiClient"
 import toDateString from '../../../actions/date'
+import getCompanies from '../../../actions/companies'
 
 import "../Functionality.css"
 
@@ -27,19 +28,6 @@ export default class VisitHistory extends Component {
     this.setSelectedCompany = this.setSelectedCompany.bind(this)
 
     this.handleFilter(new Event(""))
-  }
-
-
-  getCompanies() {
-    var companies = []
-    var apiClient = new APIClient("")
-        apiClient.getCompanies().then( resp => {
-            for(var i = 0; i < resp.length; i++) {
-                var companyName = resp[i].comName;
-                companies[i] = {value: companyName, label: companyName}
-            }
-        });
-    return companies;
   }
 
   handleFilter(event) {
@@ -107,7 +95,7 @@ export default class VisitHistory extends Component {
                     <Select
                     value={this.state.selectedCompany}
                     onChange={this.setSelectedCompany}
-                    options={this.getCompanies()}
+                    options={getCompanies()}
                     placeholder="None"
                     />
                 </div>

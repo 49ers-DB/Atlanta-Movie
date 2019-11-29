@@ -96,28 +96,36 @@ class ManagerService(object):
         i_movPlayDate = dateutil.parser.parse(i_movPlayDate).date()
         i_movReleaseDate = dateutil.parser.parse(i_movReleaseDate).date()
 
+        if i_movPlayDate < i_movReleaseDate:
+            raise Exception("Movie play date Cannot be scheduled before Movie Release Date")
+
         with connection.cursor() as cursor:
 
             query = cursor.execute("select movName, movReleaseDate from Movie") # movieSchedule1 is the output for Schedule Movie
-
             movieSchedule1 = cursor.fetchall()
-
             connection.commit()
 
-            query = "select thName, comName from Theater where manUsername = (%s)"
-
+            query = "select thName, comName, capacity from Theater where manUsername = (%s)"
             cursor.execute(query, (i_manUsername))
-
             data2 = cursor.fetchall()[0]
-
             connection.commit()
+
+            query = """SELECT count(*) as 'numScheduled' FROM MoviePlay
+                where thName in (SELECT thName FROM Theater where Theater.manUsername = (%s))
+                and comName in (SELECT comName FROM Theater where Theater.manUsername = %s)
+                and movPlayDate=%s;"""
+            cursor.execute(query, (i_manUsername, i_manUsername, i_movPlayDate))
+            data = cursor.fetchall()
+            numScheduled = data[0]['numScheduled']
+
+            print(numScheduled, data2,['capacity'])
+
+            if data2['capacity'] <= numScheduled:
+                raise Exception("Scheduling this movie would exceed Theater capacity")
 
             query = "insert into MoviePlay (thName, comName, movName, movReleaseDate, movPlayDate) values ((%s), (%s), (%s), (%s), (%s))"
-
             cursor.execute(query, (data2['thName'], data2['comName'], i_movName, i_movReleaseDate, i_movPlayDate))
-
             data3 = cursor.fetchall()
-
             connection.commit()
 
         connection.close()
