@@ -333,7 +333,7 @@ BEGIN
             cast(NULL as date) as "movPlayDate", Movie.duration as "movDuration" from Movie
             where Movie.movName not in
             (select MoviePlay.movName from MoviePlay where MoviePlay.thName in
-                (select thName from Theater where Theater.manUsername = @i_manUsername))
+                (select thName from Theater where Theater.manUsername = i_manUsername))
             and (i_minMovReleaseDate is NULL or Movie.movReleaseDate >= i_minMovReleaseDate)
             and (i_maxMovReleaseDate is NULL or Movie.movReleaseDate <= i_maxMovReleaseDate)
             and (i_minMovDuration is NULL or Movie.duration >= i_minMovDuration)
