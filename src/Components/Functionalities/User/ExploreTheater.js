@@ -68,7 +68,6 @@ export default class ExploreTheater extends Component {
   getTheatersForCompany(companyName) {
     var accessToken = localStorage.getItem("accessToken")
     theaters = [{value: "ALL", label: "ALL"}]
-    this.setState({selectedTheater: null})
     
     if (accessToken) {
       var apiClient = new APIClient(accessToken)
@@ -131,8 +130,11 @@ export default class ExploreTheater extends Component {
       console.log(apiClient)
 
       apiClient.perform('post', '/logVisit', data).then( resp => {
-
-      });
+        window.alert("User Visit Logged")
+      })
+      .catch( error => {
+         window.alert("Error Logging Visit")
+      })
       
     }
   }
