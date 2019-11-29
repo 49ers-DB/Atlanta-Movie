@@ -43,6 +43,9 @@ class RegisterService(object):
 
     with connection.cursor() as cursor:
       credit_card_list = customer['creditCardsList']
+      if len(credit_card_list):
+        return ({'message': 'Too Many Credit Cards'}, 402)
+
       for i in range(5 - len(credit_card_list)):
         credit_card_list.append(None)
 

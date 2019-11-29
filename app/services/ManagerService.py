@@ -51,7 +51,7 @@ class ManagerService(object):
                 i_maxDuration,
                 i_Movie,
                 i_Movie)
-        print(data_tuple)
+
         connection = get_conn()
         with connection.cursor() as cursor:
 
