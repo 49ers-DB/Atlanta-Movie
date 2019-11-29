@@ -59,6 +59,7 @@ class RegisterService(object):
       if dup_count[0].get(('count(`creditCardNum`)')) > 0:
         return ({'message': 'Credit Card taken'}, 402)
       
+      response = ({'message': 'Username Taken'}, 402)
       if self.registerUser(customer):
 
         #Inserting the values to Customer
@@ -77,9 +78,10 @@ class RegisterService(object):
             dataTuple = (customer['username'], creditCard)
             cursor.execute(sql, dataTuple)
             connection.commit() 
-
+        response = ({'ok': True, 'data': customer}, 200)
+      
       connection.close()
-      response = ({'ok': True, 'data': customer}, 200)
+      
 
     return response
 
@@ -95,26 +97,28 @@ class RegisterService(object):
       userDatas = cursor.fetchall()
       connection.commit()
 
-      if len(userDatas) < 1 and self.registerUser(manager):
+      if len(userDatas) < 1:
+        response = ({'Username already taken': False, 'data': manager}, 402)
+        if self.registerUser(manager):
 
-        #Inserting the values to Employee
-        sql = """INSERT INTO Employee (username)
-                  VALUES (%s)"""
-        dataTuple = (manager['username'])
-        cursor.execute(sql, dataTuple)
-        connection.commit()
+          #Inserting the values to Employee
+          sql = """INSERT INTO Employee (username)
+                    VALUES (%s)"""
+          dataTuple = (manager['username'])
+          cursor.execute(sql, dataTuple)
+          connection.commit()
 
-        #Inserting the values to Manager
-        sql = """INSERT INTO Manager (username, manStreet, manCity, manState, manZipCode, comName)
-                  VALUES (%s, %s, %s, %s, %s, %s)"""
-        dataTuple = (manager['username'], manager['address'], manager['city'], manager['selectedState']['value'], manager['zipCode'], manager['selectedCompany']['value'])
-        cursor.execute(sql, dataTuple)
-        connection.commit()
+          #Inserting the values to Manager
+          sql = """INSERT INTO Manager (username, manStreet, manCity, manState, manZipCode, comName)
+                    VALUES (%s, %s, %s, %s, %s, %s)"""
+          dataTuple = (manager['username'], manager['address'], manager['city'], manager['selectedState']['value'], manager['zipCode'], manager['selectedCompany']['value'])
+          cursor.execute(sql, dataTuple)
+          connection.commit()
 
-        response = ({'ok': True, 'data': manager}, 200)
+          response = ({'ok': True, 'data': manager}, 200)
       else:
-
         response = ({'Address already taken': False, 'data': manager}, 402)
+
     connection.close()
     return response
 
@@ -131,25 +135,26 @@ class RegisterService(object):
       userDatas = cursor.fetchall()
       connection.commit()
 
-      if len(userDatas) < 1 and self.registerCustomer(managerCustomer)[0]['ok']:
+      if len(userDatas) < 1 :
+        response = ({'Username already taken': False, 'data': manager}, 402)
+        if self.registerCustomer(managerCustomer)[0]['ok']:
 
-        #Inserting the values to Employee
-        sql = """INSERT INTO Employee (username)
-                  VALUES (%s)"""
-        dataTuple = (managerCustomer['username'])
-        cursor.execute(sql, dataTuple)
-        connection.commit()
+          #Inserting the values to Employee
+          sql = """INSERT INTO Employee (username)
+                    VALUES (%s)"""
+          dataTuple = (managerCustomer['username'])
+          cursor.execute(sql, dataTuple)
+          connection.commit()
 
-        #Inserting the values to Manager
-        sql = """INSERT INTO Manager (username, manStreet, manCity, manState, manZipCode, comName)
-                  VALUES (%s, %s, %s, %s, %s, %s)"""
-        dataTuple = (managerCustomer['username'], managerCustomer['address'], managerCustomer['city'], managerCustomer['selectedState']['value'], managerCustomer['zipCode'], managerCustomer['selectedCompany']['value'])
-        cursor.execute(sql, dataTuple)
-        connection.commit()
+          #Inserting the values to Manager
+          sql = """INSERT INTO Manager (username, manStreet, manCity, manState, manZipCode, comName)
+                    VALUES (%s, %s, %s, %s, %s, %s)"""
+          dataTuple = (managerCustomer['username'], managerCustomer['address'], managerCustomer['city'], managerCustomer['selectedState']['value'], managerCustomer['zipCode'], managerCustomer['selectedCompany']['value'])
+          cursor.execute(sql, dataTuple)
+          connection.commit()
 
-        response = ({'ok': True, 'data': managerCustomer}, 200)
+          response = ({'ok': True, 'data': managerCustomer}, 200)
       else:
-        print("here")
         response = ({'Address already taken': False, 'data': managerCustomer}, 403)
         
       connection.close()
