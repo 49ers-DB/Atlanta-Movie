@@ -10,11 +10,13 @@ from app.services.DropDownService import DropDownService
 from app.services.UserService import UserService
 from app.services.CustomerService import CustomerService
 from app.services.AdminService import AdminService
+from app.services.DBService import db_reset
 
 
 
 app = Flask(__name__)
 CORS(app)
+db_reset()
 
 
 # create services
@@ -186,6 +188,17 @@ def view_movie():
   return json_response({'ok': True})
 
 
+@app.route('/viewHistory', methods=['POST'])
+@login_required
+def viewHistory():
+  user = g.user['username']
+  filters = {'i_cusUsername': user}
+
+  data = customer_service.ViewHistory(filters)
+  print(data)
+  return json_response({'data': data})
+
+
 
 #----------ManagerService-----------------
 @app.route('/theaterOverview', methods=['POST'])
@@ -204,7 +217,7 @@ def get_visit_history():
   
   user = g.user['username']
 
-  data = user_service.VisitHistory(user, data)
+  data = user_service.VisitHistory1(user, data)
   return json_response({'data': data})
 
 
@@ -309,15 +322,7 @@ def create_movie():
 
 
 #----------CustomerService--------------------
-@app.route('/viewHistory', methods=['POST'])
-@login_required
-def viewHistory():
-  user = g.user['username']
-  print(user)
-  filters = {'i_cusUsername': user}
 
-  data = customer_service.ViewHistory(filters)
-  return json_response({'data': data})
 
 
 

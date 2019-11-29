@@ -3,6 +3,7 @@ import DatePicker from "react-datepicker";
 import Select from "react-select";
 import APIClient from "../../../apiClient"
 import toDateString from '../../../actions/date'
+import sendDate from "../../../actions/sendDate"
 
 import "../Functionality.css"
 
@@ -52,11 +53,11 @@ export default class VisitHistory extends Component {
 
       var requestBody = JSON.parse(JSON.stringify(this.state))
       if (requestBody.visitDate1) {
-        requestBody.visitDate1 = toDateString(this.state.visitDate1.toDateString())
+        requestBody.visitDate1 = sendDate(this.state.visitDate1)
       }
       
       if (requestBody.visitDate2) {
-        requestBody.visitDate2 = toDateString(this.state.visitDate2.toDateString())
+        requestBody.visitDate2 = sendDate(this.state.visitDate2)
       }
 
       apiClient.perform('post', '/GetVisitHistory', requestBody ).then( resp => {

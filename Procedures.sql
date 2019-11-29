@@ -414,6 +414,7 @@ BEGIN
     SELECT movName, thName, comName, creditCardNum, movPlayDate
     FROM CustomerViewMovie
     WHERE CustomerViewMovie.creditCardNum IN (SELECT creditCardNum FROM CustomerCreditCard WHERE CustomerCreditCard.username = i_cusUsername);
+    SELECT * from CosViewHistory;
 END$$
 DELIMITER ;
 
