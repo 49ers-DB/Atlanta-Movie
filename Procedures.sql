@@ -43,9 +43,10 @@ DELIMITER $$
 CREATE PROCEDURE `customer_add_creditcard`(IN i_username VARCHAR(50), IN i_creditCardNum CHAR(16))
 BEGIN
     DECLARE ccCount INT;
+    
 
     SELECT  count(creditCardNum) INTO ccCount  FROM CustomerCreditCard WHERE username=i_username;
-    IF (ccCount < 5) THEN
+    IF (ccCount < 5 and length(i_creditCardNum) = 16) THEN
         INSERT INTO CustomerCreditCard (username, creditCardNum) VALUES (i_username, i_creditCardNum);
     ELSE
         SELECT 'Could not insert';
