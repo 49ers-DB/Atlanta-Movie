@@ -45,7 +45,7 @@ BEGIN
     DECLARE ccCount INT;
 
     SELECT  count(creditCardNum) INTO ccCount  FROM CustomerCreditCard WHERE username=i_username;
-    IF (ccCount < 6) THEN
+    IF (ccCount < 5) THEN
         INSERT INTO CustomerCreditCard (username, creditCardNum) VALUES (i_username, i_creditCardNum);
     ELSE
         SELECT 'Could not insert';
@@ -84,8 +84,8 @@ CREATE PROCEDURE `manager_customer_add_creditcard`(IN i_username VARCHAR(50), IN
 BEGIN
     DECLARE ccCount INT;
 
-    SELECT ccCount = count(i_creditCardNum) FROM CustomerCreditCard WHERE username=i_username;
-    IF (ccCount < 6) THEN
+    SELECT  count(i_creditCardNum) INTO ccCount  FROM CustomerCreditCard WHERE username=i_username;
+    IF (ccCount < 5) THEN
         INSERT INTO CustomerCreditCard (username, creditCardNum) VALUES (i_username, i_creditCardNum);
     END IF;
 END$$
@@ -388,19 +388,29 @@ DROP PROCEDURE IF EXISTS customer_view_mov;
 DELIMITER $$
 CREATE PROCEDURE `customer_view_mov`(IN i_creditCardNum CHAR(16), IN i_movName VARCHAR(50), IN i_movReleaseDate DATE, IN i_thName VARCHAR(50), IN i_comName VARCHAR(50), IN i_movPlayDate DATE)
 BEGIN
-    DROP TABLE IF EXISTS tempCustomerViewMovie;
-    CREATE TABLE tempCustomerViewMovie
-       SELECT CustomerCreditCard.creditcardNum, MoviePlay.movReleaseDate, MoviePlay.movName, MoviePlay.movPlayDate,  MoviePlay.thName, MoviePlay.comName
-        FROM MoviePlay
-        JOIN CustomerCreditCard
-        WHERE CustomerCreditCard.creditcardNum = i_creditCardNum
-        AND MoviePlay.movName = i_movName
-        AND MoviePlay.movReleaseDate = i_movReleaseDate
-        AND MoviePlay.thName = i_thName
-        AND MoviePlay.comName = i_comName
-        AND MoviePlay.movPlayDate = i_movPlayDate;
-    INSERT INTO CustomerViewMovie SELECT * FROM tempCustomerViewMovie;
-    SELECT * FROM tempCustomerViewMovie;
+    DECLARE numMoviesSeen INT;
+
+    SELECT count(*) INTO numMoviesSeen FROM CustomerViewMovie 
+    WHERE movPlayDate=i_movPlayDate
+    AND creditCardNum in (SELECT creditCardNum FROM CustomerCreditCard WHERE username in
+    (SELECT username FROM CustomerCreditCard Where creditCardNum=i_creditCardNum));
+    SELECT numMoviesSeen;
+    IF (numMoviesSeen < 3) THEN
+
+        DROP TABLE IF EXISTS tempCustomerViewMovie;
+        CREATE TABLE tempCustomerViewMovie
+        SELECT CustomerCreditCard.creditcardNum, MoviePlay.movReleaseDate, MoviePlay.movName, MoviePlay.movPlayDate,  MoviePlay.thName, MoviePlay.comName
+            FROM MoviePlay
+            JOIN CustomerCreditCard
+            WHERE CustomerCreditCard.creditcardNum = i_creditCardNum
+            AND MoviePlay.movName = i_movName
+            AND MoviePlay.movReleaseDate = i_movReleaseDate
+            AND MoviePlay.thName = i_thName
+            AND MoviePlay.comName = i_comName
+            AND MoviePlay.movPlayDate = i_movPlayDate;
+        INSERT INTO CustomerViewMovie SELECT * FROM tempCustomerViewMovie;
+        SELECT * FROM tempCustomerViewMovie;
+    END IF;
 END$$
 DELIMITER ;
 

@@ -225,7 +225,7 @@ insert into moviez.Theater (comName,thName,capacity,thStreet,thCity,thState,thZi
 values
 ("EZ Theater Company","Main Movies",3,"123 Main St","New York",'NY',10001,'fatherAI'),
 ("EZ Theater Company",'Star Movies',2,'745 GT St','Atlanta','GA',30332,'calcultron'),
-('4400 Theater Company','Cinema Star',4,'100 Cool Place','San Francisco','CA',94016,'entropyRox'),
+('4400 Theater Company','Cinema Star',4,'100 Cool Place','San Francisco ','CA',94016,'entropyRox'),
 ('4400 Theater Company','Star Movies',5,'4400 Rocks Ave','Boulder','CA',80301,'radioactivePoRa'),
 ('4400 Theater Company',"Jonathan's Movies",2,'67 Pearl Dr','Seattle','WA',98101,'georgep'),
 ('Awesome Theater Company','ABC Theater',5,'880 Color Dr','Austin','TX',73301,'imbatman'),
