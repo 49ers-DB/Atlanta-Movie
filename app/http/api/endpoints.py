@@ -179,7 +179,9 @@ def view_movie():
   data = request.get_json()
   username = g.user['username']
   
-  customer_service.ViewMovie(username, data)
+  resp = customer_service.ViewMovie(username, data)
+  if resp is not None:
+    return json_response({'ok': True, 'data':resp})
   return json_response({'ok': True})
 
 

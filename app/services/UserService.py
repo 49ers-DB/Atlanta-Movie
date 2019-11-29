@@ -13,6 +13,15 @@ class UserService(object):
 
         if i_city == "":
             i_city = None
+        
+        if i_state == "ALL":
+            i_state = None
+
+        if i_thname == "ALL":
+            i_thname = None
+
+        if i_coname == "ALL":
+            i_coname = None
 
         data_tuple = (
             i_thname,

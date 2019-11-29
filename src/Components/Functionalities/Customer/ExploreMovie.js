@@ -6,9 +6,10 @@ import stateOptions from "../../../actions/stateOptions"
 import getCompanies from "../../../actions/companies"
 import movies from "../../../actions/movies"
 import toDateString from "../../../actions/date"
+import sendDate from "../../../actions/sendDate"
+
 
 import "../Functionality.css"
-import { isThisISOWeek } from 'date-fns'
 
 
 
@@ -19,7 +20,7 @@ function formatRows(data) {
   data.map( row => {
     var addressStr = `${row['thStreet']}, ${row['thCity']}, ${row['thState']}, ${row['thZipcode']}`
     var date = toDateString(row['movPlayDate'])
-    formatted.push([row['movName'], row['thName'], addressStr, row['comName'], date])
+    formatted.push([row['movName'], row['thName'], addressStr, row['comName'], date, row['movReleaseDate']])
   });
   return formatted
 }
@@ -148,10 +149,16 @@ export default class ExploreMovie extends Component {
         i_thName: this.state.rowData[this.state.moviePlayIndex][1],
         i_comName: this.state.rowData[this.state.moviePlayIndex][3],
         i_movPlayDate: this.state.rowData[this.state.moviePlayIndex][4],
+        i_movReleaseDate: this.state.rowData[this.state.moviePlayIndex][5],
         i_creditCardNum: this.state.selectedCreditCard['value']
       }
       apiClient.perform("post", "/viewMovie", requestBody).then( resp => {
-        
+        if (resp['data']) {
+          window.alert(resp['data']);
+        } else {
+          window.alert("Successfully viewed movie.")
+        }
+       
       }).catch(error => {
         window.alert("Already Viewed That Movie")
       })

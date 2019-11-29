@@ -13,11 +13,17 @@ class CustomerService(object):
         i_minMovPlayDate = filters.get("i_minMovPlayDate")
         i_maxMovPlayDate = filters.get("i_maxMovPlayDate")
 
+        if i_movName == "ALL":
+            i_movName = None
+
         if i_city == "":
             i_city = None
 
-        if i_state == "":
+        if i_state == "" or i_state == "ALL":
             i_state = None
+
+        if i_comName == "ALL":
+            i_comName = None
 
         data_tuple = (
             i_movName,
@@ -38,7 +44,7 @@ class CustomerService(object):
 
         with connection.cursor() as cursor:
 
-            query = "SELECT MoviePlay.movName, MoviePlay.comName,Theater.thName, Theater.thStreet, Theater.thCity, Theater.thState, Theater.thZipcode, MoviePlay.movPlayDate\
+            query = "SELECT MoviePlay.movName, MoviePlay.movReleaseDate, MoviePlay.comName,Theater.thName, Theater.thStreet, Theater.thCity, Theater.thState, Theater.thZipcode, MoviePlay.movPlayDate\
             FROM MoviePlay INNER JOIN Theater ON Theater.thName = MoviePlay.thName AND Theater.comName = MoviePlay.comName\
             WHERE (MoviePlay.movName = (%s) OR (%s) is NULL) AND \
             (MoviePlay.comName = (%s) OR (%s) is NULL) AND \
@@ -62,18 +68,29 @@ class CustomerService(object):
         i_movPlayDate = filters.get("i_movPlayDate")
         i_thName = filters.get("i_thName")
         i_comName = filters.get("i_comName")
+        i_movReleaseDate = filters.get("i_movReleaseDate")
 
         i_movPlayDate = dateutil.parser.parse(i_movPlayDate)
+        i_movReleaseDate = dateutil.parser.parse(i_movReleaseDate)
 
         connection = get_conn()
 
         with connection.cursor() as cursor:
 
-            query = "select movReleaseDate from MoviePlay where MoviePlay.movName = (%s)"
-            cursor.execute(query, (i_movName))
-            data2 = cursor.fetchall()
+            sql = """SELECT count(*) as 'numMoviesSeen' FROM CustomerViewMovie 
+            WHERE movPlayDate=(%s)
+            AND creditCardNum in (SELECT creditCardNum FROM CustomerCreditCard WHERE username in
+            (SELECT username FROM CustomerCreditCard Where creditCardNum=(%s)))"""
+            cursor.execute(sql, (i_movPlayDate, i_creditCardNum))
+            data = cursor.fetchall()
             connection.commit()
-            movReleaseDate = data2[0]['movReleaseDate']
+            numMoviesSeen = data[0]["numMoviesSeen"]
+            if (numMoviesSeen >= 3):
+                connection.close()
+                return "Could not watch that movie, too many movies already viewed that day" 
+
+
+            movReleaseDate = i_movReleaseDate
 
             query2 = """insert into CustomerViewMovie (creditCardNum, thName, comName, movName, movReleaseDate, movPlayDate)
             values ((%s), (%s), (%s), (%s), (%s), (%s))"""
@@ -84,6 +101,7 @@ class CustomerService(object):
 
 
         connection.close()
+        return None
 
 
     def ViewHistory(self, username):

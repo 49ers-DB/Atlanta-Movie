@@ -2,6 +2,7 @@
 
 const stateOptions = () => {
 return [
+  {value: "ALL", label: "ALL"},
   {value: "AL", label: "AL"},
   {value: "AK", label: "AK"},
   {value: "AZ", label: "AZ"},

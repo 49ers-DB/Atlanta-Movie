@@ -1,7 +1,7 @@
 import APIClient from "../apiClient"
 
 const movies = () => {
-  var movies = []
+  var movies = [{value: "ALL", label: "ALL"}]
   var accessToken = localStorage.getItem("accessToken")
     
     if (accessToken) {
