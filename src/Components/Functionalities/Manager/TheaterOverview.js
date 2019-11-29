@@ -97,7 +97,7 @@ export default class TheaterOverview extends Component {
   }
 
   setInclude(event) {
-    this.setState({includeNotPlayed: event.target.value})
+    this.setState({includeNotPlayed: event.target.checked})
   }
 
   render () {
