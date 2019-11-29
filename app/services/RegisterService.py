@@ -90,6 +90,9 @@ class RegisterService(object):
     connection = get_conn()
     with connection.cursor() as cursor:
 
+      if manager['selectedState']['value'] == "ALL":
+        return ({'message':'State Cannot be ALL'}, 400)
+
       address = (manager['address'], manager['city'], manager['selectedState']['value'], manager['zipCode'])
       
       sql = "SELECT `username` FROM `Manager` WHERE manStreet=(%s) AND manCity=(%s) AND manState=(%s) AND manZipCode=(%s)"
@@ -128,6 +131,9 @@ class RegisterService(object):
     connection = get_conn()
 
     with connection.cursor() as cursor:
+
+      if managerCustomer['selectedState']['value'] == "ALL":
+        return ({'message':'State Cannot be ALL'}, 400)
 
       address = (managerCustomer['address'], managerCustomer['city'], managerCustomer['selectedState']['value'], managerCustomer['zipCode'])
       sql = "SELECT `username` FROM `Manager` WHERE manStreet=(%s) AND manCity=(%s) AND manState=(%s) AND manZipCode=(%s)"

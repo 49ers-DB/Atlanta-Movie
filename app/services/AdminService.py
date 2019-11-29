@@ -122,58 +122,92 @@ class AdminService(object):
         if(filters.get("i_comName") != None):
             i_comName = filters.get("i_comName")["value"]
         else:
-            i_comName = None
-        if(filters.get("i_minCity") != ''):
-            i_minCity = filters.get("i_minCity")
-        else:
-            i_minCity = "0"
-        if(filters.get("i_maxCity") != ''):
-            i_maxCity = filters.get("i_maxCity")
-        else:
-            i_maxCity = "9999999"
-        if(filters.get("i_minTheater") != ''):
-            i_minTheater = filters.get("i_minTheater")
-        else:
-            i_minTheater = "0"
-        if(filters.get("i_maxTheater") != ''):
-            i_maxTheater = filters.get("i_maxTheater")
-        else:
-            i_maxTheater = "9999999"
-        if(filters.get("i_minEmployee") != ''):
-            i_minEmployee = filters.get("i_minEmployee")
-        else:
-            i_minEmployee = "0"
-        if(filters.get("i_maxEmployee") != ''):
-            i_maxEmployee = filters.get("i_maxEmployee")
-        else:
-            i_maxEmployee = "9999999"
+            i_comName = ""
+
+        i_minCity = filters.get("i_minCity")
+        i_maxCity = filters.get("i_maxCity")
+        i_minTheater = filters.get("i_minTheater")
+        i_maxTheater = filters.get("i_maxTheater")
+        i_minEmployee = filters.get("i_minEmployee")
+        i_maxEmployee = filters.get("i_maxEmployee")
+        i_sortBy = filters.get("i_sortBy")
+        i_sortDirection = filters.get("i_sortDirection")
+        
 
         data_tuple = (
                     i_comName,
                     i_comName,
+                    i_comName,
+                    i_minCity, # line 185
                     i_minCity,
+                    i_maxCity, # line 186
                     i_maxCity,
                     i_minTheater,
+                    i_minTheater,
+                    i_maxTheater, #line 189
                     i_maxTheater,
                     i_minEmployee,
+                    i_minEmployee,
                     i_maxEmployee,
+                    i_maxEmployee,
+                    i_sortDirection, # line 193
+                    i_sortDirection,
+                    i_sortBy, # line 195
+                    i_sortBy,
+                    i_sortBy, # line 197
+                    i_sortBy,
+                    i_sortBy,
+                    i_sortDirection, #line 202
+                    i_sortBy,
+                    i_sortBy,
+                    i_sortBy,
+                    i_sortBy,
+                    i_sortBy,
         )
 
 
 
+
+
+
+
+
+
         connection = get_conn()
+
+
         with connection.cursor() as cursor:
-            query = "select manager.comName as \"Company\", count(distinct theater.thCity) as \"City Count\", \
-            count(distinct theater.thName) \"Theater Count\", count(distinct Manager.username) as \"Employee Count\" \
-            from theater join Manager on theater.comName=Manager.comName group by theater.comName  \
-            having\
-            ((%s) is NULL or manager.comName = (%s))\
-			and (count(distinct theater.thCity) >=(%s))\
-            and (count(distinct theater.thCity) <=(%s))\
-            and (count(distinct theater.thName) >=(%s))\
-            and (count(distinct theater.thName) <=(%s))\
-            and (count(distinct Manager.username) >=(%s))\
-            and (count(distinct Manager.username)<=(%s))"
+
+            query = """select manager.comName as "comName", count(distinct theater.thCity) as "numCityCover",
+            count(distinct theater.thName) as "numTheater", count(distinct Manager.username) as "numEmployee"
+            from theater join Manager on theater.comName = Manager.comName group by theater.comName
+            having
+            (i_comName%s = "ALL" or i_comName%s = "" or manager.comName = i_comName%s)
+            and (count(distinct theater.thCity) >= i_minCity%s or i_minCity%s is NULL)
+            and (count(distinct theater.thCity) <= i_maxCity%s or i_maxCity%s is NULL)
+            and (count(distinct theater.thName) >= i_minTheater%s or i_minTheater%s is NULL)
+            and (count(distinct theater.thName) <= i_maxTheater%s or i_maxTheater%s is NULL)
+            and (count(distinct Manager.username) >= i_minEmployee%s or i_minEmployee%s is NULL)
+            and (count(distinct Manager.username) <= i_maxEmployee%s or i_maxEmployee%s is NULL)
+            ORDER BY
+                  CASE WHEN i_sortDirection%s = 'DESC' or i_sortDirection%s = '' THEN 1
+                  ELSE
+                       CASE WHEN i_sortBy%s = '' THEN manager.comName
+                            WHEN i_sortBy%s = 'comName' THEN manager.comName
+                            WHEN i_sortBy%s = 'numCityCover' THEN count(distinct theater.thCity)
+                            WHEN i_sortBy%s = 'numTheater' THEN count(distinct theater.thName)
+                            WHEN i_sortBy%s = 'numEmployee' THEN count(distinct Manager.username)
+                       END
+                  END ASC,
+                  CASE WHEN i_sortDirection%s = 'ASC' THEN 1
+                  ELSE
+                       CASE WHEN i_sortBy%s = '' THEN manager.comName
+                            WHEN i_sortBy%s = 'comName' THEN manager.comName
+                            WHEN i_sortBy%s = 'numCityCover' THEN count(distinct theater.thCity)
+                            WHEN i_sortBy%s = 'numTheater' THEN count(distinct theater.thName)
+                            WHEN i_sortBy%s = 'numEmployee' THEN count(distinct Manager.username)
+                       END
+                  END DESC;"""
 
             cursor.execute(query, data_tuple)
             info = cursor.fetchall()
@@ -195,6 +229,9 @@ class AdminService(object):
         i_thZipcode = filters.get("i_thZipcode")
         i_capacity = filters.get("i_capacity")
         i_manUsername = filters.get("i_manUsername")
+
+        if i_thState == "ALL":
+          raise Exception("State Cannot Be ALL")
 
         connection = get_conn()
         with connection.cursor() as cursor:

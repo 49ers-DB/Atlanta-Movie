@@ -1,7 +1,7 @@
 import APIClient from "../apiClient"
 
 const managers = () => {
-    var managers = []
+    var managers = [{value: "ALL", label: "ALL"}]
     var accessToken = localStorage.getItem("accessToken")
     
     if (accessToken) {
