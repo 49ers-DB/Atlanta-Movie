@@ -89,9 +89,10 @@ export default class CustomerRegistration extends Component {
                     apiClient.registerCustomer(this.state).then( resp => {
                         console.log(resp)
                         if(resp[1] !== 200) {
-                            if(resp[1] === 402) {
-                                window.alert("Credit Card Invalid")
-                            }
+                            window.alert("Could Not Register Error: " + resp[0]['message'])
+                            // if(resp[1] === 402) {
+                            //     window.alert("Could Not Register")
+                            // }
                         } else if(resp[1] === 200) {
                             window.location.replace("/");
                         }

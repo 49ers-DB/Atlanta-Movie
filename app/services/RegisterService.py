@@ -43,7 +43,7 @@ class RegisterService(object):
 
     with connection.cursor() as cursor:
       credit_card_list = customer['creditCardsList']
-      if len(credit_card_list):
+      if len(credit_card_list) > 5:
         return ({'message': 'Too Many Credit Cards'}, 402)
 
       for i in range(5 - len(credit_card_list)):
@@ -98,7 +98,7 @@ class RegisterService(object):
       connection.commit()
 
       if len(userDatas) < 1:
-        response = ({'Username already taken': False, 'data': manager}, 402)
+        response = ({'message':'Username already taken'}, 400)
         if self.registerUser(manager):
 
           #Inserting the values to Employee
@@ -117,7 +117,7 @@ class RegisterService(object):
 
           response = ({'ok': True, 'data': manager}, 200)
       else:
-        response = ({'Address already taken': False, 'data': manager}, 402)
+        response = ({'message':'Address already taken'}, 400)
 
     connection.close()
     return response
@@ -136,8 +136,8 @@ class RegisterService(object):
       connection.commit()
 
       if len(userDatas) < 1 :
-        response = ({'Username already taken': False, 'data': manager}, 402)
-        if self.registerCustomer(managerCustomer)[0]['ok']:
+        response = ({'message':'Username already taken'}, 400)
+        if self.registerCustomer(managerCustomer)[1] == 200:
 
           #Inserting the values to Employee
           sql = """INSERT INTO Employee (username)
@@ -155,7 +155,7 @@ class RegisterService(object):
 
           response = ({'ok': True, 'data': managerCustomer}, 200)
       else:
-        response = ({'Address already taken': False, 'data': managerCustomer}, 403)
+        response = ({'message':'Address already taken'}, 400)
         
       connection.close()
       

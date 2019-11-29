@@ -120,9 +120,9 @@ export default class ManagerRegistration extends Component {
             window.alert("Zip Code must be only numbers");
         } else if(this.state.password.length < 8) {
             window.alert("Password must be at least 8 characters long");
-        } else if(this.state.selectedCompany.value === "None") {
+        } else if(!this.state.selectedCompany) {
             window.alert("Choose a company");
-        } else if(this.state.selectedState.value === "None") {
+        } else if(!this.state.selectedState) {
             window.alert("Choose a company");
         } else if(this.state.password !== this.state.password2) {
             window.alert("Passwords do not match");
@@ -131,9 +131,10 @@ export default class ManagerRegistration extends Component {
             apiClient.registerManager(this.state).then( resp => {
                 console.log(resp)
                 if(resp[1] !== 200) {
-                    if(resp[1] === 403) {
-                        window.alert("Address Already Taken")
-                    }
+                    window.alert("Could Not Register Error: " + resp[0]['message'])
+                    // if(resp[1] === 403) {
+                    //     window.alert("Address Already Taken")
+                    // }
                 } else if(resp[1] === 200) {
                     window.location.replace("/");
                 }
