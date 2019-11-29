@@ -348,6 +348,8 @@ DROP PROCEDURE IF EXISTS manager_schedule_mov;
 DELIMITER $$
 CREATE PROCEDURE `manager_schedule_mov`(IN i_manUsername VARCHAR(50), IN i_movName VARCHAR(50), IN i_movReleaseDate DATE, IN i_movPlayDate DATE)
 BEGIN
+	DECLARE numScheduled INT;
+    DECLARE capacityAtTh INT;
     DROP TABLE IF EXISTS tempMoviePlay;
     CREATE Table tempMoviePlay
         SELECT movName, movReleaseDate, thName, comName, i_movPlayDate as movPlayDate FROM Theater
@@ -357,14 +359,14 @@ BEGIN
         and Theater.manUsername = i_manUsername;
     Select * FROM tempMoviePlay;
     
-    DECLARE numScheduled INT;
+    
     SELECT count(*) INTO numScheduled FROM MoviePlay
     where thName in (SELECT thName FROM Theater where Theater.manUsername = i_manUsername)
     and comName in (SELECT comName FROM Theater where Theater.manUsername = i_manUsername)
     and movPlayDate=i_movPlayDate;
     
-    DECLARE capacityAtTh INT;
-    SELECT capacity INTO capacityAtTh from Theater where Theater.manUsername = i_manUsername
+    
+    SELECT capacity INTO capacityAtTh from Theater where Theater.manUsername = i_manUsername;
 
     IF (i_movPlayDate >= i_movReleaseDate AND capacityAtTh > numScheduled) THEN
         INSERT INTO MoviePlay Select * FROM tempMoviePlay;
