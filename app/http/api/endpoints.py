@@ -126,7 +126,7 @@ def getMovies():
 @login_required
 def getTheaters(comName):
 
-  theaters = drop_down_service.TheaterDropDown(comName)
+  theaters = drop_down_service.TheaterDropDown()
   return json_response({'ok': True, 'theaters': theaters})
 
 @app.route('/creditcard', methods=['GET'])

@@ -53,15 +53,15 @@ class DropDownService(object):
         return data
 
 
-    def TheaterDropDown(self, companyName):
+    def TheaterDropDown(self):
 
         connection = get_conn()
 
         with connection.cursor() as cursor:
 
             query = """select thName from Theater
-                    where comName=(%s)"""
-            cursor.execute(query, (companyName))
+                    """
+            cursor.execute(query)
             data=cursor.fetchall()
             connection.commit()
 

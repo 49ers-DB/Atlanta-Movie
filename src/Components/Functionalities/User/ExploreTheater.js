@@ -61,12 +61,13 @@ export default class ExploreTheater extends Component {
     this.setCity = this.setCity.bind(this)
     this.checkedTheater = this.checkedTheater.bind(this);
     this.getTheatersForCompany = this.getTheatersForCompany.bind(this)
+    this.getTheatersForCompany("hello")
   }
 
 
   getTheatersForCompany(companyName) {
     var accessToken = localStorage.getItem("accessToken")
-    theaters = []
+    theaters = [{value: "ALL", label: "ALL"}]
     this.setState({selectedTheater: null})
     
     if (accessToken) {
@@ -150,8 +151,6 @@ export default class ExploreTheater extends Component {
 
   setSelectedCompany = (selectedCompany) =>  {
     this.setState({selectedCompany})
-    var company = selectedCompany['value']
-    this.getTheatersForCompany(company)
   }
 
   setSelectedState = (selectedState) => {
