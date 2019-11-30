@@ -10,13 +10,13 @@ class LoginService(object):
 
     with connection.cursor() as cursor:
       # Read a single record
-      sql = "SELECT `username`, `password` FROM `User` where username=(%s) and password=MD5(%s)"
+      sql = "SELECT `username`, `password`, status FROM `User` where username=(%s) and password=MD5(%s)"
       cursor.execute(sql, (user['username'], user['password']))
       userDatas = cursor.fetchall()
       connection.commit()
       connection.close()
     
-      if len(userDatas) > 0:
+      if len(userDatas) > 0 and userDatas['status']!='Declined':
         return True
       
       return False
