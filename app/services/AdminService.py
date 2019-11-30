@@ -36,6 +36,10 @@ class AdminService(object):
         i_status = filters.get("i_status")
         i_sortBy = filters.get("i_sortBy")
         i_sortDirection = filters.get("i_sortDirection")
+
+        if i_status == "ALL":
+            i_status = None
+        
         connection = get_conn()
 
         with connection.cursor() as cursor:
@@ -97,7 +101,7 @@ class AdminService(object):
                             WHEN (%s) = \'userType\' THEN Table2.userType
                             WHEN (%s) = \'status\' THEN Table1.status
                        END
-                  END DESC,
+                  END ASC,
                   CASE WHEN (%s) = \'asc\' THEN 1
                   ELSE
                        CASE WHEN (%s) = NULL THEN Table1.username
@@ -106,7 +110,7 @@ class AdminService(object):
                             WHEN (%s) = \'userType\' THEN Table2.userType
                             WHEN (%s) = \'status\' THEN Table1.status
                        END
-                  END ASC """
+                  END DESC """
             cursor.execute(query, (i_status, i_status, i_username, i_username, i_username, i_sortDirection, i_sortDirection, i_sortBy, i_sortBy, i_sortBy, i_sortBy, i_sortBy, i_sortDirection, i_sortBy, i_sortBy, i_sortBy, i_sortBy, i_sortBy))
             data = cursor.fetchall()
             connection.commit()
@@ -133,6 +137,18 @@ class AdminService(object):
         i_sortBy = filters.get("i_sortBy")
         i_sortDirection = filters.get("i_sortDirection")
         
+        if i_minCity == "":
+            i_minCity = None
+        if i_maxCity == "":
+            i_maxCity = None
+        if i_minTheater == "":
+            i_minTheater = None
+        if i_maxTheater == "":
+            i_maxTheater = None
+        if i_minEmployee == "":
+            i_minEmployee = None
+        if i_maxEmployee == "":
+            i_maxEmployee = None
 
         data_tuple = (
                     i_comName,
@@ -164,48 +180,36 @@ class AdminService(object):
                     i_sortBy,
                     i_sortBy,
         )
-
-
-
-
-
-
-
-
-
         connection = get_conn()
-
-
         with connection.cursor() as cursor:
-
-            query = """select manager.comName as "comName", count(distinct theater.thCity) as "numCityCover",
-            count(distinct theater.thName) as "numTheater", count(distinct Manager.username) as "numEmployee"
+            query = """select manager.comName as "Company", count(distinct theater.thCity) as "City Count",
+            count(distinct theater.thName) as "Theater Count", count(distinct Manager.username) as "Employee Count"
             from theater join Manager on theater.comName = Manager.comName group by theater.comName
             having
-            (i_comName%s = "ALL" or i_comName%s = "" or manager.comName = i_comName%s)
-            and (count(distinct theater.thCity) >= i_minCity%s or i_minCity%s is NULL)
-            and (count(distinct theater.thCity) <= i_maxCity%s or i_maxCity%s is NULL)
-            and (count(distinct theater.thName) >= i_minTheater%s or i_minTheater%s is NULL)
-            and (count(distinct theater.thName) <= i_maxTheater%s or i_maxTheater%s is NULL)
-            and (count(distinct Manager.username) >= i_minEmployee%s or i_minEmployee%s is NULL)
-            and (count(distinct Manager.username) <= i_maxEmployee%s or i_maxEmployee%s is NULL)
+            (%s = "ALL" or %s = "" or manager.comName = %s)
+            and (count(distinct theater.thCity) >= %s or %s is NULL)
+            and (count(distinct theater.thCity) <= %s or %s is NULL)
+            and (count(distinct theater.thName) >= %s or %s is NULL)
+            and (count(distinct theater.thName) <= %s or %s is NULL)
+            and (count(distinct Manager.username) >= %s or %s is NULL)
+            and (count(distinct Manager.username) <= %s or %s is NULL)
             ORDER BY
-                  CASE WHEN i_sortDirection%s = 'DESC' or i_sortDirection%s = '' THEN 1
+                  CASE WHEN %s = 'DESC' or %s = '' THEN 1
                   ELSE
-                       CASE WHEN i_sortBy%s = '' THEN manager.comName
-                            WHEN i_sortBy%s = 'comName' THEN manager.comName
-                            WHEN i_sortBy%s = 'numCityCover' THEN count(distinct theater.thCity)
-                            WHEN i_sortBy%s = 'numTheater' THEN count(distinct theater.thName)
-                            WHEN i_sortBy%s = 'numEmployee' THEN count(distinct Manager.username)
+                       CASE WHEN %s = '' THEN manager.comName
+                            WHEN %s = 'comName' THEN manager.comName
+                            WHEN %s = 'numCityCover' THEN count(distinct theater.thCity)
+                            WHEN %s = 'numTheater' THEN count(distinct theater.thName)
+                            WHEN %s = 'numEmployee' THEN count(distinct Manager.username)
                        END
                   END ASC,
-                  CASE WHEN i_sortDirection%s = 'ASC' THEN 1
+                  CASE WHEN %s = 'ASC' THEN 1
                   ELSE
-                       CASE WHEN i_sortBy%s = '' THEN manager.comName
-                            WHEN i_sortBy%s = 'comName' THEN manager.comName
-                            WHEN i_sortBy%s = 'numCityCover' THEN count(distinct theater.thCity)
-                            WHEN i_sortBy%s = 'numTheater' THEN count(distinct theater.thName)
-                            WHEN i_sortBy%s = 'numEmployee' THEN count(distinct Manager.username)
+                       CASE WHEN %s = '' THEN manager.comName
+                            WHEN %s = 'comName' THEN manager.comName
+                            WHEN %s = 'numCityCover' THEN count(distinct theater.thCity)
+                            WHEN %s = 'numTheater' THEN count(distinct theater.thName)
+                            WHEN %s = 'numEmployee' THEN count(distinct Manager.username)
                        END
                   END DESC;"""
 
@@ -232,6 +236,9 @@ class AdminService(object):
 
         if i_thState == "ALL":
           raise Exception("State Cannot Be ALL")
+
+        if i_comName == "ALL":
+            raise Exception("Company Name Cannot Be ALL")
 
         connection = get_conn()
         with connection.cursor() as cursor:

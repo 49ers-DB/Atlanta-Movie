@@ -92,17 +92,17 @@ export default class CreateTheater extends Component {
       } else if(requestBody.i_capacity.match(/^[0-9]+$/) == null || requestBody.i_capacity <= 0) {
         window.alert("Please input a valid capacity");
         doQuery = false;
-      } else if (requestBody.i_thState == "ALL") {
+      } else if (requestBody.i_thState['value'] == "ALL") {
         window.alert("State cannot be ALL");
         doQuery = false;
-      } else if (requestBody.i_manUsername == "ALL") {
+      } else if (requestBody.i_manUsername['value'] == "ALL") {
         window.alert("Manager cannot be ALL");
         doQuery = false;
-      } else if (requestBody.i_comName == "ALL") {
+      } else if (requestBody.i_comName['value'] == "ALL") {
         window.alert("Company cannot be ALL")
         doQuery = false;
       }
-      return doQuery
+      return doQuery;
   }
 
 

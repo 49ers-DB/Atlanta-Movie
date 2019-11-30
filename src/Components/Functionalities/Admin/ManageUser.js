@@ -10,7 +10,7 @@ import {
  
 
 const statuses = [
-  {value:"All", label:"All"},
+  {value:"ALL", label:"ALL"},
   {value:"Approved", label:"Approved"},
   {value:"Pending", label:"Pending"},
   {value:"Declined", label:"Declined"}
@@ -27,10 +27,10 @@ export default class ManageUser extends Component {
       username: "",
       rowData: [[],[],[],[],[],[]],
       i_status: null,
-      reverseUsernameCol: true,
-      reverseCreCardCountCol: true,
-      reverseUserTypeCol: true,
-      reverseStatusCol: true,
+      reverseUsernameCol: false,
+      reverseCreCardCountCol: false,
+      reverseUserTypeCol: false,
+      reverseStatusCol: false,
       userIndex: null,
       i_sortBy: "username",
       i_sortDirection: "desc"
@@ -82,7 +82,8 @@ export default class ManageUser extends Component {
       if (this.state.userIndex && this.state.userIndex >= 0) {
         oldRow = JSON.parse(JSON.stringify(this.state.rowData[i]));
       }
-  
+      
+      console.log(requestBody)
 
       apiClient.perform("post", "/filterUser", requestBody).then( resp => {
         this.setState({rowData: resp['data']}, this.handleRowChange)
@@ -109,6 +110,7 @@ export default class ManageUser extends Component {
       }
       console.log(requestBody)
       apiClient.perform("post", "/approveUser", requestBody ).then( resp => {
+        window.alert("Approved User")
         this.handleFilter(new Event(""))
       })
       .catch( error => {
@@ -132,6 +134,7 @@ export default class ManageUser extends Component {
       }
       
       apiClient.perform("post", "/declineUser", requestBody).then( resp => {
+        window.alert("Declined User")
         this.handleFilter(new Event(""))
 
       })
@@ -144,34 +147,74 @@ export default class ManageUser extends Component {
     }
   }
 
+  handleUsernameClick(revUsername, usernameDirection) {
+    console.log(usernameDirection)
+    this.setState({
+      reverseUsernameCol: !revUsername,
+      i_sortBy: "username",
+      i_sortDirection: usernameDirection
+      }, () => 
+      {this.handleClick()})
+    
+  }
+
+  handleCreditCardClick(revCredCard, creditCardDirection) {
+    this.setState({
+      reverseCreCardCountCol: !revCredCard,
+      i_sortBy: "creditCardCount",
+      i_sortDirection: creditCardDirection
+      }, () => 
+      {this.handleClick()})
+  }
+
+  handleUserTypeClick(revUserType, userTypeDirection) {
+    this.setState({
+      reverseUserTypeCol: !revUserType,
+      i_sortBy: "userType",
+      i_sortDirection: userTypeDirection
+      }, () => 
+      {this.handleClick()})
+    
+  }
+
+  handleStatusClick(revStatus, statusDirection) {
+    this.setState({
+      reverseStatusCol: !revStatus,
+      i_sortBy: "status",
+      i_sortDirection: statusDirection
+      }, () => 
+      {this.handleClick()})
+    
+  }
+
 
   render () {
-    var usernameIcon = faSortAlphaUp
+    var usernameIcon = faSortAlphaDown
     var revUsername = this.state.reverseUsernameCol
-    var usernameDirection = 'desc'
+    var usernameDirection = 'asc'
     if (this.state.reverseUsernameCol) {
-      usernameIcon = faSortAlphaDown
-      usernameDirection = 'asc'
+      usernameIcon = faSortAlphaUp
+      usernameDirection = 'desc'
     }
-    var creditCardIcon = faSortAlphaUp
+    var creditCardIcon = faSortAlphaDown
     var revCredCard = this.state.reverseCreCardCountCol
     var creditCardDirection = 'asc'
     if (this.state.reverseCreCardCountCol) {
-      creditCardIcon = faSortAlphaDown
+      creditCardIcon = faSortAlphaUp
       creditCardDirection = 'desc'
     }
-    var userTypeIcon = faSortAlphaUp
+    var userTypeIcon = faSortAlphaDown
     var revUserType = this.state.reverseUserTypeCol
     var userTypeDirection = 'asc'
     if (this.state.reverseUserTypeCol) {
-      userTypeIcon = faSortAlphaDown
+      userTypeIcon = faSortAlphaUp
       userTypeDirection = 'desc'
     }
-    var statusIcon = faSortAlphaUp
+    var statusIcon = faSortAlphaDown
     var revStatus = this.state.reverseStatusCol
     var statusDirection = 'asc'
     if (this.state.reverseStatusCol) {
-      statusIcon = faSortAlphaDown
+      statusIcon = faSortAlphaUp
       statusDirection = 'desc'
     }
     return (
@@ -211,46 +254,22 @@ export default class ManageUser extends Component {
                 </th>
                 <th scope="col">Username  <FontAwesomeIcon
                   icon={usernameIcon} 
-                  onClick={() => {this.setState({
-                    reverseUsernameCol: !revUsername,
-                    i_sortBy: "username",
-                    i_sortDirection: usernameDirection
-                    },
-                    this.handleClick)
-                  }}
+                  onClick={() => {this.handleUsernameClick(revUsername, usernameDirection)}}
                   />
                 </th>
                 <th scope="col">Credit Card Count  <FontAwesomeIcon
                   icon={creditCardIcon}
-                  onClick={() => {this.setState({
-                    reverseCreCardCountCol: !revCredCard,
-                    i_sortBy: "creditCardCount",
-                    i_sortDirection: creditCardDirection
-                    },
-                    this.handleClick)
-                  }}
+                  onClick={() => {this.handleCreditCardClick(revCredCard, creditCardDirection)}}
                   />
                 </th>
                 <th scope="col">User Type  <FontAwesomeIcon
                   icon={userTypeIcon}
-                  onClick={() => {this.setState({
-                    reverseUserTypeCol: !revUserType,
-                    i_sortBy: "userType",
-                    i_sortDirection: userTypeDirection
-                    },
-                    this.handleClick)
-                  }}
+                  onClick={() => {this.handleUserTypeClick(revUserType, userTypeDirection)}}
                   />
                 </th>
                 <th scope="col">Status  <FontAwesomeIcon
                   icon={statusIcon}
-                  onClick={() => {this.setState({
-                    reverseStatusCol: !revStatus,
-                    i_sortBy: "status",
-                    i_sortDirection: statusDirection
-                    },
-                    this.handleClick)
-                  }}
+                  onClick={() => {this.handleStatusClick(revStatus, statusDirection)}}
                   />
                 </th>
               </tr>

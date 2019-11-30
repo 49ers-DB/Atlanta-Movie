@@ -2,7 +2,11 @@ import React, { Component } from 'react'
 import {Redirect} from 'react-router-dom'
 import APIClient from "../../../apiClient"
 import Select from 'react-select'
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {
+  faSortAlphaUp,
+  faSortAlphaDown
+} from '@fortawesome/free-solid-svg-icons'
 
 import "../Functionality.css"
 import getCompanies from '../../../actions/companies'
@@ -20,7 +24,13 @@ export default class ManageCompany extends Component {
       numTheaters2: "",
       numEmployees1: "",
       numEmployees2: "",
-      companyIndex: null
+      companyIndex: null,
+      sortBy: "comName",
+      sortDirection: "DESC",
+      reverseCompanyCol: false,
+      reverseCityCoveredCol: false,
+      reverseTheaterCol: false,
+      reverseEmployeeCol: false,
     }
     this.handleFilter = this.handleFilter.bind(this)
     this.handleCompDetail = this.handleCompDetail.bind(this)
@@ -32,7 +42,7 @@ export default class ManageCompany extends Component {
   handleFilter(event) {
     event.preventDefault()
     var accessToken = localStorage.getItem("accessToken")
-   
+    console.log(this.state.reverseCompanyCol)
     
     if (accessToken) {
       var apiClient = new APIClient(accessToken)
@@ -43,8 +53,11 @@ export default class ManageCompany extends Component {
         i_minTheater: this.state.numTheaters1,
         i_maxTheater: this.state.numTheaters2,
         i_minEmployee: this.state.numEmployees1,
-        i_maxEmployee: this.state.numEmployees2
+        i_maxEmployee: this.state.numEmployees2,
+        i_sortBy: this.state.sortBy,
+        i_sortDirection: this.state.sortDirection,
       }
+      console.log(requestBody)
       
       apiClient.perform('post', '/manageCompany', requestBody)
       .then( resp => {
@@ -76,8 +89,72 @@ export default class ManageCompany extends Component {
     }
   }
 
+  handleComNameClick(revCom, comDirection) {
+    this.setState({
+      reverseCompanyCol: revCom,
+      sortBy: "comName",
+      sortDirection: comDirection
+      }, () =>  {
+      this.handleFilter(new Event(""))})
+  }
+
+  handleCityCoveredClick(revCityCov, cityCovDirection) {
+    this.setState({
+      reverseCityCoveredCol: revCityCov,
+      sortBy: "numCityCover",
+      sortDirection: cityCovDirection
+      }, () =>  {
+      this.handleFilter(new Event(""))})
+  }
+
+  handleTheaterClick(revTh, thDirection) {
+    this.setState({
+      reverseTheaterCol: revTh,
+      sortBy: "numTheater",
+      sortDirection: thDirection
+      }, () =>  {
+      this.handleFilter(new Event(""))})
+  }
+
+  handleEmployeeClick(revEm, emDirection) {
+    this.setState({
+      reverseEmployeeCol: revEm,
+      sortBy: "numEmployee",
+      sortDirection: emDirection
+    }, () =>  {
+      this.handleFilter(new Event(""))})
+  }
+
 
   render () {
+    var comNameIcon = faSortAlphaDown
+    var revCom = this.state.reverseCompanyCol
+    var comDirection = 'ASC'
+    if (this.state.reverseCompanyCol) {
+      comNameIcon = faSortAlphaUp
+      comDirection = 'DESC'
+    }
+    var cityCovIcon = faSortAlphaDown
+    var revCityCov = this.state.reverseCityCoveredCol
+    var cityCovDirection = 'ASC'
+    if (this.state.reverseCityCoveredCol) {
+      cityCovIcon = faSortAlphaUp
+      cityCovDirection = 'DESC'
+    }
+    var thIcon = faSortAlphaDown
+    var revTh = this.state.reverseTheaterCol
+    var thDirection = 'ASC'
+    if (this.state.reverseTheaterCol) {
+      thIcon = faSortAlphaUp
+      thDirection = 'DESC'
+    }
+    var emIcon = faSortAlphaDown
+    var revEm = this.state.reverseEmployeeCol
+    var emDirection = 'ASC'
+    if (this.state.reverseEmployeeCol) {
+      emIcon = faSortAlphaUp
+      emDirection = 'DESC'
+    }
     return (
       <div className="main">
         {this.renderRedirect()}
@@ -139,10 +216,23 @@ export default class ManageCompany extends Component {
               <thead>
                 <tr>
                   <th scope="col">Selected</th>
-                  <th scope="col">Name</th>
-                  <th scope="col">Num. Cities Covered</th>
-                  <th scope="col">Num. Theaters</th>
-                  <th scope="col">Num. Employees</th>
+                  <th scope="col">Name <FontAwesomeIcon
+                    icon={comNameIcon} 
+                    onClick={() => {this.handleComNameClick(!revCom, comDirection)}}
+                  />
+                  </th>
+                  <th scope="col">Num. Cities Covered<FontAwesomeIcon
+                    icon={cityCovIcon} 
+                    onClick={() => {this.handleCityCoveredClick(!revCityCov, cityCovDirection)}}
+                  /></th>
+                  <th scope="col">Num. Theaters<FontAwesomeIcon
+                    icon={thIcon} 
+                    onClick={() => {this.handleTheaterClick(!revTh, thDirection)}}
+                  /></th>
+                  <th scope="col">Num. Employees<FontAwesomeIcon
+                    icon={emIcon} 
+                    onClick={() => {this.handleEmployeeClick(!revEm, emDirection)}}
+                  /></th>
                 </tr>
               </thead>
               <tbody>
