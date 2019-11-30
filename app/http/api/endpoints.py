@@ -57,8 +57,9 @@ customer_service = CustomerService()
 admin_service = AdminService()
 
 #-----------Main------------
-@app.route('/', methods=['GET'])
-def index():
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def index(path):
   return render_template('index.html')
 
 

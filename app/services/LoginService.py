@@ -16,7 +16,7 @@ class LoginService(object):
       connection.commit()
       connection.close()
     
-      if len(userDatas) > 0 and userDatas['status']!='Declined':
+      if len(userDatas) == 1 and userDatas[0]['status']!='Declined':
         return True
       
       return False
