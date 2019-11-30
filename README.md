@@ -26,6 +26,10 @@ Then build the client using our npm build script.
 npm run build
 ```
 
+## Database Config
+
+The database is configured to be used by user `flask` and password `1234`. If you need to change it, please navigate to app/services/DBService.py and change the user and password to whatever is necessary.
+
 ## Running the server
 
 Navigate in a terminal to the main folder with package.json in it and run this command.
