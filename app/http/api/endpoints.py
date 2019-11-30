@@ -1,5 +1,5 @@
 from middleware import login_required, admin_only
-from flask import Flask, json, g, request
+from flask import Flask, json, g, request, render_template
 from flask_cors import CORS
 import pymysql.cursors
 from app.util.custom_jwt import create_access_token
@@ -11,11 +11,39 @@ from app.services.UserService import UserService
 from app.services.CustomerService import CustomerService
 from app.services.AdminService import AdminService
 from app.services.DBService import db_reset
+from logging.config import dictConfig
+import logging
+import sys
+
+
+dictConfig({
+    'version': 1,
+    'formatters': {'default': {
+        'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
+    }},
+    'handlers': {'wsgi': {
+        'class': 'logging.StreamHandler',
+        'stream': 'ext://flask.logging.wsgi_errors_stream',
+        'formatter': 'default'
+    }},
+    'root': {
+        'level': 'DEBUG',
+        'handlers': ['wsgi']
+    }
+})
+logging.basicConfig(level=logging.DEBUG)
 
 
 
-app = Flask(__name__)
+handler = logging.StreamHandler(sys.stdout)
+
+root = logging.getLogger()
+root.addHandler(handler)
+
+app = Flask(__name__, static_folder="build/static", template_folder="build")
 CORS(app)
+app.config['EXPLAIN_TEMPLATE_LOADING'] = True
+
 db_reset()
 
 
@@ -27,6 +55,11 @@ drop_down_service = DropDownService()
 user_service = UserService()
 customer_service = CustomerService()
 admin_service = AdminService()
+
+#-----------Main------------
+@app.route('/', methods=['GET'])
+def index():
+  return render_template('index.html')
 
 
 #------------LOGIN------------
