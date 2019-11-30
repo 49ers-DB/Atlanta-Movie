@@ -2,5 +2,6 @@ build:
   docker:
     web: Dockerfile
 run:
-  web: bundle exec puma -C config/puma.rb
+  web: FLASK_APP=$PWD/app/http/api/endpoints.py python -m flask run --port 4433
+
  
